@@ -127,4 +127,4 @@ typedef struct multiboot_mod_list
 void parse_multiboot_info(uint32_t magic, multiboot_info_t* mbi);
 
 
-#endif //OS__KERNEL_MULTIBOOT_H
+#endif

@@ -1,6 +1,7 @@
-#include "../include/terminal/terminal.h"
+#include "../include/output/terminal.h"
 
 namespace OS { namespace KERNEL {
+
 
     Terminal::Terminal(){
         init();

@@ -11,4 +11,4 @@ void memsetw(void* dst, uint32_t size, uint16_t fill);
 void *memmove(void *dst_void, const void *src_void, size_t length);
 
 
-#endif //OS_KERNEL_STRING_H
+#endif

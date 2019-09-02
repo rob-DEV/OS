@@ -45,11 +45,10 @@ namespace OS { namespace KERNEL {
         void scroll();
         void moveCursor();
         
-
     public:
         Terminal();
         ~Terminal();
-        
+
         void print(char c);
         void print(const char* str);
 

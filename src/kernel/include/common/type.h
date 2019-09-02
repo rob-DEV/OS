@@ -5,4 +5,4 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#endif //OS_KERNEL_TYPES_H
+#endif
