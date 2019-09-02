@@ -20,6 +20,10 @@ namespace OS { namespace KERNEL {
 
         m_Terminal.print("Installing Interrupt Service Routines\n");
         
+        int a = 65;
+        m_Terminal.printf("cvcxzv%c\n", a);
+        m_Terminal.printf("cvcxzv%d\n", a);
+
         CPU::ISR::terminalAddress = (uint32_t)&m_Terminal;
 
         m_ISRS.idt = &m_IDT;

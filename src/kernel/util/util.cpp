@@ -44,12 +44,16 @@ namespace OS { namespace KERNEL {
             s[i++] = '-';
         s[i] = '\0';
         reverse(s);
+
     }
 
     uint32_t Util::strlen(const char* c) {
-        int32_t strl = 0;
-        while(char i = c[strl] != 0)
-            ++strl;
+         char i;
+        uint16_t length = 0;
+        while((i = c[length]) != 0){
+            length++;
+        }
+        return length;
     }
 
     bool Util::strcmp(const char* a, const char* b) {
@@ -70,6 +74,7 @@ namespace OS { namespace KERNEL {
                         '8', '9' ,'A', 'B', 'C', 'D', 'E', 'F' };
                         
     int Util::uintToHexStr(uint32_t num, char* buffer) {
+        
             int len=0,k=0;
         do//for every 4 bits
         {

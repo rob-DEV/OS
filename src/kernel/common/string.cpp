@@ -1,10 +1,12 @@
 #include "../include/common/string.h"
 
 uint32_t strlen(const char* c) {
-    
-    int32_t strl = 0;
-    while(char i = c[strl] != 0)
-        ++strl;
+    char i;
+    uint32_t length = 0;
+    while((i = c[length]) != 0){
+        length++;
+    }
+    return length;
 }
 
 bool strcmp(const char* a, const char* b) {

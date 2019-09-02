@@ -122,7 +122,7 @@ namespace OS { namespace KERNEL {
 
     int Terminal::printf(const char* __restrict format, ...) {
         
-        va_list parameters;
+    va_list parameters;
     va_start(parameters, format);
 
 
@@ -177,14 +177,18 @@ namespace OS { namespace KERNEL {
         else if (*format == 'd') {
             format++;
             int input = va_arg(parameters, int /* char promotes to int */);
-
+            
             Util::itoa(input, buffer);
-            if (!maxrem) {
+            
+            if (!maxrem) 
                 // TODO: Set errno to EOVERFLOW.
                 return -1;
-            }
+            
+           
+            
             if (!print(buffer, strlen(buffer)))
                 return -1;
+                
             written++;
         } else if (*format == 'x') {
             format++;
