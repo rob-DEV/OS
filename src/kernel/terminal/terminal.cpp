@@ -3,7 +3,7 @@
 namespace OS { namespace KERNEL {
 
     Terminal::Terminal(){
-
+        init();
     }
 
     Terminal::~Terminal(){
@@ -40,23 +40,25 @@ namespace OS { namespace KERNEL {
             *_videoMemAddr = c;
             *(_videoMemAddr+1) = m_Color;
             m_CursorX++;
+
             if (m_CursorX == VGA_WIDTH)
             {
-                m_CursorY = 0;
+                m_CursorX = 0;
                 m_CursorY++;
             }
         }
 
-        if (m_CursorY == VGA_HEIGHT) {
+         if (m_CursorY == VGA_HEIGHT) {
             memmove(VGA_MEMORY, VGA_MEMORY + (VGA_WIDTH * 2), (VGA_WIDTH * (VGA_HEIGHT - 1)) * 2);
             memset(VGA_MEMORY + ((VGA_WIDTH * (VGA_HEIGHT - 1)) * 2), VGA_WIDTH * 2, 0);
             m_CursorY--;
-        }   
-
-        //scroll();
+        }
+        scroll();
+        moveCursor();
+        return 0;
     }
 
-    void Terminal::scroll() {
+     void Terminal::scroll() {
 
         unsigned blank, temp;
         int attrib = 0x0F;
@@ -80,6 +82,20 @@ namespace OS { namespace KERNEL {
         }
     }
 
+
+    void Terminal::moveCursor() {
+        
+        unsigned int temp;
+
+        temp = m_CursorY * VGA_WIDTH + m_CursorX;
+
+        HW_COMM::Port::outportb(0x3D4, 14);
+        HW_COMM::Port::outportb(0x3D5, temp >> 8);
+        HW_COMM::Port::outportb(0x3D4, 15);
+        HW_COMM::Port::outportb(0x3D5, temp);
+
+    }
+
     void Terminal::print(const char* str) {
         
         while (*str != 0)
@@ -87,8 +103,10 @@ namespace OS { namespace KERNEL {
             putchar((*str));
             str++;
         }
-        
+    }
 
+    void Terminal::print(char c) {
+        putchar(c);
     }
 
     void Terminal::cls() {
@@ -100,6 +118,10 @@ namespace OS { namespace KERNEL {
             *(_videoMemAddr + 1) = m_Color;
             _videoMemAddr += 2;
         }
+
+        m_CursorX = 0;
+        m_CursorY = 0;
+        moveCursor();
         
     }
 

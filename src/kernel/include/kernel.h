@@ -1,5 +1,5 @@
-#include "multiboot.h"
-#include "string.h"
+#include "../common/include/multiboot.h"
+#include "../common/include/string.h"
 
 namespace OS { namespace KERNEL {
 

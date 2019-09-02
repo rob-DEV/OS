@@ -1,4 +1,4 @@
-#include "../include/string.h"
+#include "include/string.h"
 
 uint32_t strlen(const char* c) {
     

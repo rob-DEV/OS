@@ -4,15 +4,19 @@
 namespace OS { namespace KERNEL {
 
     void Kernel::kernel_init(multiboot_info_t mbi, uint32_t magic) {
-        
+        //heap
+        //irq
+        //idt gdt
+
     }
 
     void Kernel::kernel_main(multiboot_info_t mbi, uint32_t magic) {
 
-        Terminal term;
-        term.init();
-        term.print("OS Terminal >>");
-
+        Terminal terminal;
+        
+        terminal.print("A");
+        terminal.print("Adfs");
+        
         for(;;);
     }
 

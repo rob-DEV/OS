@@ -1,7 +1,7 @@
 #ifndef OS_MULTIBOOT_H
 #define OS_MULTIBOOT_H
 
-#include <stdint.h>
+#include "type.h"
 
 #define MULTIBOOT_SEARCH                      8192 // How many bytes from the start of the file we search for the header.
 #define MULTIBOOT_HEADER_MAGIC          0x1BADB002 // The magic field should contain this.

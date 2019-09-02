@@ -2,3 +2,4 @@
 make
 make link
 make run
+make clean
