@@ -9,13 +9,10 @@ namespace OS {
 
     //Entrypoint for the OS called from the assembly code
     //int kmain(multiboot_info_t*mbi, uint32_t magic_number) {
-    extern "C" void kmain(void) {
+    extern "C" void kmain(multiboot_info_t mbi, uint32_t magic) {
         
-        KERNEL::Kernel* k = new KERNEL::Kernel();
-
-
         KERNEL::Kernel kernel;
-        kernel.test_main();
+        kernel.kernel_main(mbi, magic);
         return;
 
     }

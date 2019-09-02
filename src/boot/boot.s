@@ -26,6 +26,7 @@ a and w are both attributes, a means allocatable and w means writable
 @nobits means that the section does not contain data and only occupies space
 */
 .section .bootstrap_stack, "aw", @nobits
+
 .align 16
   stack_bottom:
   .skip 32768
