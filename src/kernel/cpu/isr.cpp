@@ -1,7 +1,7 @@
 #include "../include/cpu/isr.h"
 
 //terminal hack
-#include "../include/output/terminal.h"
+#include "../include/io/terminal.h"
 
 extern "C" void isr0();
 extern "C" void isr1();

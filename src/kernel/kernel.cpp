@@ -1,5 +1,5 @@
 #include "include/kernel.h"
-#include "include/output/terminal.h"
+#include "include/io/terminal.h"
 
 namespace OS { namespace KERNEL {
 

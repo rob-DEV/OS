@@ -1,9 +1,16 @@
-#ifndef OS_KERNEL_TERMINAL_H
-#define OS_KERNEL_TERMINAL_H
+#ifndef OS_KERNEL_IO_TERMINAL_H
+#define OS_KERNEL_IO_TERMINAL_H
+
+#include <limits.h>
+#include <stdbool.h>
+#include <stdarg.h>
 
 #include "../common/type.h"
 #include "../common/string.h"
 #include "../hardware/port.h"
+#include "../util/util.h"
+
+#define EOF -1
 
 namespace OS { namespace KERNEL {
 
@@ -42,6 +49,7 @@ namespace OS { namespace KERNEL {
       
         void init();
         int putchar(char c);
+        bool print(const char* data, size_t length);
         void scroll();
         void moveCursor();
         
@@ -51,6 +59,7 @@ namespace OS { namespace KERNEL {
 
         void print(char c);
         void print(const char* str);
+        int printf(const char* __restrict format, ...);
 
         void setColor(enum vga_color fg,  enum vga_color bg);
         void cls();

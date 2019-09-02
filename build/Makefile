@@ -15,7 +15,8 @@ CXX_FILE = $(wildcard ../src/kernel/*.cpp) \
 			$(wildcard ../src/kernel/cpu/*.cpp) \
 			$(wildcard ../src/kernel/hardware/*.cpp) \
 			$(wildcard ../src/kernel/memory/*.cpp) \
-			$(wildcard ../src/kernel/output/*.cpp) \
+			$(wildcard ../src/kernel/io/*.cpp) \
+			$(wildcard ../src/kernel/util/*.cpp) \
 			$(wildcard ../src/libc/*.cpp) 
 
 CXX_SRC = $(CXX_FILE:.c=)

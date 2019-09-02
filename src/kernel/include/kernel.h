@@ -4,7 +4,7 @@
 #include "cpu/idt.h"
 #include "cpu/isr.h"
 #include "memory/memorymanagement.h"
-#include "output/terminal.h"
+#include "io/terminal.h"
 
 namespace OS { namespace KERNEL {
 
