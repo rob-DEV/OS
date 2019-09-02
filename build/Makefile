@@ -11,8 +11,8 @@ C_SRC = $(C_FILE:.c=)
 
 
 CXX_FILE = $(wildcard ../src/kernel/*.cpp) \
-			$(wildcard ../src/kernel/video/*.cpp) \
-			$(wildcard ../src/kernel/string/*.cpp) 
+			$(wildcard ../src/kernel/string/*.cpp) \
+			$(wildcard ../src/kernel/terminal/*.cpp) 
 CXX_SRC = $(CXX_FILE:.c=)
 
 

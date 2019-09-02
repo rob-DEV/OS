@@ -1,59 +1,44 @@
-.intel_syntax noprefix
-
-/*Aligns boot modules on 4KB boundries*/
-.set ALIGN, 1<<0
-
-/*Requires memory data in the multiboot structure*/
-.set MEMINFO, 1 << 1
-
-/*Requires video mode info be available to the kernel*/
-.set VIDEOINFO, 1<<2
-
-.set MAGIC, 0x1BADB002
-.set FLAGS, ALIGN | MEMINFO /*| VIDEOINFO*/
-.set CHECKSUM, -(MAGIC + FLAGS)
-
+/* Declare constants for the multiboot header. */
+.set ALIGN,    1<<0             /* align loaded modules on page boundaries */
+.set MEMINFO,  1<<1             /* provide memory map */
+.set FLAGS,    ALIGN | MEMINFO  /* this is the Multiboot 'flag' field */
+.set MAGIC,    0x1BADB002       /* 'magic number' lets bootloader find the header */
+.set CHECKSUM, -(MAGIC + FLAGS) /* checksum of above, to prove we are multiboot */
 
 .section .multiboot
-  .align 4
-  .long MAGIC
-  .long FLAGS
-  .long CHECKSUM
-  .skip 20
+.align 4
+.long MAGIC
+.long FLAGS
+.long CHECKSUM
 
-/*
-a and w are both attributes, a means allocatable and w means writable
-@nobits means that the section does not contain data and only occupies space
-*/
-.section .bootstrap_stack, "aw", @nobits
-
+.section .bss
 .align 16
-  stack_bottom:
-  .skip 32768
-  stack_top:
+stack_bottom:
+.skip 16384 # 16 KiB
+stack_top:
 
 .section .text
-  .global _start
-  .extern kmain
-  .global outb
-  .type _start, @function
-  .type kmain, @function
-  _start:
-    cli
+.global _start
+.type _start, @function
+_start:
+	mov $stack_top, %esp
 
-    /*Grab addresses of the stack*/
-    lea edx, stack_top
-    lea ecx, stack_bottom
+    //EAX containing 0x2BAD002
+	push %eax
+    //32-bit physical address of the Multiboot information structure
+	push %ebx
 
-    /*Setup stack*/
-    mov esp, edx
 
-    /*Some parameters*/
-    push eax
-    push ebx
-    push ecx
-    push edx
 
-    /*Our main C function*/
-  	call kmain
+	call kmain
+
+	pop %ebx
+	pop %eax
+
+	
+
+	cli
+
     hlt
+
+.size _start, . - _start
