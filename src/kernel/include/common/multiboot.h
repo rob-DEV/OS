@@ -1,5 +1,5 @@
-#ifndef OS_MULTIBOOT_H
-#define OS_MULTIBOOT_H
+#ifndef OS__KERNEL_MULTIBOOT_H
+#define OS__KERNEL_MULTIBOOT_H
 
 #include "type.h"
 
@@ -127,4 +127,4 @@ typedef struct multiboot_mod_list
 void parse_multiboot_info(uint32_t magic, multiboot_info_t* mbi);
 
 
-#endif //OS_MULTIBOOT_H
+#endif //OS__KERNEL_MULTIBOOT_H

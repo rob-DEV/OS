@@ -13,6 +13,7 @@ C_SRC = $(C_FILE:.c=)
 CXX_FILE = $(wildcard ../src/kernel/*.cpp) \
 			$(wildcard ../src/kernel/common/*.cpp) \
 			$(wildcard ../src/kernel/hardware/*.cpp) \
+			$(wildcard ../src/kernel/memory/*.cpp) \
 			$(wildcard ../src/kernel/terminal/*.cpp) 
 CXX_SRC = $(CXX_FILE:.c=)
 

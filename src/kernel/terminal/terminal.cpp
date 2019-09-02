@@ -1,4 +1,4 @@
-#include "../include/terminal.h"
+#include "../include/terminal/terminal.h"
 
 namespace OS { namespace KERNEL {
 
@@ -10,14 +10,16 @@ namespace OS { namespace KERNEL {
 
     }
 
-    uint8_t Terminal::setColor(enum vga_color fg,  enum vga_color bg) {
-        return fg | bg << 4;
+    void Terminal::setColor(enum vga_color fg,  enum vga_color bg) {
+        m_Color = fg | bg << 4;
+        cls();
     }
 
     void Terminal::init() {
         m_CursorX = 0;
         m_CursorY = 0;
-        m_Color = setColor(VGA_COLOR_WHITE, VGA_COLOR_BLACK);
+        
+        setColor(VGA_COLOR_WHITE, VGA_COLOR_BLACK);
         
         cls();
     }

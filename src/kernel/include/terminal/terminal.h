@@ -1,9 +1,9 @@
 #ifndef OS_KERNEL_TERMINAL_H
 #define OS_KERNEL_TERMINAL_H
 
-#include "../common/include/type.h"
-#include "../common/include/string.h"
-#include "../hardware/include/port.h"
+#include "../common/type.h"
+#include "../common/string.h"
+#include "../hardware/port.h"
 
 namespace OS { namespace KERNEL {
 
@@ -39,8 +39,7 @@ namespace OS { namespace KERNEL {
         uint16_t m_CursorY;
         uint8_t m_Color;
 
-        uint8_t setColor(enum vga_color fg,  enum vga_color bg);
-        
+      
         void init();
         int putchar(char c);
         void scroll();
@@ -53,6 +52,8 @@ namespace OS { namespace KERNEL {
         
         void print(char c);
         void print(const char* str);
+
+        void setColor(enum vga_color fg,  enum vga_color bg);
         void cls();
 
 
