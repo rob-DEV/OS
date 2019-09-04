@@ -16,10 +16,10 @@ namespace OS { namespace KERNEL {
         CPU::ISR m_ISRS;
         
         Terminal m_Terminal;
-        void kernel_init(multiboot_info_t mbi, uint32_t magic);
+        void kernel_init(multiboot_info_t* mbi, uint32_t magic);
 
     public:
-        void kernel_main(multiboot_info_t mbi, uint32_t magic);
+        void kernel_main(multiboot_info_t* mbi, uint32_t magic);
 
     };
 }}

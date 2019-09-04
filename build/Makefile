@@ -43,7 +43,7 @@ link:
 		ld $(LN_FLAGS) -o out/bin/os.bin $(OUT)
 
 run:
-	qemu-system-i386 -kernel  out/bin/os.bin -m 512M
+	qemu-system-i386 -kernel  out/bin/os.bin -m 768M
 
 clean:
 	rm -f $(OUT)

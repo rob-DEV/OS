@@ -64,8 +64,42 @@ namespace OS { namespace KERNEL { namespace MEMORY {
     }
 
     void MemoryManager::free(void* ptr) {
-        
-    }
+        //this is the reverse of malloc()
+
+        //find the memory chunk -> address of data - sizeof(memory_chunk_t) == chunk start address
+        MemoryChunk* chunk = (MemoryChunk*)((size_t)ptr - sizeof(MemoryChunk));
+        //deallocate the memory
+        chunk->allocated = false;
+
+        uint32_t* chunk_data_ptr = (uint32_t*)chunk + sizeof(MemoryChunk);
+
+
+
+        uint32_t* data_address = (uint32_t*)ptr;
+        //TEST NULLIFY ALL MEMORY
+        for (int i = 0; i < chunk->size; ++i) {
+            *data_address = 0;
+            data_address++;
+        }
+
+        if(chunk->prev != NULL && !chunk->prev->allocated)
+        {
+            chunk->prev->next = chunk->next;
+            chunk->prev->size += chunk->size + sizeof(MemoryChunk);
+
+            if(chunk->next != NULL)
+                chunk->next->prev = chunk->prev;
+
+            chunk = chunk->prev;
+        }
+
+        if(chunk->next != NULL && !chunk->next->allocated){
+            chunk->size += chunk->next->size + sizeof(MemoryChunk);
+            chunk->next = chunk->next->next;
+            if(chunk->next != NULL)
+                chunk->next->prev = chunk;
+        }
+        }
 
     
 }}}
@@ -86,12 +120,16 @@ void* operator new[](size_t size)
 
 void* operator new(size_t size, void* ptr)
 {
-    return ptr;
+     if(OS::KERNEL::MEMORY::MemoryManager::Instance == 0)
+        return 0;
+    return OS::KERNEL::MEMORY::MemoryManager::Instance->malloc(size);
 }
 
 void* operator new[](size_t size, void* ptr)
 {
-    return ptr;
+     if(OS::KERNEL::MEMORY::MemoryManager::Instance == 0)
+        return 0;
+    return OS::KERNEL::MEMORY::MemoryManager::Instance->malloc(size);
 }
 
 void operator delete(void* ptr)

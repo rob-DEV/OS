@@ -1,11 +1,22 @@
 #include "include/kernel.h"
 #include "include/io/terminal.h"
 
+class AIDS {
+public:
+    const char* test;
+    int a;
+
+    AIDS(const char * d) {
+        test = d;
+        a = 54634;
+    }
+
+};
 namespace OS { namespace KERNEL {
 
-    void Kernel::kernel_init(multiboot_info_t mbi, uint32_t magic) {
+    void Kernel::kernel_init(multiboot_info_t* mbi, uint32_t magic) {
  
-        MEMORY::MemoryManager memoryManagment(mbi.mem_lower, mbi.mem_upper - mbi.mem_lower);
+        MEMORY::MemoryManager memoryManagment(mbi->mem_lower, mbi->mem_upper * 1024);
         
         m_Terminal.setColor(vga_color::VGA_COLOR_WHITE, vga_color::VGA_COLOR_BLACK);
 
@@ -20,28 +31,22 @@ namespace OS { namespace KERNEL {
 
         m_Terminal.print("Installing Interrupt Service Routines\n");
         
-        int a = 65;
-        m_Terminal.printf("cvcxzv%c\n", a);
-        m_Terminal.printf("cvcxzv%d\n", a);
-
         CPU::ISR::terminalAddress = (uint32_t)&m_Terminal;
 
         m_ISRS.idt = &m_IDT;
         m_ISRS.install();
 
-        m_Terminal.print("Mem Test\n");
-       
-    
 
-        //exception test
-        //int a = a / 0;
+        void* aa = MEMORY::MemoryManager::Instance->malloc(7000*100040);
+
+        m_Terminal.printf("%d\n", ((MEMORY::MemoryChunk*)(aa-16))->size);
 
         m_Terminal.print("LOG: Kernel Initalized\n");
         
 
     }
 
-    void Kernel::kernel_main(multiboot_info_t mbi, uint32_t magic) {
+    void Kernel::kernel_main(multiboot_info_t* mbi, uint32_t magic) {
 
         kernel_init(mbi, magic);
         
@@ -49,7 +54,7 @@ namespace OS { namespace KERNEL {
     }
 
     //Entrypoint for the OS called from the assembly code
-    extern "C" void kmain(multiboot_info_t mbi, uint32_t magic) {
+    extern "C" void kmain(multiboot_info_t* mbi, uint32_t magic) {
         
         KERNEL::Kernel kernel;
         kernel.kernel_main(mbi, magic);

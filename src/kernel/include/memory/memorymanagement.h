@@ -17,7 +17,7 @@ namespace OS { namespace KERNEL { namespace MEMORY {
     };
 
     class MemoryManager {
-    private:
+    public:
         MemoryChunk* first;
     public:
         static MemoryManager* Instance;
