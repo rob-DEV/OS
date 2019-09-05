@@ -15,7 +15,9 @@ namespace OS { namespace KERNEL {
         CPU::IDT m_IDT;
         CPU::ISR m_ISRS;
         
-        Terminal m_Terminal;
+        Terminal* m_Terminal;
+
+
         void kernel_init(multiboot_info_t* mbi, uint32_t magic);
 
     public:

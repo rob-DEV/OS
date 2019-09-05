@@ -1,36 +1,40 @@
 #include "include/kernel.h"
 #include "include/io/terminal.h"
 
-class AIDS {
+class TestClass {
 public:
     const char* test;
     int a;
 
-    AIDS(const char * d) {
+    TestClass(const char * d) {
         test = d;
         a = 54634;
     }
 
 };
+
 namespace OS { namespace KERNEL {
 
     void Kernel::kernel_init(multiboot_info_t* mbi, uint32_t magic) {
  
         MEMORY::MemoryManager memoryManagment(mbi->mem_lower, mbi->mem_upper * 1024);
-        
-        m_Terminal.setColor(vga_color::VGA_COLOR_WHITE, vga_color::VGA_COLOR_BLACK);
 
-        m_Terminal.print("LOG: Initalizing Kernel...\n");
+        m_Terminal = Terminal::getInstance();
+        memoryManagment.terminalInstanceAllocated = true;
+
+        m_Terminal->setColor(vga_color::VGA_COLOR_WHITE, vga_color::VGA_COLOR_BLACK);
+
+        m_Terminal->print("LOG: Initalizing Kernel...\n");
         
 
-        m_Terminal.print("Installing Global Descriptor Table\n");
+        m_Terminal->print("Installing Global Descriptor Table\n");
         m_GDT.install();
         
-        m_Terminal.print("Installing Interrupt Descriptor Table\n");
+        m_Terminal->print("Installing Interrupt Descriptor Table\n");
         m_IDT.install();
 
-        m_Terminal.print("Installing Interrupt Service Routines\n");
-        
+        m_Terminal->print("Installing Interrupt Service Routines\n");
+        m_Terminal->printf("0x%x\n", Terminal::getInstance());
         CPU::ISR::terminalAddress = (uint32_t)&m_Terminal;
 
         m_ISRS.idt = &m_IDT;
@@ -39,9 +43,14 @@ namespace OS { namespace KERNEL {
 
         void* aa = MEMORY::MemoryManager::Instance->malloc(7000*100040);
 
-        m_Terminal.printf("%d\n", ((MEMORY::MemoryChunk*)(aa-16))->size);
+        TestClass* testClass = new TestClass("dsdfsdfdd");
 
-        m_Terminal.print("LOG: Kernel Initalized\n");
+        MEMORY::MemoryChunk s = (MEMORY::MemoryChunk)(*((MEMORY::MemoryChunk*)((void*)testClass - 16)));
+
+        m_Terminal->printf("%d\n", s.size);
+        m_Terminal->printf("%s\n", ((TestClass*)testClass)->test);
+
+        m_Terminal->print("LOG: Kernel Initalized\n");
         
 
     }

@@ -1,6 +1,7 @@
 #include "../include/memory/memorymanagement.h"
 
 
+
 namespace OS { namespace KERNEL { namespace MEMORY {
 
     MemoryManager* MemoryManager::Instance = NULL;
@@ -31,11 +32,16 @@ namespace OS { namespace KERNEL { namespace MEMORY {
 
     void* MemoryManager::malloc(size_t size) {
 
+        if(terminalInstanceAllocated)
+            OS::KERNEL::Terminal::getInstance()->printf("size:%d\n", size);
         MemoryChunk* allocation_result = NULL;
 
         for(MemoryChunk* chunk = first; chunk != NULL && allocation_result == NULL; chunk = chunk->next)
             if(chunk->size > size && !chunk->allocated)
                 allocation_result = chunk;
+
+        if(terminalInstanceAllocated)
+            OS::KERNEL::Terminal::getInstance()->printf("alloc:%d\n", allocation_result);
 
         //no free heap memory / bug (more likely a bug)
         if(allocation_result == NULL)
@@ -60,6 +66,9 @@ namespace OS { namespace KERNEL { namespace MEMORY {
 
         //return a pointer to the data alloc start address
         //to do this get the result - memory header (memory_chunk_t)
+        if(terminalInstanceAllocated)
+            OS::KERNEL::Terminal::getInstance()->printf("here\n");
+
         return (void*)(((size_t)(allocation_result) + sizeof(MemoryChunk)));
     }
 
@@ -106,6 +115,7 @@ namespace OS { namespace KERNEL { namespace MEMORY {
 
 void* operator new(size_t size)
 {
+    //OS::KERNEL::Terminal::getInstance()->printf("here");
     if(OS::KERNEL::MEMORY::MemoryManager::Instance == 0)
         return 0;
     return OS::KERNEL::MEMORY::MemoryManager::Instance->malloc(size);
@@ -118,19 +128,7 @@ void* operator new[](size_t size)
     return OS::KERNEL::MEMORY::MemoryManager::Instance->malloc(size);
 }
 
-void* operator new(size_t size, void* ptr)
-{
-     if(OS::KERNEL::MEMORY::MemoryManager::Instance == 0)
-        return 0;
-    return OS::KERNEL::MEMORY::MemoryManager::Instance->malloc(size);
-}
 
-void* operator new[](size_t size, void* ptr)
-{
-     if(OS::KERNEL::MEMORY::MemoryManager::Instance == 0)
-        return 0;
-    return OS::KERNEL::MEMORY::MemoryManager::Instance->malloc(size);
-}
 
 void operator delete(void* ptr)
 {
@@ -139,6 +137,12 @@ void operator delete(void* ptr)
 }
 
 void operator delete[](void* ptr)
+{
+    if(OS::KERNEL::MEMORY::MemoryManager::Instance != 0)
+        OS::KERNEL::MEMORY::MemoryManager::Instance->free(ptr);
+}
+
+void operator delete(void* ptr, unsigned long size)
 {
     if(OS::KERNEL::MEMORY::MemoryManager::Instance != 0)
         OS::KERNEL::MEMORY::MemoryManager::Instance->free(ptr);

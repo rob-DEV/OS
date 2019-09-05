@@ -46,6 +46,8 @@ namespace OS { namespace KERNEL {
         uint16_t m_CursorY;
         uint8_t m_Color;
 
+        static Terminal* m_Instance;
+
       
         void init();
         int putchar(char c);
@@ -56,6 +58,8 @@ namespace OS { namespace KERNEL {
     public:
         Terminal();
         ~Terminal();
+
+        static Terminal* getInstance();
 
         void print(char c);
         void print(const char* str);

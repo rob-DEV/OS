@@ -3,6 +3,7 @@
 
 #include "../common/type.h"
 #include "../common/string.h"
+#include "../io/terminal.h"
 
 
 namespace OS { namespace KERNEL { namespace MEMORY {
@@ -17,13 +18,15 @@ namespace OS { namespace KERNEL { namespace MEMORY {
     };
 
     class MemoryManager {
-    public:
+    private:
         MemoryChunk* first;
     public:
         static MemoryManager* Instance;
 
         MemoryManager(size_t first, size_t size);
         ~MemoryManager();
+
+        bool terminalInstanceAllocated = false;
 
         void* malloc(size_t size);
         void free(void* ptr);
@@ -34,10 +37,8 @@ namespace OS { namespace KERNEL { namespace MEMORY {
 void* operator new(size_t size);
 void* operator new[](size_t size);
 
-void* operator new(size_t size, void* ptr);
-void* operator new[](size_t size, void* ptr);
-
 void operator delete(void* ptr);
 void operator delete[](void* ptr);
+void operator delete(void* ptr, unsigned long size);
 
 #endif
