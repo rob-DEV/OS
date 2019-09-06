@@ -41,7 +41,7 @@ namespace OS { namespace KERNEL {
             //MOVE THE CURSOR BACKWARDS
             //THIS DOESN'T DELETE THE CHARACTER
             //IT SIMPLY ALLOWS YOU TO OVERWRITE IT
-            //TODO: replace with space char
+            //TODO: replace with space char DONE
             m_CursorX--;
             unsigned int position = m_CursorY * VGA_WIDTH + m_CursorX;
             unsigned char*  _videoMemAddr = VGA_MEMORY + position*2;

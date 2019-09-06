@@ -78,7 +78,7 @@ namespace OS { namespace KERNEL { namespace CPU {
         static ISR* getInstance();
 
         void install();
-        static void faults(regs* r);
+        void handle_fault(regs* r);
     
     };
 

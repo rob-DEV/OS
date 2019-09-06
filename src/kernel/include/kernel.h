@@ -3,6 +3,8 @@
 #include "cpu/gdt.h"
 #include "cpu/idt.h"
 #include "cpu/isr.h"
+#include "cpu/irq.h"
+#include "cpu/pit.h"
 #include "memory/memorymanagement.h"
 #include "io/terminal.h"
 
@@ -14,7 +16,9 @@ namespace OS { namespace KERNEL {
         CPU::GDT* m_GDT;
         CPU::IDT* m_IDT;
         CPU::ISR* m_ISRS;
-        
+        CPU::IRQ* m_IRQ;
+        CPU::PIT* m_PIT;
+
         Terminal* m_Terminal;
 
 

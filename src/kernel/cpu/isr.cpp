@@ -36,10 +36,9 @@ extern "C" void isr29();
 extern "C" void isr30();
 extern "C" void isr31();
 
-void fault_handler(regs* r) {
+void fault_handler(regs* registers) {
 
-    //c wrapper to static function to be changed to singleton
-    OS::KERNEL::CPU::ISR::faults(r);
+    OS::KERNEL::CPU::ISR::getInstance()->handle_fault(registers);
 
 }
 
@@ -97,7 +96,7 @@ namespace OS { namespace KERNEL { namespace CPU {
         idt->setIDTEntry(31, (unsigned)isr31, 0x08, 0x8E);
     }
 
-    void ISR::faults(regs* r) {
+    void ISR::handle_fault(regs* r) {
         /* Is this a fault whose number is from 0 to 31? */
         if (r->int_no < 32)
         {
