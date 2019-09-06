@@ -7,12 +7,21 @@ extern "C" void gdt_flush();
 
 namespace OS { namespace KERNEL { namespace CPU {
 
+    GDT* GDT::m_Instance = NULL;
+
     GDT::GDT() {
         
     }
 
     GDT::~GDT() {
 
+    }
+    
+    GDT* GDT::getInstance() {
+        if(m_Instance == NULL)
+            m_Instance = new GDT();
+        
+        return m_Instance;
     }
 
     void GDT::setGDTEntry(uint32_t num, long base, long limit, unsigned char access, unsigned char gran) {

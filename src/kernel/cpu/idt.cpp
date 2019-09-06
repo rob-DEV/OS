@@ -8,12 +8,22 @@ extern "C" void idt_load();
 
 namespace OS { namespace KERNEL { namespace CPU {
 
+    IDT* IDT::m_Instance = NULL;
+
     IDT::IDT() {
 
     }
 
     IDT::~IDT() {
 
+    }
+
+    
+    IDT* IDT::getInstance() {
+        if(m_Instance == NULL)
+            m_Instance = new IDT();
+        
+        return m_Instance;
     }
 
     void IDT::setIDTEntry(unsigned char num, unsigned long base, unsigned short sel, unsigned char flags) {

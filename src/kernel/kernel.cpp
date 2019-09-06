@@ -22,36 +22,23 @@ namespace OS { namespace KERNEL {
         m_Terminal = Terminal::getInstance();
         memoryManagment.terminalInstanceAllocated = true;
 
-        m_Terminal->setColor(vga_color::VGA_COLOR_WHITE, vga_color::VGA_COLOR_BLACK);
-
+        
         m_Terminal->print("LOG: Initalizing Kernel...\n");
         
 
         m_Terminal->print("Installing Global Descriptor Table\n");
-        m_GDT.install();
+        m_GDT->install();
         
         m_Terminal->print("Installing Interrupt Descriptor Table\n");
-        m_IDT.install();
+        m_IDT->install();
 
         m_Terminal->print("Installing Interrupt Service Routines\n");
-        m_Terminal->printf("0x%x\n", Terminal::getInstance());
-        CPU::ISR::terminalAddress = (uint32_t)&m_Terminal;
 
-        m_ISRS.idt = &m_IDT;
-        m_ISRS.install();
+        m_ISRS->install();
 
-
-        void* aa = MEMORY::MemoryManager::Instance->malloc(7000*100040);
-
-        TestClass* testClass = new TestClass("dsdfsdfdd");
-
-        MEMORY::MemoryChunk s = (MEMORY::MemoryChunk)(*((MEMORY::MemoryChunk*)((void*)testClass - 16)));
-
-        m_Terminal->printf("%d\n", s.size);
-        m_Terminal->printf("%s\n", ((TestClass*)testClass)->test);
-
-        m_Terminal->print("LOG: Kernel Initalized\n");
-        
+        m_Terminal->setColor(VGA_COLOR_GREEN, VGA_COLOR_BLACK);
+        m_Terminal->print("LOG: Kernel Initalized\b\b\b\b\b\btest\n");
+        m_Terminal->setColor(VGA_COLOR_WHITE, VGA_COLOR_BLACK);
 
     }
 

@@ -21,7 +21,6 @@ namespace OS { namespace KERNEL {
 
     void Terminal::setColor(enum vga_color fg,  enum vga_color bg) {
         m_Color = fg | bg << 4;
-        cls();
     }
 
     void Terminal::init() {
@@ -44,6 +43,9 @@ namespace OS { namespace KERNEL {
             //IT SIMPLY ALLOWS YOU TO OVERWRITE IT
             //TODO: replace with space char
             m_CursorX--;
+            unsigned int position = m_CursorY * VGA_WIDTH + m_CursorX;
+            unsigned char*  _videoMemAddr = VGA_MEMORY + position*2;
+            *_videoMemAddr = ' ';
         }
         else {
             unsigned int position = m_CursorY * VGA_WIDTH + m_CursorX;

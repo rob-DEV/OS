@@ -23,10 +23,13 @@ namespace OS { namespace KERNEL { namespace CPU {
 
     class IDT {
     private:
-
+        static IDT* m_Instance;
     public:
         IDT();
         ~IDT();
+
+        static IDT* getInstance();
+
         void setIDTEntry(unsigned char num, unsigned long base, unsigned short sel, unsigned char flags);
         void install();
     

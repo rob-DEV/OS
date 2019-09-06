@@ -24,13 +24,13 @@ namespace OS { namespace KERNEL { namespace CPU {
 
     class GDT {
     private:
-        
+        static GDT* m_Instance;
         void setGDTEntry(uint32_t num, long base, long limit, unsigned char access, unsigned char gran);
 
     public:
         GDT();
         ~GDT();
-
+        static GDT* getInstance();
         void install();
     
     };

@@ -9,11 +9,11 @@ namespace OS { namespace KERNEL { namespace CPU {
 
     class IRQ {
     private:
-        
+        static IRQ* m_Instance;
     public:
         IRQ();
         ~IRQ();
-
+        static IRQ* getInstance();
         void install();
     };
 

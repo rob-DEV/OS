@@ -11,9 +11,9 @@ namespace OS { namespace KERNEL {
     class Kernel {
 
     private:
-        CPU::GDT m_GDT;
-        CPU::IDT m_IDT;
-        CPU::ISR m_ISRS;
+        CPU::GDT* m_GDT;
+        CPU::IDT* m_IDT;
+        CPU::ISR* m_ISRS;
         
         Terminal* m_Terminal;
 

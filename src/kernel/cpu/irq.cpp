@@ -50,7 +50,7 @@ extern "C" void irq_handler(regs *r)
 
 namespace OS { namespace KERNEL { namespace CPU {
 
-   
+    IRQ* IRQ::m_Instance = NULL;
 
     IRQ::IRQ() {
         
@@ -60,5 +60,11 @@ namespace OS { namespace KERNEL { namespace CPU {
 
     }
 
+    IRQ* IRQ::getInstance() {
+        if(m_Instance == NULL)
+            m_Instance = new IRQ();
+        
+        return m_Instance;
+    }
 
 }}}

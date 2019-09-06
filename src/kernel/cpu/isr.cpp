@@ -46,13 +46,20 @@ void fault_handler(regs* r) {
 
 namespace OS { namespace KERNEL { namespace CPU {
 
-    uint32_t ISR::terminalAddress = 0;
+    ISR* ISR::m_Instance = NULL;
+
     ISR::ISR() {
         
     }
 
     ISR::~ISR() {
 
+    }
+
+    ISR* ISR::getInstance(){
+        if(m_Instance == NULL)
+            m_Instance = new ISR();
+        return m_Instance;
     }
 
     void ISR::install() {
@@ -97,7 +104,7 @@ namespace OS { namespace KERNEL { namespace CPU {
             /* Display the description for the Exception that occurred.
             *  In this tutorial, we will simply halt the system using an
             *  infinite loop */
-           Terminal* terminal = (Terminal*)terminalAddress;
+            Terminal* terminal = Terminal::getInstance();
             terminal->print(exception_messages[r->int_no]);
             terminal->print(" Exception. System Halted!\n");
             //puts(exception_messages[r->int_no]);
