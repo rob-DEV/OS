@@ -23,10 +23,6 @@ namespace OS { namespace KERNEL { namespace CPU {
         return m_Instance;
     }
 
-    void PIT::init() {
-        
-    }
-
     void PIT::handler(regs* registers) {
         /* Increment our 'tick count' */
         m_Ticks++;
@@ -35,12 +31,19 @@ namespace OS { namespace KERNEL { namespace CPU {
         *  display a message on the screen */
         if (m_Ticks % 18 == 0)
         {
-            Terminal::getInstance()->print("One second has passed\n");
+            //Terminal::getInstance()->printf("%d\n", m_Ticks);
         }
     }
 
     void PIT::install() {
         OS::KERNEL::CPU::IRQ::getInstance()->irq_install(0, timer_handler);
+    }
+
+    void PIT::waitForMilliSeconds(uint32_t milliseconds) {
+        
+        unsigned int targetTicks = m_Ticks + (18 * (float)milliseconds / 1000);
+        while(m_Ticks < targetTicks);
+        Terminal::getInstance()->printf("Waited for %d milliseconds!\n", milliseconds);
     }
 
 }}}

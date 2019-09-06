@@ -7,6 +7,7 @@
 #include "cpu/pit.h"
 #include "memory/memorymanagement.h"
 #include "io/terminal.h"
+#include "hardware/keyboard.h"
 
 namespace OS { namespace KERNEL {
 
@@ -18,6 +19,8 @@ namespace OS { namespace KERNEL {
         CPU::ISR* m_ISRS;
         CPU::IRQ* m_IRQ;
         CPU::PIT* m_PIT;
+
+        HW_COMM::Keyboard* m_Keyboard;
 
         Terminal* m_Terminal;
 

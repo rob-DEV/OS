@@ -14,11 +14,8 @@ namespace OS { namespace KERNEL { namespace CPU {
     class PIT {
     private:
         static PIT* m_Instance;
-        
         uint32_t m_Ticks = 0;
 
-
-        void init();
     public:
         PIT();
         ~PIT();
@@ -27,6 +24,8 @@ namespace OS { namespace KERNEL { namespace CPU {
 
         void handler(regs* registers);
         void install();
+
+        void waitForMilliSeconds(uint32_t milliseconds);
        
     };
 

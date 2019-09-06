@@ -42,7 +42,16 @@ namespace OS { namespace KERNEL {
             //THIS DOESN'T DELETE THE CHARACTER
             //IT SIMPLY ALLOWS YOU TO OVERWRITE IT
             //TODO: replace with space char DONE
-            m_CursorX--;
+           
+
+            //check for going back a line
+            if(m_CursorX <= 0) {
+                m_CursorX = VGA_WIDTH;
+                if(m_CursorY > 0)
+                    --m_CursorY; 
+            }
+            --m_CursorX;
+
             unsigned int position = m_CursorY * VGA_WIDTH + m_CursorX;
             unsigned char*  _videoMemAddr = VGA_MEMORY + position*2;
             *_videoMemAddr = ' ';

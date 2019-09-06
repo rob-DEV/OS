@@ -26,6 +26,8 @@ namespace OS { namespace KERNEL {
         m_IRQ = CPU::IRQ::getInstance();
         m_ISRS = CPU::ISR::getInstance();
         m_PIT = CPU::PIT::getInstance();
+        m_Keyboard = HW_COMM::Keyboard::getInstance();
+
 
 
         m_Terminal->printf("m_GDT Address: 0x%x\n", m_GDT);
@@ -33,6 +35,7 @@ namespace OS { namespace KERNEL {
         m_Terminal->printf("m_IRQ Address: 0x%x\n", m_IRQ);
         m_Terminal->printf("m_ISRS Address: 0x%x\n", m_ISRS);
         m_Terminal->printf("m_PIT Address: 0x%x\n", m_PIT);
+        m_Terminal->printf("m_Keyboard Address: 0x%x\n", m_Keyboard);
 
                 
         m_Terminal->print("LOG: Initalizing Kernel...\n");
@@ -54,6 +57,12 @@ namespace OS { namespace KERNEL {
 
         m_Terminal->print("Installing Programmable Interval Timer\n");
         m_PIT->install();
+
+        m_Terminal->print("Installing Keyboard (US)\n");
+        m_Keyboard->install();
+
+
+        CPU::PIT::getInstance()->waitForMilliSeconds(30000);
 
 
 
