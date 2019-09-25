@@ -9,6 +9,7 @@
 #include "../common/string.h"
 #include "../hardware/port.h"
 #include "../util/util.h"
+#include "../memory/memorymanagement.h"
 
 #define EOF -1
 

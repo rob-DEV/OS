@@ -18,6 +18,8 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
     Keyboard* Keyboard::getInstance() {
         if(m_Instance == NULL)
             m_Instance = new Keyboard();
+
+        return m_Instance;
     }
 
     void Keyboard::handler(regs* registers) {

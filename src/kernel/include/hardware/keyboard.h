@@ -6,6 +6,7 @@
 #include "../cpu/irq.h"
 //TODO: change out to a custom shell
 #include "../io/terminal.h"
+#include "../memory/memorymanagement.h"
 
 extern "C" void keyboard_handler(regs* r);
 

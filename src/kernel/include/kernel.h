@@ -8,17 +8,23 @@
 #include "memory/memorymanagement.h"
 #include "io/terminal.h"
 #include "hardware/keyboard.h"
+#include "hardware/vga.h"
+#include "hardware/mouse.h"
+#include "gui/window.h"
 
 namespace OS { namespace KERNEL {
 
     class Kernel {
 
     private:
+        MEMORY::MemoryManager* m_Memory;
         CPU::GDT* m_GDT;
         CPU::IDT* m_IDT;
         CPU::ISR* m_ISRS;
         CPU::IRQ* m_IRQ;
         CPU::PIT* m_PIT;
+
+        HW_COMM::VGA* m_VGA;
 
         HW_COMM::Keyboard* m_Keyboard;
 

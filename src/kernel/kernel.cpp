@@ -1,25 +1,24 @@
 #include "include/kernel.h"
 #include "include/io/terminal.h"
 
-class TestClass {
-public:
-    const char* test;
-    int a;
-
-    TestClass(const char * d) {
-        test = d;
-        a = 54634;
-    }
-
-};
-
 namespace OS { namespace KERNEL {
 
     void Kernel::kernel_init(multiboot_info_t* mbi, uint32_t magic) {
- 
-        MEMORY::MemoryManager memoryManagment(mbi->mem_lower, mbi->mem_upper * 1024);
         
+        //migrate stack managed memory to full heap based memory
+        MEMORY::MemoryManager stackMemoryVolatile(mbi->mem_lower, mbi->mem_upper * 1024);
+        Terminal::getInstance()->printf("Address STACK MM : 0x%x\n", &stackMemoryVolatile);
+
+        m_Memory = (MEMORY::MemoryManager*)stackMemoryVolatile.malloc(sizeof(MEMORY::MemoryManager));
+        m_Memory = new MEMORY::MemoryManager(mbi->mem_lower + 100, mbi->mem_upper * 1024);
+        
+
+        Terminal::getInstance()->printf("Address HEAP MM : 0x%x\n", m_Memory);        
+
+
         m_Terminal = Terminal::getInstance();
+        
+        m_Terminal->printf("0x%x terminal\n", m_Terminal);
 
         m_GDT = CPU::GDT::getInstance();
         m_IDT = CPU::IDT::getInstance();
@@ -61,21 +60,50 @@ namespace OS { namespace KERNEL {
         m_Terminal->print("Installing Keyboard (US)\n");
         m_Keyboard->install();
 
-
-        CPU::PIT::getInstance()->waitForMilliSeconds(30000);
-
-
-
         m_Terminal->setColor(VGA_COLOR_GREEN, VGA_COLOR_BLACK);
         m_Terminal->print("LOG: Kernel Initalized\b\b\b\b\b\btest\n");
         m_Terminal->setColor(VGA_COLOR_WHITE, VGA_COLOR_BLACK);
-
+    
     }
 
     void Kernel::kernel_main(multiboot_info_t* mbi, uint32_t magic) {
 
         kernel_init(mbi, magic);
         
+        m_VGA = HW_COMM::VGA::getInstance();
+        m_VGA->setMode(320, 200, 8);
+        m_VGA->fillRectangle(0,0, 320, 200, 0xFF,0xFF,0xFF);
+        
+        HW_COMM::Mouse* mouse = HW_COMM::Mouse::getInstance();
+        
+        mouse->drawCursor();
+        mouse->install();
+        
+        GUI::Window* window = new GUI::Window(50, 50, 100, 70);
+
+        uint32_t a = 50;
+        while(1) {
+
+            //update VGA
+            //update MOUSE
+
+            window->draw();
+
+            window->xPos = a;
+            window->yPos = a;
+            
+            if(a > 1)
+                a--;
+            
+
+            mouse->drawCursor();
+            
+            
+            //60hz
+            m_PIT->waitForMilliSeconds(1000 / 60);
+
+        }
+
         for(;;);
     }
 

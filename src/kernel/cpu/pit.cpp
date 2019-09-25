@@ -43,7 +43,7 @@ namespace OS { namespace KERNEL { namespace CPU {
         
         unsigned int targetTicks = m_Ticks + (18 * (float)milliseconds / 1000);
         while(m_Ticks < targetTicks);
-        Terminal::getInstance()->printf("Waited for %d milliseconds!\n", milliseconds);
+        //Terminal::getInstance()->printf("Waited for %d milliseconds!\n", milliseconds);
     }
 
 }}}
