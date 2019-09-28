@@ -23,6 +23,8 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
         
         unsigned char m_MouseCycle = 0;
         uint8_t m_MouseByte[3];
+        uint8_t m_Buttons;
+        uint8_t m_Offset;
         
         static Mouse* m_Instance;
 

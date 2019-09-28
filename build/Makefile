@@ -16,6 +16,7 @@ CXX_FILE = $(wildcard ../src/kernel/*.cpp) \
 			$(wildcard ../src/kernel/gui/*.cpp) \
 			$(wildcard ../src/kernel/hardware/*.cpp) \
 			$(wildcard ../src/kernel/memory/*.cpp) \
+			$(wildcard ../src/kernel/shell/*.cpp) \
 			$(wildcard ../src/kernel/io/*.cpp) \
 			$(wildcard ../src/kernel/util/*.cpp) \
 			$(wildcard ../src/libc/*.cpp) 

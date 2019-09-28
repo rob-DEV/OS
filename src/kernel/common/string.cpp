@@ -20,6 +20,7 @@ bool strcmp(const char* a, const char* b) {
         ++a;
         ++b;
     } 
+    return true;
 }
 
 char* strcat(char* destination, const char* source)

@@ -40,18 +40,28 @@ namespace OS { namespace KERNEL { namespace GUI {
 
     void Window::draw() {
         
-        OS::KERNEL::HW_COMM::VGA* vga = OS::KERNEL::HW_COMM::VGA::getInstance();
-        OS::KERNEL::Terminal::getInstance()->printf("Window: x,y,w,h - %d %d %d %d\n", xPos, yPos, width, height);
+
+        OS::KERNEL::HW_COMM::VGA* vga = OS::KERNEL::HW_COMM::VGA::getInstance();    
         
-        /*if(xPos > xOldPos || yPos > yOldPos) {
+        if(xPos > xOldPos || yPos > yOldPos) {
             //remove old window - moving to bottom right
-            vga->fillRectangle(xOldPos, yOldPos, xPos-xOldPos, yPos + yOldPos, 255,255,255);
+            vga->fillRectangle(xOldPos, yOldPos, xPos+xOldPos, yPos + yOldPos, 255,255,255);
             vga->fillRectangle(xOldPos, yOldPos, yPos+yOldPos, xPos - xOldPos, 255,255,255);
         
-        }*/
+        }
         
+        if(xPos < xOldPos || yPos < yOldPos) {
+
+            
+            //remove old window - moving to bottom right
+            vga->fillRectangle(xOldPos, yOldPos, xPos-xOldPos, yPos - yOldPos, 255,255,255);
+            vga->fillRectangle(xOldPos, yOldPos, yPos+yOldPos, xPos + xOldPos, 255,255,255);
+        
+        }
+        
+
         //draw new window
-        vga->fillRectangle(xPos, yPos, width, height, -50 + color, -50 + color, color);
+        vga->fillRectangle(xPos, yPos, width, height, 10,100,100);
 
         xOldPos = xPos;
         yOldPos = yPos;

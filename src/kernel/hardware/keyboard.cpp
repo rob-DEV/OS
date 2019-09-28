@@ -25,18 +25,17 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
     void Keyboard::handler(regs* registers) {
         unsigned char scancode;
 
-    scancode = HW_COMM::Port::inportb(0x60);
+        scancode = HW_COMM::Port::inportb(0x60);
 
-    if (scancode & 0x80)
-    {
-        /* You can use this one to see if the user released the
-        *  shift, alt, or control keys... */
-    }
-    else
-    {
-        
-        Terminal::getInstance()->print(KB_US[scancode]);
-    }
+        if (scancode & 0x80)
+        {
+            /* You can use this one to see if the user released the
+            *  shift, alt, or control keys... */
+        }
+        else
+        {
+            SHELL::Shell::getInstance()->putchar(KB_US[scancode]); 
+        }
     }
 
     void Keyboard::install() {

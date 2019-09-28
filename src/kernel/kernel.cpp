@@ -4,7 +4,18 @@
 #include "../libc++/vector.h"
 #include "../libc++/string.h"
 
+enum Direction {
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT
+};
+
 namespace OS { namespace KERNEL {
+
+    void alphaCmd() {
+        OS::KERNEL::Terminal::getInstance()->printf("alpha command executed\n");    
+    }
 
     void Kernel::kernel_init(multiboot_info_t* mbi, uint32_t magic) {
         
@@ -83,77 +94,78 @@ namespace OS { namespace KERNEL {
 
         kernel_init(mbi, magic);
 
-        Terminal::getInstance()->printf("MEMORY MANGER HEAP INSTANCE 0x%x\n", MEMORY::MemoryManager::Instance);
-
+        Shell::getInstance()->addCommand("alpha", alphaCmd);
+    
         m_VGA = HW_COMM::VGA::getInstance();
-        //m_VGA->setMode(320, 200, 8);
+        m_VGA->setMode(320, 200, 8);
         m_VGA->fillRectangle(0,0, 320, 200, 0xFF,0xFF,0xFF);
         
         HW_COMM::Mouse* mouse = HW_COMM::Mouse::getInstance();
         
         mouse->install();
-        mouse->drawCursor();
+        //mouse->drawCursor();
 
         GUI::WindowManager* windowManager = new GUI::WindowManager();
 
-        std::string str = "test";
-
-        m_Terminal->printf(str.c_str());
-        m_Terminal->printf("\n");
-
-        str+="apples";
-        str+="oranges";
-        m_Terminal->printf(str.c_str());
-
+        windowManager->addWindow(new GUI::Window(20,20,35,35));
+        Terminal::getInstance()->printf("window count: %d\n", windowManager->m_Windows.size());
         
-        
-        for (size_t i = 0; i < windowManager->m_Windows.size(); i++)
-        {
-            Terminal::getInstance()->printf("Window %d : 0x%x\n", i, windowManager->m_Windows[i]);
-        }
-
-        windowManager->addWindow(new GUI::Window(10,10,10,10));
-        windowManager->addWindow(new GUI::Window(10,20,10,10));
-        windowManager->addWindow(new GUI::Window(10,30,10,10));
-        windowManager->addWindow(new GUI::Window(10,40,10,10));
-        windowManager->addWindow(new GUI::Window(10,50,10,10));
-        windowManager->addWindow(new GUI::Window(10,60,10,10));
-        windowManager->addWindow(new GUI::Window(10,70,10,10));
-        windowManager->addWindow(new GUI::Window(10,80,10,10));
-        windowManager->addWindow(new GUI::Window(20,80,10,10));
-
-        Terminal::getInstance()->printf("Window Count%d\n", windowManager->m_Windows.size());
-
-        for (size_t i = 0; i < windowManager->m_Windows.size(); i++)
-        {
-            Terminal::getInstance()->printf("Window %d : 0x%x\n", i, windowManager->m_Windows[i]);
-        }
-        
-        
-        
-        uint32_t a = 50;
+        Direction dir;
+        dir = Direction::RIGHT;
+        int times = 0;
+        int step = 120;
         while(1) {
 
             //update VGA
             //update MOUSE
            
-            //draw all graphics 
-            windowManager->draw();
-            windowManager->m_Windows[2]->xPos = a;
-            windowManager->m_Windows[2]->yPos = a;
-            windowManager->m_Windows[2]->color = a;
-            
+            if(dir == Direction::RIGHT && times < step) {
+                windowManager->m_Windows[0]->xPos++;
+                times++;
+                if(times == step) {
+                    times = 0;
+                    dir = Direction::DOWN;
+                }
+            }
 
-            if(a > 1)
-                a++;
-            
+            if(dir == Direction::LEFT && times < step) {
+                windowManager->m_Windows[0]->xPos--;
+                times++;
+                if(times == step) {
+                    times = 0;
+                    dir = Direction::UP;
+                }
+            }
+            if(dir == Direction::UP && times < step) {
+                windowManager->m_Windows[0]->yPos--;
+                times++;
+                if(times == step) {
+                    times = 0;
+                    dir = Direction::RIGHT;
+                }
+            }
+            if(dir == Direction::DOWN && times < step) {
+                windowManager->m_Windows[0]->yPos++;
+                times++;
+                if(times == step) {
+                    times = 0;
+                    dir = Direction::LEFT;
+                }
+            }
+
+            DRAW:
+            //times = 0;
+            windowManager->draw();
+
+            m_VGA->swapBuffers();
+
             
 
             mouse->drawCursor();
             
             
             //60hz
-            m_PIT->waitForMilliSeconds(10000 / 60);
+            m_PIT->waitForMilliSeconds(100);
 
         }
         

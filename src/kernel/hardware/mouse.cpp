@@ -82,56 +82,13 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
     }
 
     void Mouse::handler(regs* reg) { 
-        switch(m_MouseCycle)
-        {
-            
-            case 0:
-            m_MouseByte[0] = HW_COMM::Port::inportb(0x60);
-            m_MouseCycle++;
-            break;
-            case 1:
-            m_MouseByte[1] = HW_COMM::Port::inportb(0x60);
-            m_MouseCycle++;
-            break;
-            case 2:
-            m_MouseByte[2]= HW_COMM::Port::inportb(0x60);
-            m_MouseX += m_MouseByte[1] % 10;
-            m_MouseY += m_MouseByte[2] % 10;
-            m_MouseCycle = 0;
-            break;
-        }
+        
     }
 
     void Mouse::install() {
 
         unsigned char _status;  //unsigned char
 
-        /*
-        //Enable the auxiliary mouse device
-        mouseWait(1);
-        HW_COMM::Port::outportb(0x64, 0xA8);
-        
-        //Enable the interrupts
-        mouseWait(1);
-        HW_COMM::Port::outportb(0x64, 0x20);
-        mouseWait(0);
-        _status=(HW_COMM::Port::inportb(0x60) | 2);
-        mouseWait(1);
-        HW_COMM::Port::outportb(0x64, 0x60);
-        mouseWait(1);
-        HW_COMM::Port::outportb(0x60, _status);
-        
-        //Tell the mouse to use default settings
-        mouseWrite(0xF6);
-        mouseRead();  //Acknowledge
-        
-        //Enable the mouse
-        mouseWrite(0xF4);
-        mouseRead();  //Acknowledge
-
-        //Setup the mouse handler
-        OS::KERNEL::CPU::IRQ::getInstance()->irq_install(MOUSE_IRQ_ID, mouse_handler);
-        */
     }
 
     void Mouse::uninstall() {

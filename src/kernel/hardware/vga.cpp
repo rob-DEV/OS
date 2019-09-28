@@ -16,6 +16,13 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
         attributeControllerReadPort(0x3C1),
         attributeControllerWritePort(0x3C0),
         attributeControllerResetPort(0x3DA) {
+        
+        m_VGA_Buffers = new uint8_t*[2];
+        m_VGA_Buffers[0] = new uint8_t[VGA_320x200_MEM_SIZE];
+        m_VGA_Buffers[1] = new uint8_t[VGA_320x200_MEM_SIZE];
+        m_VGA_Active_Buffer = 0;
+        initalFrameCopied = false;
+        
     }
 
     VGA::~VGA() {
@@ -147,8 +154,11 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
         if(x < 0 || 320 <= x || y < 0 || 200 <= y)
             return;
         
-        uint8_t* pixelAddress = getFrameBufferSegment() + 320*y + x;
-        *pixelAddress = getColorIndex(RGB_Color(r,g,b));
+        //uint8_t* pixelAddress = getFrameBufferSegment() + 320*y + x;
+        //*pixelAddress = getColorIndex(RGB_Color(r,g,b));
+        
+        uint8_t* bufferAddress = m_VGA_Buffers[m_VGA_Active_Buffer] + 320*y+x;
+        *bufferAddress = getColorIndex(RGB_Color(r,g,b));
 
     }
     
@@ -158,6 +168,37 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
             for(int32_t X = x; X < x+w; X++)
                 putPixel(X, Y, r, g, b);
     
+    }
+
+
+    void memcpy32bit(void* src, void* dst , size_t size) {
+    
+    if(src == dst)
+        return;
+    uint32_t* bsrc = (uint32_t*)src;
+    uint32_t* bdst = (uint32_t*)dst;
+    for(size_t i = 0; i < size; i+=4){
+        bdst[i] = bsrc[i];
+    }
+}
+
+    void VGA::swapBuffers() {
+        
+        //memcopy screen buffer to vga
+        if(!initalFrameCopied) {
+            memcpy(m_VGA_Buffers[0], m_VGA_Buffers[1], VGA_320x200_MEM_SIZE * sizeof(uint8_t));
+            initalFrameCopied = true;
+        }
+        uint32_t* pixelAddress = (uint32_t*)getFrameBufferSegment();
+        memcpy(m_VGA_Buffers[m_VGA_Active_Buffer], pixelAddress, sizeof(uint32_t) * VGA_320x200_MEM_SIZE / 4);
+
+        if(m_VGA_Active_Buffer == 1)
+            m_VGA_Active_Buffer = 0;
+        else
+            m_VGA_Active_Buffer = 0;
+        
+        
+
     }
 
 }}}

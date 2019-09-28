@@ -2,7 +2,11 @@
 #define OS_KERNEL_HW_COMM_VGA_H
 
 #include "../common/type.h"
+#include "../common/string.h"
 #include "port.h"
+
+#define VGA_320x200_MEM_SIZE 320*200
+#define VGA_BUFFER_COUNT 2
 
 namespace OS { namespace KERNEL { namespace HW_COMM {
 
@@ -29,6 +33,8 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
         HW_COMM::Port8Bit attributeControllerWritePort;
         HW_COMM::Port8Bit attributeControllerResetPort;
 
+
+
         void writeRegisters(uint8_t* registers);
         
         uint8_t* getFrameBufferSegment();
@@ -36,6 +42,10 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
         uint8_t getColorIndex(RGB_Color color);
 
         static VGA* m_Instance;
+
+        uint8_t** m_VGA_Buffers;
+        uint8_t m_VGA_Active_Buffer;
+        bool initalFrameCopied;
 
     public:
 
@@ -49,6 +59,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
         void putPixel(uint32_t x, uint32_t y, uint8_t r, uint8_t g, uint8_t b);
         void fillRectangle(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t r, uint8_t g, uint8_t b);
 
+        void swapBuffers();
     };
 
 }}}

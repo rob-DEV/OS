@@ -7,6 +7,7 @@
 #include "cpu/pit.h"
 #include "memory/memorymanagement.h"
 #include "io/terminal.h"
+#include "shell/shell.h"
 #include "hardware/keyboard.h"
 #include "hardware/vga.h"
 #include "hardware/mouse.h"
@@ -16,11 +17,9 @@
 #define MEM_SIZE 750 * 1024 * 1024
 #define KERNEL_PAUSE for(;;)
 
-typedef struct _1MB_BLOCK {
-    char MEGA_BYTE[1000*1000];
-};
 
 namespace OS { namespace KERNEL {
+    using namespace SHELL;
 
     class Kernel {
 
