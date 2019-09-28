@@ -6,22 +6,26 @@ namespace OS { namespace KERNEL { namespace MEMORY {
 
     MemoryManager* MemoryManager::Instance = NULL;
 
-    MemoryManager::MemoryManager(size_t start, size_t size){
+    MemoryManager::MemoryManager(size_t memory_start, size_t memory_end){
         
         Instance = this;
+        m_HeapStart = memory_start + sizeof(MemoryChunk);
+        m_HeapEnd = memory_end;
+
+        m_SizeBytes = m_HeapEnd - m_HeapStart;
     
-        if(size < sizeof(MemoryChunk))
+        if(m_SizeBytes < sizeof(MemoryChunk))
         {
             first = 0;
         }
         else
         {
-            first = (MemoryChunk*)start;
+            first = (MemoryChunk*)memory_start;
             
             first -> allocated = false;
-            first -> prev = 0;
-            first -> next = 0;
-            first -> size = size - sizeof(MemoryChunk);
+            first -> prev = NULL;
+            first -> next = NULL;
+            first -> size = m_SizeBytes - sizeof(MemoryChunk);
         }
         }
     MemoryManager::~MemoryManager()
@@ -32,44 +36,32 @@ namespace OS { namespace KERNEL { namespace MEMORY {
 
     void* MemoryManager::malloc(size_t size) {
 
-        if(terminalInstanceAllocated)
-            OS::KERNEL::Terminal::getInstance()->printf("size:%d\n", size);
-        MemoryChunk* allocation_result = NULL;
-
-        for(MemoryChunk* chunk = first; chunk != NULL && allocation_result == NULL; chunk = chunk->next)
+        MemoryChunk *result = 0;
+    
+        for(MemoryChunk* chunk = first; chunk != 0 && result == 0; chunk = chunk->next)
             if(chunk->size > size && !chunk->allocated)
-                allocation_result = chunk;
-
-        if(terminalInstanceAllocated)
-            OS::KERNEL::Terminal::getInstance()->printf("alloc:%d\n", allocation_result);
-
-        //no free heap memory / bug (more likely a bug)
-        if(allocation_result == NULL)
-            return NULL;
-
-        if(allocation_result->size >= size + sizeof(MemoryChunk) + 1)
+                result = chunk;
+            
+        if(result == 0)
+            return 0;
+        
+        if(result->size >= size + sizeof(MemoryChunk) + 1)
         {
-            MemoryChunk* temp_chunk = (MemoryChunk*)((size_t)allocation_result + sizeof(MemoryChunk) + size);
-            temp_chunk->allocated = false;
-            temp_chunk->size = allocation_result->size - size - sizeof(MemoryChunk);
-            temp_chunk->prev = allocation_result;
-            temp_chunk->next = allocation_result->next;
-
-            if(temp_chunk->next != NULL)
-                temp_chunk->next->prev=temp_chunk;
-
-            allocation_result->size = size;
-            allocation_result->next = temp_chunk;
+            MemoryChunk* temp = (MemoryChunk*)((size_t)result + sizeof(MemoryChunk) + size);
+            
+            temp->allocated = false;
+            temp->size = result->size - size - sizeof(MemoryChunk);
+            temp->prev = result;
+            temp->next = result->next;
+            if(temp->next != 0)
+                temp->next->prev = temp;
+            
+            result->size = size;
+            result->next = temp;
         }
-
-        allocation_result->allocated = true;
-
-        //return a pointer to the data alloc start address
-        //to do this get the result - memory header (memory_chunk_t)
-        if(terminalInstanceAllocated)
-            OS::KERNEL::Terminal::getInstance()->printf("here\n");
-
-        return (void*)(((size_t)(allocation_result) + sizeof(MemoryChunk)));
+        
+        result->allocated = true;
+        return (void*)(((size_t)result) + sizeof(MemoryChunk));
     }
 
     void MemoryManager::free(void* ptr) {
@@ -113,16 +105,24 @@ namespace OS { namespace KERNEL { namespace MEMORY {
     
 }}}
 
-void* operator new(size_t size)
-{
-    //OS::KERNEL::Terminal::getInstance()->printf("here");
+void* malloc(size_t size) {
     if(OS::KERNEL::MEMORY::MemoryManager::Instance == 0)
         return 0;
     return OS::KERNEL::MEMORY::MemoryManager::Instance->malloc(size);
 }
 
-void* operator new[](size_t size)
-{
+void free(void* ptr) {
+    if(OS::KERNEL::MEMORY::MemoryManager::Instance == 0)
+        OS::KERNEL::MEMORY::MemoryManager::Instance->free(ptr);
+}
+
+void* operator new(size_t size) {
+    if(OS::KERNEL::MEMORY::MemoryManager::Instance == 0)
+        return 0;
+    return OS::KERNEL::MEMORY::MemoryManager::Instance->malloc(size);
+}
+
+void* operator new[](size_t size) {
     if(OS::KERNEL::MEMORY::MemoryManager::Instance == 0)
         return 0;
     return OS::KERNEL::MEMORY::MemoryManager::Instance->malloc(size);
@@ -130,20 +130,17 @@ void* operator new[](size_t size)
 
 
 
-void operator delete(void* ptr)
-{
+void operator delete(void* ptr) {
     if(OS::KERNEL::MEMORY::MemoryManager::Instance != 0)
         OS::KERNEL::MEMORY::MemoryManager::Instance->free(ptr);
 }
 
-void operator delete[](void* ptr)
-{
+void operator delete[](void* ptr) {
     if(OS::KERNEL::MEMORY::MemoryManager::Instance != 0)
         OS::KERNEL::MEMORY::MemoryManager::Instance->free(ptr);
 }
 
-void operator delete(void* ptr, unsigned long size)
-{
+void operator delete(void* ptr, unsigned long size) {
     if(OS::KERNEL::MEMORY::MemoryManager::Instance != 0)
         OS::KERNEL::MEMORY::MemoryManager::Instance->free(ptr);
 }

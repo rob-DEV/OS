@@ -1,6 +1,7 @@
 #include "../hardware/vga.h"
 #include "window.h"
 
+#include "../../../libc++/vector.h"
 
 namespace OS { namespace KERNEL { namespace GUI { 
 
@@ -15,15 +16,19 @@ struct RGB_Color{
 
 class WindowManager {
     private: 
+        
         uint8_t m_BackgroundColor = 255;
-        Window* m_Windows[500];
+        
 
     public:    
         WindowManager();
         ~WindowManager();
 
-        void addWindow();
+        std::vector<Window*> m_Windows;
+        void addWindow(Window* window);
         void removeWindow();
+
+        void draw();
 
 };
 

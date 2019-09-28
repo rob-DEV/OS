@@ -24,6 +24,7 @@ bool strcmp(const char* a, const char* b) {
 }
 
 void memcpy(void* src, void* dst , size_t size) {
+    
     if(src == dst)
         return;
 

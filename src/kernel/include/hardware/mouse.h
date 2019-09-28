@@ -42,7 +42,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
         void install();
         void uninstall();
     };
-
+    
     
 
 }}}
