@@ -11,8 +11,10 @@
 namespace  OS { namespace KERNEL { namespace GUI {
  
     class Window : public Widget {
+    private:
+        uint32_t s_NWindows = 0;
+        uint32_t m_ID;
     public:
-        
         uint32_t xOldPos;
         uint32_t yOldPos;
 
@@ -22,10 +24,13 @@ namespace  OS { namespace KERNEL { namespace GUI {
         uint32_t width;
         uint32_t height;
 
+        uint8_t color;
+
         Window();
         Window(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
         ~Window();
 
+        const uint32_t getID() const;
         void draw();
 
     };

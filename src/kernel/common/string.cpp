@@ -19,22 +19,35 @@ bool strcmp(const char* a, const char* b) {
     
         ++a;
         ++b;
-    }
-    
+    } 
 }
+
+char* strcat(char* destination, const char* source)
+{
+	// make ptr point to the end of destination string
+	char* ptr = destination + strlen(destination);
+
+	// Appends characters of source to the destination string
+	while (*source != '\0')
+		*ptr++ = *source++;
+
+	// null terminate destination string
+	*ptr = '\0';
+
+	// destination is returned by standard strcat()
+	return destination;
+}
+
 
 void memcpy(void* src, void* dst , size_t size) {
     
     if(src == dst)
         return;
-
     uint8_t* bsrc = (uint8_t*)src;
     uint8_t* bdst = (uint8_t*)dst;
-
-    for (uint32_t i = 0; i < size; i++)
+    for(size_t i = 0; i < size; i++){
         bdst[i] = bsrc[i];
-    
-    
+    }
 }
 
 void memset(void* dst, uint32_t size, uint8_t fill){

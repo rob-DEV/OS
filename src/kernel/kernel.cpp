@@ -2,8 +2,7 @@
 #include "include/io/terminal.h"
 
 #include "../libc++/vector.h"
-
-
+#include "../libc++/string.h"
 
 namespace OS { namespace KERNEL {
 
@@ -21,7 +20,7 @@ namespace OS { namespace KERNEL {
             m_Memory = new MEMORY::MemoryManager(start, mbi->mem_upper * 1024);
             
             Terminal::getInstance()->print("LOG: Initalizing Kernel...\n");
-            Terminal::getInstance()->print("LOG: Memory Management Initialized!\n");
+            Terminal::getInstance()->printf("LOG: Memory Management Initialized! start : %x\n", start);
 
 
             Terminal::getInstance()->printf("Address STACK MM : 0x%x\n", &stackMemoryVolatile);
@@ -44,8 +43,7 @@ namespace OS { namespace KERNEL {
         m_ISRS = CPU::ISR::getInstance();
         m_PIT = CPU::PIT::getInstance();
         m_Keyboard = HW_COMM::Keyboard::getInstance();
-
-
+        
 
         m_Terminal->printf("m_GDT Address: 0x%x\n", m_GDT);
         m_Terminal->printf("m_IDT Address: 0x%x\n", m_IDT);
@@ -85,48 +83,30 @@ namespace OS { namespace KERNEL {
 
         kernel_init(mbi, magic);
 
+        Terminal::getInstance()->printf("MEMORY MANGER HEAP INSTANCE 0x%x\n", MEMORY::MemoryManager::Instance);
+
         m_VGA = HW_COMM::VGA::getInstance();
         //m_VGA->setMode(320, 200, 8);
-        //m_VGA->fillRectangle(0,0, 320, 200, 0xFF,0xFF,0xFF);
+        m_VGA->fillRectangle(0,0, 320, 200, 0xFF,0xFF,0xFF);
         
-        //HW_COMM::Mouse* mouse = HW_COMM::Mouse::getInstance();
+        HW_COMM::Mouse* mouse = HW_COMM::Mouse::getInstance();
         
-        //mouse->drawCursor();
-        //mouse->install();
-        
-        //GUI::Window* window = new GUI::Window(45, 45, 10, 10);
-        //GUI::Window* window2 = new GUI::Window(130, 90, 10, 10);
-
-        //m_VGA->fillRectangle(150, 50, 10,10,120,20,80);
-        //m_VGA->fillRectangle(160, 70, 10,10,120,20,80);
+        mouse->install();
+        mouse->drawCursor();
 
         GUI::WindowManager* windowManager = new GUI::WindowManager();
-        //windowManager->addWindow(window); 
-        //windowManager->addWindow(window2);
 
-    
-  
-        std::vector<int*> asd;
+        std::string str = "test";
 
-        asd.push_back(new int(32));
-        asd.push_back(new int(45));
-        asd.push_back(new int(46));
-        asd.push_back(new int(3772));
-        asd.push_back(new int(333));
-        //asd.push_back(new int(46));
-        //asd.push_back(new int(56));
-        //asd.push_back(new int(4756));
-        //asd.push_back(new int(46));
+        m_Terminal->printf(str.c_str());
+        m_Terminal->printf("\n");
+
+        str+="apples";
+        str+="oranges";
+        m_Terminal->printf(str.c_str());
+
         
-        for (size_t i = 0; i < asd.size(); i++)
-        {
-            m_Terminal->printf("asd[%d] %d\n", i, *asd[i]);
-        }
         
-
-        for(;;);
-        
-
         for (size_t i = 0; i < windowManager->m_Windows.size(); i++)
         {
             Terminal::getInstance()->printf("Window %d : 0x%x\n", i, windowManager->m_Windows[i]);
@@ -158,19 +138,22 @@ namespace OS { namespace KERNEL {
             //update MOUSE
            
             //draw all graphics 
-            //windowManager->draw();
-    
+            windowManager->draw();
+            windowManager->m_Windows[2]->xPos = a;
+            windowManager->m_Windows[2]->yPos = a;
+            windowManager->m_Windows[2]->color = a;
+            
 
             if(a > 1)
                 a++;
             
             
 
-            //mouse->drawCursor();
+            mouse->drawCursor();
             
             
             //60hz
-            m_PIT->waitForMilliSeconds(1000 / 60);
+            m_PIT->waitForMilliSeconds(10000 / 60);
 
         }
         

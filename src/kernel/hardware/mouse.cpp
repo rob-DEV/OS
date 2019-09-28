@@ -106,7 +106,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
 
         unsigned char _status;  //unsigned char
 
-
+        /*
         //Enable the auxiliary mouse device
         mouseWait(1);
         HW_COMM::Port::outportb(0x64, 0xA8);
@@ -131,7 +131,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
 
         //Setup the mouse handler
         OS::KERNEL::CPU::IRQ::getInstance()->irq_install(MOUSE_IRQ_ID, mouse_handler);
-
+        */
     }
 
     void Mouse::uninstall() {

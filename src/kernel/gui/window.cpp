@@ -5,6 +5,10 @@ namespace OS { namespace KERNEL { namespace GUI {
 
 
     Window::Window() {
+        
+        m_ID = s_NWindows;
+        s_NWindows++;
+
         xOldPos = 0;
         yOldPos = 0;
         xPos = 0;
@@ -14,6 +18,9 @@ namespace OS { namespace KERNEL { namespace GUI {
 
     }
     Window::Window(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
+
+        m_ID = s_NWindows;
+        s_NWindows++;
         xOldPos = x;
         yOldPos = x;
         xPos = x;
@@ -25,6 +32,10 @@ namespace OS { namespace KERNEL { namespace GUI {
 
     Window::~Window() {
 
+    }
+
+    const uint32_t Window::getID() const {
+        return m_ID;
     }
 
     void Window::draw() {
@@ -40,7 +51,7 @@ namespace OS { namespace KERNEL { namespace GUI {
         }*/
         
         //draw new window
-        vga->fillRectangle(xPos, yPos, width, height, 0, 0, 255);
+        vga->fillRectangle(xPos, yPos, width, height, -50 + color, -50 + color, color);
 
         xOldPos = xPos;
         yOldPos = yPos;

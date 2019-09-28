@@ -24,10 +24,14 @@ class WindowManager {
         WindowManager();
         ~WindowManager();
 
+
+
         std::vector<Window*> m_Windows;
         void addWindow(Window* window);
         void removeWindow();
 
+
+        //draw mouse cursor and windows
         void draw();
 
 };
