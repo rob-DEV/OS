@@ -1,5 +1,6 @@
 #include "../include/shell/shell.h"
 #include "../include/io/terminal.h"
+#include "../include/hardware/vga.h"
 
 namespace OS { namespace KERNEL { namespace SHELL {
 
@@ -7,6 +8,7 @@ namespace OS { namespace KERNEL { namespace SHELL {
 
     Shell::Shell() { 
         m_BufferLength = 0;
+        nLines = 1;
         OS::KERNEL::Terminal::getInstance()->printf("Shell Initialized!\n");
     }
 
@@ -25,6 +27,13 @@ namespace OS { namespace KERNEL { namespace SHELL {
         //only hold line for now
         //pass char to video memory if not in graphics mode
         Terminal::getInstance()->print(c);
+
+        //test vga type BAD IDEA refactor to GUI input handler
+        if(c != '\n')
+            HW_COMM::VGA::getInstance()->drawChar8(10 * m_BufferLength, 8 * nLines, c, 0xFF);
+        else
+            nLines++;
+
         if(c != '\n') {
             m_Buffer[m_BufferLength] = c;
             m_BufferLength++;

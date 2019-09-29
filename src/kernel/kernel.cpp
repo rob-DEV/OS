@@ -1,8 +1,5 @@
 #include "include/kernel.h"
-#include "include/io/terminal.h"
 
-#include "../libc++/vector.h"
-#include "../libc++/string.h"
 
 enum Direction {
     UP,
@@ -16,6 +13,15 @@ namespace OS { namespace KERNEL {
     void alphaCmd() {
         OS::KERNEL::Terminal::getInstance()->printf("alpha command executed\n");    
     }
+
+    void vga(){
+         OS::KERNEL::HW_COMM::VGA::getInstance()->setMode(320, 200, 8);
+    }
+
+    void reboot() {
+         OS::KERNEL::Terminal::getInstance()->printf("Shutting down\n");    
+    }
+    
 
     void Kernel::kernel_init(multiboot_info_t* mbi, uint32_t magic) {
         
@@ -95,78 +101,70 @@ namespace OS { namespace KERNEL {
         kernel_init(mbi, magic);
 
         Shell::getInstance()->addCommand("alpha", alphaCmd);
-    
+        Shell::getInstance()->addCommand("vga", vga);
+        Shell::getInstance()->addCommand("reboot", reboot);
+
         m_VGA = HW_COMM::VGA::getInstance();
-        m_VGA->setMode(320, 200, 8);
-        m_VGA->fillRectangle(0,0, 320, 200, 0xFF,0xFF,0xFF);
+        //vga();
+
+        m_Terminal->printf("m_VGA Address: 0x%x\n", m_VGA);
+       
         
         HW_COMM::Mouse* mouse = HW_COMM::Mouse::getInstance();
         
         mouse->install();
         //mouse->drawCursor();
 
-        GUI::WindowManager* windowManager = new GUI::WindowManager();
+        m_VGA->fillRectangle(0,0, 320, 14, 4, 76, 9);
 
-        windowManager->addWindow(new GUI::Window(20,20,35,35));
-        Terminal::getInstance()->printf("window count: %d\n", windowManager->m_Windows.size());
+        //dodgy menu bar
+        m_VGA->fillRectangle(0,0, 32, 14, 0xA8, 0, 0);
+        m_VGA->fillRectangle(32,0, 32, 14, 0, 0, 0xA8);
+        m_VGA->fillRectangle(64,0, 32, 14, 56, 76, 9);
+        m_VGA->fillRectangle(96,0, 32, 14, 78, 5, 78);
+
         
-        Direction dir;
-        dir = Direction::RIGHT;
-        int times = 0;
-        int step = 120;
-        while(1) {
+        
+        m_VGA->fillRectangle(0,0, 320, 200, 0xFF,0xFF,0xFF);
+        GUI::Window* windowTest = new GUI::Window("Test", 10,20,150,100);
 
+        GUI::Window* windowTest1 = new GUI::Window("PORN", 100, 130,150, 60);
+        uint32_t a = 0;
+        uint8_t s = 0;
+        while(1) {
             //update VGA
             //update MOUSE
-           
-            if(dir == Direction::RIGHT && times < step) {
-                windowManager->m_Windows[0]->xPos++;
-                times++;
-                if(times == step) {
-                    times = 0;
-                    dir = Direction::DOWN;
-                }
-            }
-
-            if(dir == Direction::LEFT && times < step) {
-                windowManager->m_Windows[0]->xPos--;
-                times++;
-                if(times == step) {
-                    times = 0;
-                    dir = Direction::UP;
-                }
-            }
-            if(dir == Direction::UP && times < step) {
-                windowManager->m_Windows[0]->yPos--;
-                times++;
-                if(times == step) {
-                    times = 0;
-                    dir = Direction::RIGHT;
-                }
-            }
-            if(dir == Direction::DOWN && times < step) {
-                windowManager->m_Windows[0]->yPos++;
-                times++;
-                if(times == step) {
-                    times = 0;
-                    dir = Direction::LEFT;
-                }
-            }
-
-            DRAW:
-            //times = 0;
-            windowManager->draw();
-
-            m_VGA->swapBuffers();
-
             
 
-            mouse->drawCursor();
+            /*
+            m_VGA->fillRectangle(0,0, 320, 14, 4, 76, 9);
+
+            //dodgy menu bar
+            m_VGA->fillRectangle(0,0, 32, 14, 0xA8, 0, 0);
+            m_VGA->fillRectangle(32,0, 32, 14, 0, 0, 0xA8);
+            m_VGA->fillRectangle(64,0, 32, 14, 56, 76, 9);
+            m_VGA->fillRectangle(96,0, 32, 14, 78, 5, 78);
+            */
+            
+            windowTest->draw();
+            windowTest1->draw();
+
+            if(a < 255) {
+                m_VGA->drawChar8(a+16,a+16,a,s);
+                ++a;
+                if(s < 64)
+                    ++s;
+                else
+                    s = 0;
+            }
+            
+
+            m_VGA->swapBuffers();
+            
             
             
             //60hz
-            m_PIT->waitForMilliSeconds(100);
-
+            m_PIT->waitForMilliSeconds(80);
         }
         
         for(;;);

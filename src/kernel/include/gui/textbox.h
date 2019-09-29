@@ -12,17 +12,18 @@
 
 namespace  OS { namespace KERNEL { namespace GUI {
  
-    class Window : public Widget {
+    class Textbox : public Widget {
     
     private:
-        const char* m_Name;
+        char* m_Buffer;
         std::vector<Widget*> m_Widgets;
     public:
-        Window();
-        Window(const char* name, uint32_t x, uint32_t y, uint32_t w, uint32_t h);
-        ~Window();
+        Textbox();
+        Textbox(const char* initalText, uint32_t x, uint32_t y, uint32_t w, uint32_t h);
+        ~Textbox();
 
-        void addWidget(Widget* component);
+        
+        void clear();
 
         void draw();
 

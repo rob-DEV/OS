@@ -17,6 +17,7 @@ namespace OS { namespace KERNEL { namespace SHELL {
 
         char m_Buffer[256];
         uint16_t m_BufferLength;
+        uint32_t nLines;
         
     public:
         Shell();

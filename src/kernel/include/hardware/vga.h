@@ -4,9 +4,13 @@
 #include "../common/type.h"
 #include "../common/string.h"
 #include "port.h"
+#include "vga_fonts.h"
 
 #define VGA_320x200_MEM_SIZE 320*200
+
 #define VGA_BUFFER_COUNT 2
+#define VGA_WIDTH_ 320
+#define VGA_HEIGHT_ 200
 
 namespace OS { namespace KERNEL { namespace HW_COMM {
 
@@ -55,8 +59,17 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
         static VGA* getInstance();
 
         bool supportMode(uint32_t width, uint32_t height, uint32_t colorDepth);
+        
         bool setMode(uint32_t width, uint32_t height, uint32_t colorDepth);
+        
         void putPixel(uint32_t x, uint32_t y, uint8_t r, uint8_t g, uint8_t b);
+
+        void putPixel(uint32_t x, uint32_t y, uint8_t color);
+
+        void drawChar8(uint32_t x, uint32_t y, char c, uint8_t fgcolor);
+
+        void drawChar16(uint32_t x, uint32_t y, char c, int fgcolor, int bgcolor);
+        
         void fillRectangle(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t r, uint8_t g, uint8_t b);
 
         void swapBuffers();

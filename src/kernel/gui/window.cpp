@@ -1,72 +1,40 @@
 #include "../include/gui/window.h"
-#include "../include/io/terminal.h"
 
-namespace OS { namespace KERNEL { namespace GUI {
+namespace  OS { namespace KERNEL { namespace GUI {
+ 
 
-
-    Window::Window() {
-        
-        m_ID = s_NWindows;
-        s_NWindows++;
-
-        xOldPos = 0;
-        yOldPos = 0;
-        xPos = 0;
-        yPos = 0;
-        width = 0;
-        height = 0;
+    Window::Window() : Widget() {
 
     }
-    Window::Window(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
-
-        m_ID = s_NWindows;
-        s_NWindows++;
-        xOldPos = x;
-        yOldPos = x;
-        xPos = x;
-        yPos = y;
-        width = w;
-        height = h;
+    
+    Window::Window(const char* name, uint32_t x, uint32_t y, uint32_t w, uint32_t h) : Widget(x,y,w,h), m_Name(name) {
 
     }
-
+    
     Window::~Window() {
-
+        
     }
 
-    const uint32_t Window::getID() const {
-        return m_ID;
+    void Window::addWidget(Widget* component) {
+        m_Widgets.push_back(component);
     }
 
     void Window::draw() {
-        
 
-        OS::KERNEL::HW_COMM::VGA* vga = OS::KERNEL::HW_COMM::VGA::getInstance();    
-        
-        if(xPos > xOldPos || yPos > yOldPos) {
-            //remove old window - moving to bottom right
-            vga->fillRectangle(xOldPos, yOldPos, xPos+xOldPos, yPos + yOldPos, 255,255,255);
-            vga->fillRectangle(xOldPos, yOldPos, yPos+yOldPos, xPos - xOldPos, 255,255,255);
-        
+        HW_COMM::VGA::getInstance()->fillRectangle(m_X, m_Y, m_W, m_H, 123,23,45);
+
+        for (size_t i = 0; i < strlen(m_Name); i++)
+        {
+            HW_COMM::VGA::getInstance()->drawChar8(m_X + ( 8 * i),m_Y + 8, m_Name[i], 63);
+        }
+
+        for (size_t i = 0; i < m_Widgets.size(); i++)
+        {
+            m_Widgets[i]->draw();
         }
         
-        if(xPos < xOldPos || yPos < yOldPos) {
-
-            
-            //remove old window - moving to bottom right
-            vga->fillRectangle(xOldPos, yOldPos, xPos-xOldPos, yPos - yOldPos, 255,255,255);
-            vga->fillRectangle(xOldPos, yOldPos, yPos+yOldPos, xPos + xOldPos, 255,255,255);
-        
-        }
-        
-
-        //draw new window
-        vga->fillRectangle(xPos, yPos, width, height, 10,100,100);
-
-        xOldPos = xPos;
-        yOldPos = yPos;
-
     }
 
 
 } } }
+

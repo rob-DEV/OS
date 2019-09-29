@@ -8,14 +8,19 @@
 #include "memory/memorymanagement.h"
 #include "io/terminal.h"
 #include "shell/shell.h"
+#include "gui/window.h"
 #include "hardware/keyboard.h"
 #include "hardware/vga.h"
 #include "hardware/mouse.h"
-#include "gui/window.h"
-#include "gui/windowmanager.h"
+
+
+#include "../../libc++/vector.h"
+#include "../../libc++/string.h"
+
 
 #define MEM_SIZE 750 * 1024 * 1024
 #define KERNEL_PAUSE for(;;)
+
 
 
 namespace OS { namespace KERNEL {
@@ -36,7 +41,6 @@ namespace OS { namespace KERNEL {
         HW_COMM::Keyboard* m_Keyboard;
 
         Terminal* m_Terminal;
-
 
         void kernel_init(multiboot_info_t* mbi, uint32_t magic);
 

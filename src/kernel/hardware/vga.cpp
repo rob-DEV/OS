@@ -19,7 +19,6 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
         
         m_VGA_Buffers = new uint8_t*[2];
         m_VGA_Buffers[0] = new uint8_t[VGA_320x200_MEM_SIZE];
-        m_VGA_Buffers[1] = new uint8_t[VGA_320x200_MEM_SIZE];
         m_VGA_Active_Buffer = 0;
         initalFrameCopied = false;
         
@@ -161,6 +160,43 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
         *bufferAddress = getColorIndex(RGB_Color(r,g,b));
 
     }
+
+    void VGA::putPixel(uint32_t x, uint32_t y, uint8_t color) {
+        
+        if(x < 0 || 320 <= x || y < 0 || 200 <= y)
+                return;
+        
+            //uint8_t* pixelAddress = getFrameBufferSegment() + 320*y + x;
+            //*pixelAddress = getColorIndex(RGB_Color(r,g,b));
+            
+            uint8_t* bufferAddress = m_VGA_Buffers[m_VGA_Active_Buffer] + 320*y+x;
+            *bufferAddress = color;
+
+    }
+
+    void VGA::drawChar8(uint32_t x, uint32_t y, char c, uint8_t fgcolor) {
+        int cx,cy;
+        int mask[8]={128,64,32,16,8,4,2,1};
+        unsigned char *glyph=GUI::g_8x8_font+(int)c*8;
+    
+        for(cy=0;cy<8;cy++){
+            for(cx=0;cx<8;cx++){
+                if(glyph[cy]&mask[cx]) putPixel(x+cx,y+cy-6, fgcolor);
+            }
+        }
+    }
+
+    void VGA::drawChar16(uint32_t x, uint32_t y, char c, int fgcolor, int bgcolor) {
+        int cx,cy;
+        int mask[8]={128,64,32,16,8,4,2,1};
+        unsigned char *glyph=GUI::g_8x16_font+(int)c*16;
+    
+        for(cy=0;cy<16;cy++){
+            for(cx=0;cx<8;cx++){
+                if(glyph[cy]&mask[cx]) putPixel(x+cx,y+cy-12, fgcolor);
+            }
+        }
+    }
     
     void VGA::fillRectangle(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t r, uint8_t g, uint8_t b) {
        
@@ -169,18 +205,6 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
                 putPixel(X, Y, r, g, b);
     
     }
-
-
-    void memcpy32bit(void* src, void* dst , size_t size) {
-    
-    if(src == dst)
-        return;
-    uint32_t* bsrc = (uint32_t*)src;
-    uint32_t* bdst = (uint32_t*)dst;
-    for(size_t i = 0; i < size; i+=4){
-        bdst[i] = bsrc[i];
-    }
-}
 
     void VGA::swapBuffers() {
         
