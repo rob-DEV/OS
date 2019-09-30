@@ -1,5 +1,5 @@
-#ifndef OS_KERNEL_GUI_WINDOW_H
-#define OS_KERNEL_GUI_WINDOW_H
+#ifndef OS_KERNEL_GUI_TEXTBOX_H
+#define OS_KERNEL_GUI_TEXTBOX_H
 
 #include "../common/type.h"
 #include "../cpu/isr.h"
@@ -16,6 +16,8 @@ namespace  OS { namespace KERNEL { namespace GUI {
     
     private:
         char* m_Buffer;
+        uint32_t m_strLen;
+        uint32_t m_BufferLength;
         std::vector<Widget*> m_Widgets;
     public:
         Textbox();

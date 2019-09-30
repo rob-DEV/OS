@@ -165,10 +165,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
         
         if(x < 0 || 320 <= x || y < 0 || 200 <= y)
                 return;
-        
-            //uint8_t* pixelAddress = getFrameBufferSegment() + 320*y + x;
-            //*pixelAddress = getColorIndex(RGB_Color(r,g,b));
-            
+
             uint8_t* bufferAddress = m_VGA_Buffers[m_VGA_Active_Buffer] + 320*y+x;
             *bufferAddress = color;
 
@@ -202,7 +199,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
        
         for(int32_t Y = y; Y < y+h; Y++)
             for(int32_t X = x; X < x+w; X++)
-                putPixel(X, Y, r, g, b);
+                putPixel(X, Y, r);
     
     }
 

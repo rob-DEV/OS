@@ -7,7 +7,7 @@ namespace  OS { namespace KERNEL { namespace GUI {
 
     }
     
-    Window::Window(const char* name, uint32_t x, uint32_t y, uint32_t w, uint32_t h) : Widget(x,y,w,h), m_Name(name) {
+    Window::Window(const char* name, uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t color, Widget* parent) : Widget(x,y,w,h, color, parent), m_Name(name) {
 
     }
     
@@ -21,7 +21,7 @@ namespace  OS { namespace KERNEL { namespace GUI {
 
     void Window::draw() {
 
-        HW_COMM::VGA::getInstance()->fillRectangle(m_X, m_Y, m_W, m_H, 123,23,45);
+        HW_COMM::VGA::getInstance()->fillRectangle(m_X, m_Y, m_W, m_H, m_Color,23,45);
 
         for (size_t i = 0; i < strlen(m_Name); i++)
         {

@@ -112,53 +112,33 @@ namespace OS { namespace KERNEL {
         
         HW_COMM::Mouse* mouse = HW_COMM::Mouse::getInstance();
         
-        mouse->install();
+        //mouse->install();
         //mouse->drawCursor();
 
-        m_VGA->fillRectangle(0,0, 320, 14, 4, 76, 9);
-
-        //dodgy menu bar
-        m_VGA->fillRectangle(0,0, 32, 14, 0xA8, 0, 0);
-        m_VGA->fillRectangle(32,0, 32, 14, 0, 0, 0xA8);
-        m_VGA->fillRectangle(64,0, 32, 14, 56, 76, 9);
-        m_VGA->fillRectangle(96,0, 32, 14, 78, 5, 78);
 
         
         
-        m_VGA->fillRectangle(0,0, 320, 200, 0xFF,0xFF,0xFF);
-        GUI::Window* windowTest = new GUI::Window("Test", 10,20,150,100);
+        m_VGA->fillRectangle(0,0, 320, 200, 64,0xFF,0xFF);
+        GUI::Window* bar = new GUI::Window("OS Kernel - VGA 320x200", 0,0,320,12, 24, NULL);
+        GUI::Window* windowTest = new GUI::Window("Test Window", 10,20,150,100, 35, NULL);
 
-        GUI::Window* windowTest1 = new GUI::Window("PORN", 100, 130,150, 60);
-        uint32_t a = 0;
-        uint8_t s = 0;
+        Shell::getInstance()->registerWidget(windowTest);
+
+        GUI::Window* windowTest1 = new GUI::Window("Second Window", 100, 130,150, 60,42, NULL);
+        windowTest->addWidget(new GUI::Textbox("Inital text in the\ntext box\n", 10, 40, 100,100));
+
         while(1) {
             //update VGA
             //update MOUSE
-            
+            m_VGA->fillRectangle(0,0, 320, 200, 15,0xFF,0xFF);
 
-            /*
-            m_VGA->fillRectangle(0,0, 320, 14, 4, 76, 9);
-
-            //dodgy menu bar
-            m_VGA->fillRectangle(0,0, 32, 14, 0xA8, 0, 0);
-            m_VGA->fillRectangle(32,0, 32, 14, 0, 0, 0xA8);
-            m_VGA->fillRectangle(64,0, 32, 14, 56, 76, 9);
-            m_VGA->fillRectangle(96,0, 32, 14, 78, 5, 78);
-            */
-            
+            bar->draw();
             windowTest->draw();
             windowTest1->draw();
 
-            if(a < 255) {
-                m_VGA->drawChar8(a+16,a+16,a,s);
-                ++a;
-                if(s < 64)
-                    ++s;
-                else
-                    s = 0;
-            }
             
 
+            //copy buffer to pixel array in one shot to avoid tearing and flickering
             m_VGA->swapBuffers();
             
             

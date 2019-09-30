@@ -6,6 +6,7 @@
 #include "../common/string.h"
 #include "../../../libc++/vector.h"
 #include "shellcommand.h"
+#include "../gui/widget.h"
 
 namespace OS { namespace KERNEL { namespace SHELL {
 
@@ -18,6 +19,7 @@ namespace OS { namespace KERNEL { namespace SHELL {
         char m_Buffer[256];
         uint16_t m_BufferLength;
         uint32_t nLines;
+        GUI::Widget* focusedWindow;
         
     public:
         Shell();
@@ -26,6 +28,8 @@ namespace OS { namespace KERNEL { namespace SHELL {
         void putchar(char c);
         void addCommand(const char* cmdText, void(*callback)());
         void checkRegisteredCommands();
+
+        inline void registerWidget(GUI::Widget* widget) { focusedWindow = widget; };
 
         static Shell* getInstance();
 

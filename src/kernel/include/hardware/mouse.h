@@ -15,34 +15,31 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
 
     class Mouse {
     private:
-        uint8_t m_MouseCursorW;
-        uint8_t m_MouseCursorH;
-        
-        char m_MouseX = 0; 
-        char m_MouseY = 0;
-        
-        unsigned char m_MouseCycle = 0;
-        uint8_t m_MouseByte[3];
-        uint8_t m_Buttons;
-        uint8_t m_Offset;
-        
         static Mouse* m_Instance;
+        
 
-        void mouseWait(unsigned char a_type);
-        char mouseRead();
-        void mouseWrite(unsigned char byte);
+        uint8_t buffer[3];
+        uint8_t offset;
+        uint8_t buttons;
+        
 
     public:
         Mouse();
         ~Mouse();
         
+        int16_t m_MouseX = 0; 
+        int16_t m_MouseY = 0;
+        void OnMouseDown();
+        void OnMouseUp();
+        void OnMouseMove(int32_t x, int32_t y);
+
         static Mouse* getInstance();
-
-        void drawCursor();
-
+        
         void handler(regs* registers);
         void install();
         void uninstall();
+
+
     };
     
     

@@ -9,6 +9,7 @@
 #include "io/terminal.h"
 #include "shell/shell.h"
 #include "gui/window.h"
+#include "gui/textbox.h"
 #include "hardware/keyboard.h"
 #include "hardware/vga.h"
 #include "hardware/mouse.h"

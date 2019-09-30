@@ -19,10 +19,25 @@ namespace  OS { namespace KERNEL { namespace GUI {
         std::vector<Widget*> m_Widgets;
     public:
         Window();
-        Window(const char* name, uint32_t x, uint32_t y, uint32_t w, uint32_t h);
+        Window(const char* name, uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t color, Widget* parent);
         ~Window();
 
         void addWidget(Widget* component);
+        inline void setPosition(const uint32_t x, const uint32_t y) { 
+
+            m_XPrev = m_X;
+            m_YPrev = m_Y;
+            m_X = x;
+            m_Y = y;
+            for (size_t i = 0; i < m_Widgets.size(); i++)
+            {
+                //title bar height
+                uint32_t  yOffset = y + 16;
+                m_Widgets[i]->setPosition((m_X - m_XPrev) + x, (m_Y - m_YPrev) + yOffset);
+            }
+            
+
+        }
 
         void draw();
 

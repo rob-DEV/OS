@@ -5,6 +5,57 @@ void mouse_handler(regs* registers){
     OS::KERNEL::HW_COMM::Mouse::getInstance()->handler(registers);
 }
 
+unsigned char mouse_cycle=0;     //unsigned char
+char mouse_byte[3];    //signed char
+char mouse_x=0;         //signed char
+char mouse_y=0;         //signed char
+
+
+void mouse_wait(unsigned char a_type) //unsigned char
+{
+  uint32_t _time_out=100000; //unsigned int
+  if(a_type==0)
+  {
+    while(_time_out--) //Data
+    {
+      if((OS::KERNEL::HW_COMM::Port::inportb(0x64) & 1)==1)
+      {
+        return;
+      }
+    }
+    return;
+  }
+  else
+  {
+    while(_time_out--) //Signal
+    {
+      if((OS::KERNEL::HW_COMM::Port::inportb(0x64) & 2)==0)
+      {
+        return;
+      }
+    }
+    return;
+  }
+}
+
+inline void mouse_write(unsigned char a_write) //unsigned char
+{
+  //Wait to be able to send a command
+  mouse_wait(1);
+  //Tell the mouse we are sending a command
+  OS::KERNEL::HW_COMM::Port::outportb(0x64, 0xD4);
+  //Wait for the final part
+  mouse_wait(1);
+  //Finally write
+  OS::KERNEL::HW_COMM::Port::outportb(0x60, a_write);
+}
+
+unsigned char mouse_read()
+{
+  //Get's response from mouse
+  mouse_wait(0);
+  return OS::KERNEL::HW_COMM::Port::inportb(0x60);
+}
 
 namespace OS { namespace KERNEL { namespace HW_COMM {
 
@@ -28,71 +79,62 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
         return m_Instance;
     }
 
-    void Mouse::mouseWait(unsigned char a_type) {
-        uint32_t _time_out=100000; //unsigned int
-        if(a_type==0)
-        {
-            while(_time_out--) //Data
-                if((HW_COMM::Port::inportb(0x64) & 1)==1)
-                    return;
-            return;
-        }
-        else
-        {
-            while(_time_out--) //Signal
-                if((HW_COMM::Port::inportb(0x64) & 2)==0)
-                    return;
-            return;
-        }
-    }
 
-    char Mouse::mouseRead() {
-        mouseWait(0);
-        return HW_COMM::Port::inportb(0x60);
-    }
-
-    void Mouse::mouseWrite(unsigned char byte) {
-        //Wait to be able to send a command
-        mouseWait(1);
-        //Tell the mouse we are sending a command
-        HW_COMM::Port::outportb(0x64, 0xD4);
-        //Wait for the final part
-        mouseWait(1);
-        //Finally write
-        HW_COMM::Port::outportb(0x60, byte);
-    }
-
-    void Mouse::drawCursor() {
-        
-
-        uint32_t curW = 1;
-        uint32_t curH = 8;
-
-        Terminal::getInstance()->printf("Drawing Mouse(%d,%d)\n", m_MouseX, m_MouseY);
-
-        //draw a simple cross at mouse x and y
-        VGA* vga = VGA::getInstance();
-
-        //vert
-        vga->fillRectangle(m_MouseX, (m_MouseY-(curH / 2)), curW, curH, 18, 40, 80);
-
-        //horizontal
-        vga->fillRectangle((m_MouseX - (curH / 2) + curW), m_MouseY - curW, curH, curW, 18, 40, 80);
-        
-    }
-
-    void Mouse::handler(regs* reg) { 
-        
-    }
 
     void Mouse::install() {
+        char _status;  //unsigned char
 
-        unsigned char _status;  //unsigned char
+        //Enable the auxiliary mouse device
+        mouse_wait(1);
+        OS::KERNEL::HW_COMM::Port::outportb(0x64, 0xA8);
+        
+        //Enable the interrupts
+        mouse_wait(1);
+        OS::KERNEL::HW_COMM::Port::outportb(0x64, 0x20);
+        mouse_wait(0);
+        _status=(OS::KERNEL::HW_COMM::Port::inportb(0x60) | 2);
+        mouse_wait(1);
+        OS::KERNEL::HW_COMM::Port::outportb(0x64, 0x60);
+        mouse_wait(1);
+        OS::KERNEL::HW_COMM::Port::outportb(0x60, _status);
+        
+        //Tell the mouse to use default settings
+        mouse_write(0xF6);
+        mouse_read();  //Acknowledge
+        
+        //Enable the mouse
+        mouse_write(0xF4);
+        mouse_read();  //Acknowledge
 
+        //Setup the mouse handler
+        OS::KERNEL::CPU::IRQ::getInstance()->irq_install(MOUSE_IRQ_ID, mouse_handler);  
     }
 
-    void Mouse::uninstall() {
+    void Mouse::handler(regs* registers) {
 
+        switch(mouse_cycle)
+        {
+            case 0:
+            mouse_byte[0]=OS::KERNEL::HW_COMM::Port::inportb(0x60);
+            mouse_cycle++;
+            break;
+            case 1:
+            mouse_byte[1]=OS::KERNEL::HW_COMM::Port::inportb(0x60);
+            mouse_cycle++;
+            break;
+            case 2:
+            mouse_byte[2]=OS::KERNEL::HW_COMM::Port::inportb(0x60);
+            mouse_x=mouse_byte[1];
+            mouse_y=mouse_byte[2];
+
+
+            mouse_cycle=0;
+            break;
+        }
+
+        OS::KERNEL::Terminal::getInstance()->printf("X: %d Y:%d\n", mouse_x, mouse_y);
+        
     }
+    
 
 }}}

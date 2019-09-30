@@ -23,14 +23,31 @@ namespace OS { namespace KERNEL { namespace SHELL {
         return s_Instance;
     }
 
+    
+
     void Shell::putchar(char c) {
         //only hold line for now
         //pass char to video memory if not in graphics mode
         Terminal::getInstance()->print(c);
 
         //test vga type BAD IDEA refactor to GUI input handler
-        if(c != '\n')
+        if(c != '\n') {
             HW_COMM::VGA::getInstance()->drawChar8(10 * m_BufferLength, 8 * nLines, c, 0xFF);
+
+            if(c == 'w')
+                focusedWindow->setPosition(focusedWindow->m_X, focusedWindow->m_Y - 1);
+
+            if(c == 'a')
+                focusedWindow->setPosition(focusedWindow->m_X - 1, focusedWindow->m_Y);
+
+            if(c == 's')
+                focusedWindow->setPosition(focusedWindow->m_X, focusedWindow->m_Y + 1);
+
+            if(c == 'd')
+                focusedWindow->setPosition(focusedWindow->m_X + 1, focusedWindow->m_Y);
+            
+
+        }
         else
             nLines++;
 
