@@ -1,6 +1,4 @@
 #include "../include/shell/shell.h"
-#include "../include/io/terminal.h"
-#include "../include/hardware/vga.h"
 
 namespace OS { namespace KERNEL { namespace SHELL {
 
@@ -8,7 +6,10 @@ namespace OS { namespace KERNEL { namespace SHELL {
 
     Shell::Shell() { 
         m_BufferLength = 0;
+        m_GraphicsModeEntered = false;
         nLines = 1;
+
+
         OS::KERNEL::Terminal::getInstance()->printf("Shell Initialized!\n");
     }
 
@@ -25,28 +26,20 @@ namespace OS { namespace KERNEL { namespace SHELL {
 
     
 
-    void Shell::putchar(char c) {
+    void Shell::onKeyDown(char c) {
         //only hold line for now
         //pass char to video memory if not in graphics mode
-        Terminal::getInstance()->print(c);
+        
+        if(!m_GraphicsModeEntered)
+            Terminal::getInstance()->print(c);
+        else
+            //m_Desktop->keyPressed(c);
+        
+
 
         //test vga type BAD IDEA refactor to GUI input handler
         if(c != '\n') {
-            HW_COMM::VGA::getInstance()->drawChar8(10 * m_BufferLength, 8 * nLines, c, 0xFF);
-
-            if(c == 'w')
-                focusedWindow->setPosition(focusedWindow->m_X, focusedWindow->m_Y - 1);
-
-            if(c == 'a')
-                focusedWindow->setPosition(focusedWindow->m_X - 1, focusedWindow->m_Y);
-
-            if(c == 's')
-                focusedWindow->setPosition(focusedWindow->m_X, focusedWindow->m_Y + 1);
-
-            if(c == 'd')
-                focusedWindow->setPosition(focusedWindow->m_X + 1, focusedWindow->m_Y);
             
-
         }
         else
             nLines++;
@@ -84,6 +77,19 @@ namespace OS { namespace KERNEL { namespace SHELL {
             if(strcmp(m_Commands[i]->commandText, m_Buffer))
                 m_Commands[i]->execute();
         
+    }
+
+    void Shell::enterGraphicsMode() {
+
+        //create desktop and pass shell input to it
+        //GUI::Desktop desktop;
+        
+        while (1)
+        {
+          //  desktop.draw();
+        }
+        
+
     }
     
 

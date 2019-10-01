@@ -1,12 +1,12 @@
-#ifndef OS_KERNEL_IO_SHELL_H
-#define OS_KERNEL_IO_SHELL_H
+#ifndef OS_KERNEL_SHELL_SHELL_H
+#define OS_KERNEL_SHELL_SHELL_H
 
 
-#include "../common/type.h"
-#include "../common/string.h"
-#include "../../../libc++/vector.h"
 #include "shellcommand.h"
-#include "../gui/widget.h"
+#include "../gui/desktop.h"
+
+
+#include "../../../libc++/vector.h"
 
 namespace OS { namespace KERNEL { namespace SHELL {
 
@@ -19,17 +19,23 @@ namespace OS { namespace KERNEL { namespace SHELL {
         char m_Buffer[256];
         uint16_t m_BufferLength;
         uint32_t nLines;
-        GUI::Widget* focusedWindow;
+
+
+
+        bool m_GraphicsModeEntered;
+
+        GUI::Desktop* m_Desktop;
+        
         
     public:
         Shell();
         ~Shell();
 
-        void putchar(char c);
+        void onKeyDown(char c);
         void addCommand(const char* cmdText, void(*callback)());
         void checkRegisteredCommands();
 
-        inline void registerWidget(GUI::Widget* widget) { focusedWindow = widget; };
+        void enterGraphicsMode();
 
         static Shell* getInstance();
 

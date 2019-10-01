@@ -1,27 +1,14 @@
 #include "include/kernel.h"
 
-
-enum Direction {
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT
-};
-
 namespace OS { namespace KERNEL {
 
     void alphaCmd() {
         OS::KERNEL::Terminal::getInstance()->printf("alpha command executed\n");    
     }
 
-    void vga(){
-         OS::KERNEL::HW_COMM::VGA::getInstance()->setMode(320, 200, 8);
-    }
-
     void reboot() {
          OS::KERNEL::Terminal::getInstance()->printf("Shutting down\n");    
     }
-    
 
     void Kernel::kernel_init(multiboot_info_t* mbi, uint32_t magic) {
         
@@ -96,56 +83,36 @@ namespace OS { namespace KERNEL {
     
     }
 
+    void enterVGAStub() {
+        SHELL::Shell::getInstance()->enterGraphicsMode();
+    }
     void Kernel::kernel_main(multiboot_info_t* mbi, uint32_t magic) {
 
         kernel_init(mbi, magic);
 
-        Shell::getInstance()->addCommand("alpha", alphaCmd);
-        Shell::getInstance()->addCommand("vga", vga);
-        Shell::getInstance()->addCommand("reboot", reboot);
+        SHELL::Shell::getInstance()->addCommand("alpha", alphaCmd);
+
+
+        SHELL::Shell::getInstance()->addCommand("vga", enterVGAStub);
+        SHELL::Shell::getInstance()->addCommand("reboot", reboot);
 
         m_VGA = HW_COMM::VGA::getInstance();
-        //vga();
-
-        m_Terminal->printf("m_VGA Address: 0x%x\n", m_VGA);
        
         
         HW_COMM::Mouse* mouse = HW_COMM::Mouse::getInstance();
-        
-        //mouse->install();
-        //mouse->drawCursor();
-
 
         
         
         m_VGA->fillRectangle(0,0, 320, 200, 64,0xFF,0xFF);
         GUI::Window* bar = new GUI::Window("OS Kernel - VGA 320x200", 0,0,320,12, 24, NULL);
-        GUI::Window* windowTest = new GUI::Window("Test Window", 10,20,150,100, 35, NULL);
+        GUI::Window* windowTest = new GUI::Window("Test Window", 50,40,150,100, 35, NULL);
 
-        Shell::getInstance()->registerWidget(windowTest);
 
         GUI::Window* windowTest1 = new GUI::Window("Second Window", 100, 130,150, 60,42, NULL);
         windowTest->addWidget(new GUI::Textbox("Inital text in the\ntext box\n", 10, 40, 100,100));
-
-        while(1) {
-            //update VGA
-            //update MOUSE
-            m_VGA->fillRectangle(0,0, 320, 200, 15,0xFF,0xFF);
-
-            bar->draw();
-            windowTest->draw();
-            windowTest1->draw();
-
-            
-
-            //copy buffer to pixel array in one shot to avoid tearing and flickering
-            m_VGA->swapBuffers();
-            
-            
-            
-            //60hz
-            m_PIT->waitForMilliSeconds(80);
-        }
+        windowTest->addWidget(new GUI::Textbox("Inital t box\n", 10, 60, 100,100));
+        windowTest1->addWidget(new GUI::Textbox("NIGGER!\n", 100,148, 10,60));
+        windowTest1->addWidget(new GUI::Textbox("NIGGER2!\n", 100,168, 10,60));
         
         for(;;);
     }

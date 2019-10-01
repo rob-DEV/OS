@@ -24,14 +24,11 @@ namespace  OS { namespace KERNEL { namespace GUI {
         HW_COMM::VGA::getInstance()->fillRectangle(m_X, m_Y, m_W, m_H, m_Color,23,45);
 
         for (size_t i = 0; i < strlen(m_Name); i++)
-        {
             HW_COMM::VGA::getInstance()->drawChar8(m_X + ( 8 * i),m_Y + 8, m_Name[i], 63);
-        }
 
         for (size_t i = 0; i < m_Widgets.size(); i++)
-        {
             m_Widgets[i]->draw();
-        }
+        
         
     }
 

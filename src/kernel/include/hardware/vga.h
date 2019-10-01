@@ -70,6 +70,8 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
 
         void drawChar16(uint32_t x, uint32_t y, char c, int fgcolor, int bgcolor);
         
+        void fillRectangle(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t color);
+
         void fillRectangle(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t r, uint8_t g, uint8_t b);
 
         void swapBuffers();

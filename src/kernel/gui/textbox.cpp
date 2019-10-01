@@ -1,4 +1,5 @@
 #include "../include/gui/textbox.h"
+#include "../include/io/terminal.h"
 
 namespace  OS { namespace KERNEL { namespace GUI {
  
@@ -28,6 +29,8 @@ namespace  OS { namespace KERNEL { namespace GUI {
 
         int a = 0;
         int b = 0;
+
+
         for (size_t i = 0; i < m_strLen; i++)
         {
             if(m_Buffer[i] == '\n') {
@@ -35,7 +38,7 @@ namespace  OS { namespace KERNEL { namespace GUI {
                 b = 0;
                 continue;
             }
-            OS::KERNEL::HW_COMM::VGA::getInstance()->drawChar8(m_X+ (b * 8), m_Y + (a * 8), m_Buffer[i], 62);
+            OS::KERNEL::HW_COMM::VGA::getInstance()->drawChar8(m_X+ (b * 8) +1 , m_Y + (a * 8), m_Buffer[i], 62);
             b++;
             
         }

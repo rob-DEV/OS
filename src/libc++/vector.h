@@ -1,7 +1,8 @@
-#pragma once
 
 #ifndef LIB_CPP_VECTOR_H
 #define LIB_CPP_VECTOR_H
+
+#include "../kernel/include/common/string.h"
 
 namespace std {
 

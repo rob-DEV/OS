@@ -1,12 +1,8 @@
 #ifndef OS_KERNEL_GUI_WINDOW_H
 #define OS_KERNEL_GUI_WINDOW_H
 
-#include "../common/type.h"
-#include "../cpu/isr.h"
-#include "../cpu/irq.h"
-#include "../hardware/port.h"
-#include "../hardware/vga.h"
 #include "widget.h"
+#include "../hardware/vga.h"
 
 #include "../../../libc++/vector.h"
 

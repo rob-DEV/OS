@@ -9,10 +9,10 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
     Keyboard* Keyboard::m_Instance = NULL;
 
     Keyboard::Keyboard() {
-        
+        m_KeyboardEventHandler = KeyboardEventHandler::getInstance();
     }
     Keyboard::~Keyboard() {
-
+        delete m_KeyboardEventHandler;
     }
         
     Keyboard* Keyboard::getInstance() {
@@ -34,7 +34,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
         }
         else
         {
-            SHELL::Shell::getInstance()->putchar(KB_US[scancode]); 
+            m_KeyboardEventHandler->OnKeyDown(scancode);
         }
     }
 

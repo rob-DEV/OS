@@ -1,25 +1,14 @@
-#ifndef OS_KERNEL_HW_COMM_KEYBOARD_H
-#define OS_KERNEL_HW_COMM_KEYBOARD_H
+#ifndef OS_KERNEL_HW_COMM_KEYBOARDEVENTHANDLER_H
+#define OS_KERNEL_HW_COMM_KEYBOARDEVENTHANDLER_H
 
-#include "../common/type.h"
-#include "../cpu/isr.h"
-#include "../cpu/irq.h"
-#include "../io/terminal.h"
-#include "../memory/memorymanagement.h"
-
-
-#include "keyboardeventhandler.h"
-
-extern "C" void keyboard_handler(regs* r);
-
-#define KEYBOARD_IRQ_ID 1
 
 namespace OS { namespace KERNEL { namespace HW_COMM {
 
-
-    class Keyboard {
+     
+    class KeyboardEventHandler
+    {
     private:
-     const unsigned char KB_US[128] = {
+        const unsigned char KB_US[128] = {
                 0,  27, '1', '2', '3', '4', '5', '6', '7', '8',	/* 9 */
             '9', '0', '-', '=', '\b',	/* Backspace */
             '\t',			/* Tab */
@@ -57,21 +46,18 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
                 0,	/* F12 Key */
                 0,	/* All other keys are undefined */
             };	
-       
-        static Keyboard* m_Instance;
-        KeyboardEventHandler* m_KeyboardEventHandler;
+        static KeyboardEventHandler* m_Instance;
     public:
-        Keyboard();
-        ~Keyboard();
-        
-        static Keyboard* getInstance();
+        KeyboardEventHandler();
+        ~KeyboardEventHandler();
 
-        void handler(regs* registers);
-        void install();
-        void uninstall();
+        static KeyboardEventHandler* getInstance();
+
+        void OnKeyUp(char key);
+        void OnKeyDown(char key);
+
+
     };
-
-    
 
 }}}
 

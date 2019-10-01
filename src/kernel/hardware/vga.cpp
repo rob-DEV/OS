@@ -121,6 +121,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
     }
 
     bool VGA::setMode(uint32_t width, uint32_t height, uint32_t colorDepth) {
+        
         if(!supportMode(width, height, colorDepth))
         return false;
         unsigned char g_320x200x256[] =
@@ -200,6 +201,14 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
         for(int32_t Y = y; Y < y+h; Y++)
             for(int32_t X = x; X < x+w; X++)
                 putPixel(X, Y, r);
+    
+    }
+
+     void VGA::fillRectangle(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t color) {
+       
+        for(int32_t Y = y; Y < y+h; Y++)
+            for(int32_t X = x; X < x+w; X++)
+                putPixel(X, Y, color);
     
     }
 

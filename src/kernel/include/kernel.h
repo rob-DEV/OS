@@ -25,7 +25,6 @@
 
 
 namespace OS { namespace KERNEL {
-    using namespace SHELL;
 
     class Kernel {
 
@@ -44,6 +43,7 @@ namespace OS { namespace KERNEL {
         Terminal* m_Terminal;
 
         void kernel_init(multiboot_info_t* mbi, uint32_t magic);
+        void vga();
 
     public:
         void kernel_main(multiboot_info_t* mbi, uint32_t magic);
