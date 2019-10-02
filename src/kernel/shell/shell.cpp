@@ -9,6 +9,7 @@ namespace OS { namespace KERNEL { namespace SHELL {
         m_GraphicsModeEntered = false;
         nLines = 1;
 
+        m_Desktop = NULL;
 
         OS::KERNEL::Terminal::getInstance()->printf("Shell Initialized!\n");
     }
@@ -33,7 +34,7 @@ namespace OS { namespace KERNEL { namespace SHELL {
         if(!m_GraphicsModeEntered)
             Terminal::getInstance()->print(c);
         else
-            //m_Desktop->keyPressed(c);
+            m_Desktop->OnKeyDown(c);
         
 
 
@@ -82,12 +83,11 @@ namespace OS { namespace KERNEL { namespace SHELL {
     void Shell::enterGraphicsMode() {
 
         //create desktop and pass shell input to it
-        //GUI::Desktop desktop;
-        
-        while (1)
-        {
-          //  desktop.draw();
-        }
+        m_Desktop = new GUI::Desktop();
+
+        OS::KERNEL::Terminal::getInstance()->printf("Desktop 0x%x\n", m_Desktop);
+
+        m_GraphicsModeEntered = true;
         
 
     }

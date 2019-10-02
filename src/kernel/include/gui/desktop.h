@@ -1,11 +1,11 @@
 #ifndef OS_KERNEL_GUI_DESKTOP_H
 #define OS_KERNEL_GUI_DESKTOP_H
 
-#include "widget.h"
+#include "window.h"
 #include "../hardware/vga.h"
 #include "../hardware/keyboard.h"
 
-//#include "../../../libc++/vector.h"
+#include "../../../libc++/vector.h"
 
 
 namespace OS { namespace KERNEL { namespace GUI { 
@@ -13,7 +13,10 @@ namespace OS { namespace KERNEL { namespace GUI {
     class Desktop : public Widget {
     private:
         HW_COMM::VGA* m_VGA;
-        //OS::KERNEL::HW_COMM::Keyboard* m_Keyboard;
+        std::vector<Window*> m_Windows;
+
+        Window* m_ActiveWindow;
+        
     public:
 
         Desktop();

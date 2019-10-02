@@ -4,6 +4,7 @@
 
 #include "shellcommand.h"
 #include "../gui/desktop.h"
+#include "../cpu/pit.h"
 
 
 #include "../../../libc++/vector.h"
@@ -24,7 +25,6 @@ namespace OS { namespace KERNEL { namespace SHELL {
 
         bool m_GraphicsModeEntered;
 
-        GUI::Desktop* m_Desktop;
         
         
     public:
@@ -35,6 +35,7 @@ namespace OS { namespace KERNEL { namespace SHELL {
         void addCommand(const char* cmdText, void(*callback)());
         void checkRegisteredCommands();
 
+        GUI::Desktop* m_Desktop;
         void enterGraphicsMode();
 
         static Shell* getInstance();

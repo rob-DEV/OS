@@ -99,10 +99,10 @@ namespace OS { namespace KERNEL {
         m_VGA = HW_COMM::VGA::getInstance();
        
         
-        HW_COMM::Mouse* mouse = HW_COMM::Mouse::getInstance();
+        //HW_COMM::Mouse* mouse = HW_COMM::Mouse::getInstance();
 
         
-        
+        /*
         m_VGA->fillRectangle(0,0, 320, 200, 64,0xFF,0xFF);
         GUI::Window* bar = new GUI::Window("OS Kernel - VGA 320x200", 0,0,320,12, 24, NULL);
         GUI::Window* windowTest = new GUI::Window("Test Window", 50,40,150,100, 35, NULL);
@@ -113,7 +113,16 @@ namespace OS { namespace KERNEL {
         windowTest->addWidget(new GUI::Textbox("Inital t box\n", 10, 60, 100,100));
         windowTest1->addWidget(new GUI::Textbox("NIGGER!\n", 100,148, 10,60));
         windowTest1->addWidget(new GUI::Textbox("NIGGER2!\n", 100,168, 10,60));
-        
+        */
+
+        while(1) {
+
+            if(SHELL::Shell::getInstance()->m_Desktop) 
+                SHELL::Shell::getInstance()->m_Desktop->draw();
+
+            m_PIT->waitForMilliSeconds(1000/60);
+        }
+
         for(;;);
     }
 
