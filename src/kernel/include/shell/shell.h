@@ -11,6 +11,8 @@
 
 namespace OS { namespace KERNEL { namespace SHELL {
 
+
+    #define SHELL_PRINT_HEADER OS::KERNEL::Terminal::getInstance()->printf("kernel>")
     class Shell {
     
     private:
@@ -20,9 +22,6 @@ namespace OS { namespace KERNEL { namespace SHELL {
         char m_Buffer[256];
         uint16_t m_BufferLength;
         uint32_t nLines;
-
-
-
         bool m_GraphicsModeEntered;
 
         

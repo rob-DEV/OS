@@ -3,7 +3,7 @@
 #ifndef LIB_CPP_STRING_H
 #define LIB_CPP_STRING_H
 
-#include "../kernel/include/common/string.h"
+#include "../kernel/include/com/string.h"
 #include "../kernel/include/io/terminal.h"
 
 namespace std {

@@ -1,8 +1,8 @@
 #ifndef OS__KERNEL_CPU_IDT_H
 #define OS__KERNEL_CPU_IDT_H
 
-#include "../common/type.h"
-#include "../common/string.h"
+#include "../com/type.h"
+#include "../com/string.h"
 
 struct idt_entry
 {

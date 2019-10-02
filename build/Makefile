@@ -11,14 +11,14 @@ C_SRC = $(C_FILE:.c=)
 
 
 CXX_FILE = $(wildcard ../src/kernel/*.cpp) \
-			$(wildcard ../src/kernel/common/*.cpp) \
+			$(wildcard ../src/kernel/com/*.cpp) \
 			$(wildcard ../src/kernel/cpu/*.cpp) \
 			$(wildcard ../src/kernel/gui/*.cpp) \
-			$(wildcard ../src/kernel/hardware/*.cpp) \
+			$(wildcard ../src/kernel/hw/*.cpp) \
 			$(wildcard ../src/kernel/io/*.cpp) \
-			$(wildcard ../src/kernel/memory/*.cpp) \
+			$(wildcard ../src/kernel/mem/*.cpp) \
 			$(wildcard ../src/kernel/shell/*.cpp) \
-			$(wildcard ../src/kernel/util/*.cpp) \
+			$(wildcard ../src/kernel/utl/*.cpp) \
 			$(wildcard ../src/libc/*.cpp) 
 
 CXX_SRC = $(CXX_FILE:.c=)

@@ -1,17 +1,18 @@
 #ifndef OS__KERNEL_MEMORY_MANAGEMENT_H
 #define OS__KERNEL_MEMORY_MANAGEMENT_H
 
-#include "../common/type.h"
-#include "../common/string.h"
+#include "../com/type.h"
+#include "../com/string.h"
 #include "../io/terminal.h"
 
-
+#define MEMORY_CHUNK_MAGIC 0x1337
 
 namespace OS { namespace KERNEL { namespace MEMORY {
 
      
     typedef struct MemoryChunk
     {
+        uint16_t magic;
         MemoryChunk *next;
         MemoryChunk *prev;
         bool allocated;

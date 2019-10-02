@@ -2,7 +2,7 @@
 #define OS_KERNEL_GUI_WINDOW_H
 
 #include "widget.h"
-#include "../hardware/vga.h"
+#include "../hw/vga.h"
 
 #include "../../../libc++/vector.h"
 

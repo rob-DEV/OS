@@ -5,11 +5,11 @@
 #include <stdbool.h>
 #include <stdarg.h>
 
-#include "../common/type.h"
-#include "../common/string.h"
-#include "../hardware/port.h"
+#include "../com/type.h"
+#include "../com/string.h"
+#include "../hw/port.h"
 #include "../util/util.h"
-#include "../memory/memorymanagement.h"
+#include "../mem/memorymanagement.h"
 
 #define EOF -1
 

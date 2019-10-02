@@ -1,7 +1,7 @@
 #ifndef OS_KERNEL_HW_COMM_PORT_H
 #define OS_KERNEL_HW_COMM_PORT_H
 
-#include "../common/type.h"
+#include "../com/type.h"
 
 namespace OS { namespace KERNEL { namespace HW_COMM {
 

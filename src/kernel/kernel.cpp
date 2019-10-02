@@ -7,7 +7,8 @@ namespace OS { namespace KERNEL {
     }
 
     void reboot() {
-         OS::KERNEL::Terminal::getInstance()->printf("Shutting down\n");    
+         OS::KERNEL::Terminal::getInstance()->printf("Rebooting...\n"); 
+         CPU::PIT::getInstance()->waitForMilliSeconds(300);   
     }
 
     void Kernel::kernel_init(multiboot_info_t* mbi, uint32_t magic) {
@@ -16,7 +17,7 @@ namespace OS { namespace KERNEL {
         
         //migrate stack managed memory to full heap based memory
         //small inital manage to allocate the actual manager onto the heap
-        {
+        { //destroy stack mm after scope end - migrate to heap
             MEMORY::MemoryManager stackMemoryVolatile(mbi->mem_lower, mbi->mem_lower + 500);
 
             //750 mb for heap
@@ -97,8 +98,7 @@ namespace OS { namespace KERNEL {
         SHELL::Shell::getInstance()->addCommand("reboot", reboot);
 
         m_VGA = HW_COMM::VGA::getInstance();
-       
-        
+
         //HW_COMM::Mouse* mouse = HW_COMM::Mouse::getInstance();
 
         

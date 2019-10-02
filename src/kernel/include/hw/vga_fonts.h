@@ -1,11 +1,11 @@
 #ifndef OS_KERNEL_GUI_TEXT_H
 #define OS_KERNEL_GUI_TEXT_H
 
-#include "../common/type.h"
+#include "../com/type.h"
 #include "../cpu/isr.h"
 #include "../cpu/irq.h"
-#include "../hardware/port.h"
-#include "../hardware/vga.h"
+#include "../hw/port.h"
+#include "../hw/vga.h"
 
 namespace  OS { namespace KERNEL { namespace GUI {
  

@@ -1,8 +1,8 @@
 #ifndef OS__KERNEL_CPU_IRQ_H
 #define OS__KERNEL_CPU_IRQ_H
 
-#include "../common/type.h"
-#include "../hardware/port.h"
+#include "../com/type.h"
+#include "../hw/port.h"
 #include "isr.h"
 
 

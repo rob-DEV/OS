@@ -1,4 +1,4 @@
-#include "../include/memory/memorymanagement.h"
+#include "../include/mem/memorymanagement.h"
 
 
 
@@ -27,7 +27,7 @@ namespace OS { namespace KERNEL { namespace MEMORY {
             first -> next = NULL;
             first -> size = m_SizeBytes - sizeof(MemoryChunk);
         }
-        }
+    }
     MemoryManager::~MemoryManager()
     {
         OS::KERNEL::Terminal::getInstance()->print("Memory Manager: destructor called\n");
@@ -54,6 +54,11 @@ namespace OS { namespace KERNEL { namespace MEMORY {
             temp->size = result->size - size - sizeof(MemoryChunk);
             temp->prev = result;
             temp->next = result->next;
+            
+            //VALID MEMBLOCK SIGNATURE
+            temp->magic = MEMORY_CHUNK_MAGIC;
+
+
             if(temp->next != 0)
                 temp->next->prev = temp;
             
@@ -66,43 +71,21 @@ namespace OS { namespace KERNEL { namespace MEMORY {
     }
 
     void MemoryManager::free(void* ptr) {
-        //this is the reverse of malloc()
+        
 
-        //find the memory chunk -> address of data - sizeof(memory_chunk_t) == chunk start address
-        MemoryChunk* chunk = (MemoryChunk*)((size_t)ptr - sizeof(MemoryChunk));
-        //deallocate the memory
-        chunk->allocated = false;
+        //access memory chunk check MAGIC before attempting to free
+        memory_chunk_t* ptr_mem_chunk = (memory_chunk_t*)(ptr - sizeof(memory_chunk_t));
+        
 
-        uint32_t* chunk_data_ptr = (uint32_t*)chunk + sizeof(MemoryChunk);
+        //memory block not valid
+        if(ptr_mem_chunk->magic = MEMORY_CHUNK_MAGIC)
+            return;
+
+        //free memory
 
 
 
-        uint32_t* data_address = (uint32_t*)ptr;
-        //TEST NULLIFY ALL MEMORY
-        for (int i = 0; i < chunk->size; ++i) {
-            *data_address = 0;
-            data_address++;
-        }
-
-        if(chunk->prev != NULL && !chunk->prev->allocated)
-        {
-            chunk->prev->next = chunk->next;
-            chunk->prev->size += chunk->size + sizeof(MemoryChunk);
-
-            if(chunk->next != NULL)
-                chunk->next->prev = chunk->prev;
-
-            chunk = chunk->prev;
-        }
-
-        if(chunk->next != NULL && !chunk->next->allocated){
-            chunk->size += chunk->next->size + sizeof(MemoryChunk);
-            chunk->next = chunk->next->next;
-            if(chunk->next != NULL)
-                chunk->next->prev = chunk;
-        }
-        }
-
+    }
     
 }}}
 
@@ -113,8 +96,11 @@ void* malloc(size_t size) {
 }
 
 void free(void* ptr) {
+
     if(OS::KERNEL::MEMORY::MemoryManager::Instance == 0)
-        OS::KERNEL::MEMORY::MemoryManager::Instance->free(ptr);
+        return;
+
+    OS::KERNEL::MEMORY::MemoryManager::Instance->free(ptr);
 }
 
 void* operator new(size_t size) {

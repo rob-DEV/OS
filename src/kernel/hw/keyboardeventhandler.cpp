@@ -1,5 +1,5 @@
-#include "../include/hardware/keyboardeventhandler.h"
-#include "../include/hardware/keyboard.h"
+#include "../include/hw/keyboardeventhandler.h"
+#include "../include/hw/keyboard.h"
 #include "../include/shell/shell.h"
 
 

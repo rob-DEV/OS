@@ -1,7 +1,7 @@
 #ifndef OS__KERNEL_CPU_GDT_H
 #define OS__KERNEL_CPU_GDT_H
 
-#include "../common/type.h"
+#include "../com/type.h"
 
 struct gdt_entry
 {

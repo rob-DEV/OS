@@ -1,11 +1,11 @@
 #ifndef OS_KERNEL_HW_COMM_KEYBOARD_H
 #define OS_KERNEL_HW_COMM_KEYBOARD_H
 
-#include "../common/type.h"
+#include "../com/type.h"
 #include "../cpu/isr.h"
 #include "../cpu/irq.h"
 #include "../io/terminal.h"
-#include "../memory/memorymanagement.h"
+#include "../mem/memorymanagement.h"
 
 
 #include "keyboardeventhandler.h"

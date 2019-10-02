@@ -1,7 +1,7 @@
 #ifndef OS_KERNEL_UTIL_UTIL_H
 #define OS_KERNEL_UTIL_UTIL_H
 
-#include "../common/type.h"
+#include "../com/type.h"
 
 namespace OS { namespace KERNEL {
 

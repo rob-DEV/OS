@@ -1,10 +1,10 @@
 #ifndef OS_KERNEL_HW_COMM_MOUSE_H
 #define OS_KERNEL_HW_COMM_MOUSE_H
 
-#include "../common/type.h"
+#include "../com/type.h"
 #include "../cpu/isr.h"
 #include "../cpu/irq.h"
-#include "../hardware/port.h"
+#include "../hw/port.h"
 #include "vga.h"
 
 extern "C" void mouse_handler(regs* r);

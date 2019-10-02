@@ -1,4 +1,4 @@
-#include "../include/hardware/keyboard.h"
+#include "../include/hw/keyboard.h"
 
 void keyboard_handler(regs* registers){
     OS::KERNEL::HW_COMM::Keyboard::getInstance()->handler(registers);

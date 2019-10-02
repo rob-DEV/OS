@@ -1,4 +1,4 @@
-#include "../include/hardware/port.h"
+#include "../include/hw/port.h"
 
 namespace OS { namespace KERNEL { namespace HW_COMM {
 

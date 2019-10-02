@@ -2,8 +2,8 @@
 #define OS_KERNEL_GUI_DESKTOP_H
 
 #include "window.h"
-#include "../hardware/vga.h"
-#include "../hardware/keyboard.h"
+#include "../hw/vga.h"
+#include "../hw/keyboard.h"
 
 #include "../../../libc++/vector.h"
 

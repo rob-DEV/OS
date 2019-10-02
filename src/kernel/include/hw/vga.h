@@ -1,14 +1,13 @@
 #ifndef OS_KERNEL_HW_COMM_VGA_H
 #define OS_KERNEL_HW_COMM_VGA_H
 
-#include "../common/type.h"
-#include "../common/string.h"
+#include "../com/type.h"
+#include "../com/string.h"
 #include "port.h"
 #include "vga_fonts.h"
 
 #define VGA_320x200_MEM_SIZE 320*200
 
-#define VGA_BUFFER_COUNT 2
 #define VGA_WIDTH_ 320
 #define VGA_HEIGHT_ 200
 

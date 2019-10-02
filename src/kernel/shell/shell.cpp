@@ -10,8 +10,8 @@ namespace OS { namespace KERNEL { namespace SHELL {
         nLines = 1;
 
         m_Desktop = NULL;
-
         OS::KERNEL::Terminal::getInstance()->printf("Shell Initialized!\n");
+        SHELL_PRINT_HEADER;
     }
 
     Shell::~Shell() {
@@ -31,20 +31,20 @@ namespace OS { namespace KERNEL { namespace SHELL {
         //only hold line for now
         //pass char to video memory if not in graphics mode
         
-        if(!m_GraphicsModeEntered)
-            Terminal::getInstance()->print(c);
-        else
+        if(m_GraphicsModeEntered) {
             m_Desktop->OnKeyDown(c);
-        
+        }       
 
-
-        //test vga type BAD IDEA refactor to GUI input handler
         if(c != '\n') {
-            
+            Terminal::getInstance()->print(c);
         }
-        else
+        else {
+
+            Terminal::getInstance()->print("\n");
+            SHELL_PRINT_HEADER;
             nLines++;
 
+        }
         if(c != '\n') {
             m_Buffer[m_BufferLength] = c;
             m_BufferLength++;

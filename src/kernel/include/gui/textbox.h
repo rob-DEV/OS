@@ -1,11 +1,11 @@
 #ifndef OS_KERNEL_GUI_TEXTBOX_H
 #define OS_KERNEL_GUI_TEXTBOX_H
 
-#include "../common/type.h"
+#include "../com/type.h"
 #include "../cpu/isr.h"
 #include "../cpu/irq.h"
-#include "../hardware/port.h"
-#include "../hardware/vga.h"
+#include "../hw/port.h"
+#include "../hw/vga.h"
 #include "widget.h"
 
 #include "../../../libc++/vector.h"

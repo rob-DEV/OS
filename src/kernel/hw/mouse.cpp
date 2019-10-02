@@ -1,4 +1,4 @@
-#include "../include/hardware/mouse.h"
+#include "../include/hw/mouse.h"
 #include "../include/io/terminal.h"
 
 void mouse_handler(regs* registers){

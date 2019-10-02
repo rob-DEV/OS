@@ -1,8 +1,8 @@
 #ifndef OS__KERNEL_CPU_ISRS_H
 #define OS__KERNEL_CPU_ISRS_H
 
-#include "../common/type.h"
-#include "../common/string.h"
+#include "../com/type.h"
+#include "../com/string.h"
 
 #include "idt.h"
 
