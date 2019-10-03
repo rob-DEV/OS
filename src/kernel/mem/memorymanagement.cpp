@@ -6,14 +6,18 @@ namespace OS { namespace KERNEL { namespace MEMORY {
 
 
     void printMemChunk(memory_chunk_t* memChunk) {
-    
-
+ 
+        #if MEMORY_DEBUG
+        
         OS::KERNEL::Terminal::getInstance()->printf("\nPrinting Memory Chunk at 0x%x\n", memChunk);
         OS::KERNEL::Terminal::getInstance()->printf("MAGIC: 0x%x\n", memChunk->magic);
         OS::KERNEL::Terminal::getInstance()->printf("Size: %d\n", memChunk->size);
         OS::KERNEL::Terminal::getInstance()->printf("Allocated: %d\n", memChunk->allocated);
         OS::KERNEL::Terminal::getInstance()->printf("Previous: 0x%x\n", memChunk->prev);
         OS::KERNEL::Terminal::getInstance()->printf("Next: 0x%x\n", memChunk->next);
+            
+        #endif
+
     }
 
     MemoryManager* MemoryManager::Instance = NULL;
@@ -94,7 +98,7 @@ namespace OS { namespace KERNEL { namespace MEMORY {
             return;
 
         //free memory
-        OS::KERNEL::Terminal::getInstance()->printf("Freeing memory at 0x%x", ptr);
+        OS::KERNEL::Terminal::getInstance()->printf("Freeing memory at 0x%x\n", ptr);
 
         printMemChunk(ptr_mem_chunk);
         printMemChunk(ptr_mem_chunk->prev);
@@ -102,6 +106,19 @@ namespace OS { namespace KERNEL { namespace MEMORY {
 
         //allocated set to false then malloc can reallocate to this block
         ptr_mem_chunk->allocated = false;
+
+        #if ZERO_DEALLOC_MEMORY
+
+        //zero deallocated memory
+        char* ptrToZero = (char*)ptr;
+        for (size_t i = 0; i < ptr_mem_chunk->size; i++)
+        {
+            *ptrToZero = 0;
+            ptrToZero++;
+        }
+        
+
+        #endif
 
         //check for free blocks in neighbouring elements and merge together
         if(ptr_mem_chunk->prev != 0 && !ptr_mem_chunk->prev->allocated) {

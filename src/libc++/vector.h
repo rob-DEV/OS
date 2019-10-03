@@ -25,18 +25,7 @@ namespace std {
 		void swap(unsigned int index1, unsigned int index2);
 
 		unsigned int size();
-		T operator[](unsigned int index_pointer);
-
-
-		/*
-		
-		clear clears the contents (public member function)
-		insert inserts elements (public member function)
-		emplace (C++11)constructs element in-place (public member function)
-		erase erases elements
-		
-		*/
-
+		const T& operator[](unsigned int index_pointer);
 
 	};
 
@@ -133,7 +122,7 @@ namespace std {
 
 
 	template<typename T>
-	T vector<T>::operator[](unsigned int i)
+	const T& vector<T>::operator[](unsigned int i)
 	{
 		if (i <= m_Size)
 			return m_Elements[i];

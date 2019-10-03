@@ -7,6 +7,10 @@
 
 #define MEMORY_CHUNK_MAGIC 0x1337
 
+#define MEMORY_DEBUG 0
+#define ZERO_DEALLOC_MEMORY 0
+
+
 namespace OS { namespace KERNEL { namespace MEMORY {
 
      

@@ -17,6 +17,8 @@ namespace  OS { namespace KERNEL { namespace GUI {
 
         m_ActiveWindow = m_Windows[1];
 
+
+
     }
 
     Desktop::~Desktop() {
@@ -29,14 +31,17 @@ namespace  OS { namespace KERNEL { namespace GUI {
 
         OS::KERNEL::Terminal::getInstance()->print(key);
         
-        if(key == '1')
+        if(key == '1') {
             m_ActiveWindow = m_Windows[0];
-        
+        }
         if(key == '2') 
             m_ActiveWindow = m_Windows[1];
 
         if(key == '3') 
             m_ActiveWindow = m_Windows[2];
+
+
+
 
 
 
@@ -59,12 +64,9 @@ namespace  OS { namespace KERNEL { namespace GUI {
 
         for (size_t i = 0; i < m_Windows.size(); i++)
         {
-            m_Windows[i]->draw();
+            m_RenderOrder[i]->draw();
         }
-
-        m_ActiveWindow->draw();
-        
-
+    
         m_VGA->swapBuffers();
 
     }

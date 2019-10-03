@@ -87,6 +87,7 @@ namespace OS { namespace KERNEL {
     void enterVGAStub() {
         SHELL::Shell::getInstance()->enterGraphicsMode();
     }
+
     void Kernel::kernel_main(multiboot_info_t* mbi, uint32_t magic) {
 
         kernel_init(mbi, magic);
@@ -99,54 +100,28 @@ namespace OS { namespace KERNEL {
 
         m_VGA = HW_COMM::VGA::getInstance();
 
-        int* largeIntArray = new int[3000];
-        int* anotherArray = new int[3000];
-        m_Terminal->printf("Address of array 0x%x\n", largeIntArray);
-        free(largeIntArray);
 
+        std::slow_deque<int> slow_test;
+        slow_test.push_back(1);
+        slow_test.push_back(2);
+        slow_test.push_back(3);
+        slow_test.push_back(4);
+        slow_test.push_back(5);
+        slow_test.push_back(6);
+        slow_test.push_back(7);
+        slow_test.push_back(8);
         
         
+        //for (size_t i = 0; i < slow_test.size(); i++)
+          //  m_Terminal->printf("slow_test[%d] = %d\n", i, slow_test[i]);
 
-        int* largeIntArray2 = new int[2999];
-        m_Terminal->printf("Address of new array 0x%x\n", largeIntArray2);
+        slow_test.erase(3,0);
 
-        std::vector<int*> ptrVector;
-
-        ptrVector.push_back(new int(23));
-        ptrVector.push_back(new int(231123));
-        ptrVector.push_back(new int(28793));
-        ptrVector.push_back(new int(22343));
-        ptrVector.push_back(new int(2343));
-        ptrVector.push_back(new int(234));
-        ptrVector.push_back(new int(23));
-        ptrVector.push_back(new int(21));
-        ptrVector.push_back(new int(22));
-        ptrVector.push_back(new int(23));
-        ptrVector.push_back(new int(24));
-        ptrVector.push_back(new int(25));
-        ptrVector.push_back(new int(26));
+        for (size_t i = 0; i < slow_test.size(); i++)
+            m_Terminal->printf("slow_test[%d] = %d\n", i, slow_test[i]);
         
-        for (size_t i = 0; i < ptrVector.size(); i++)
-        {
-            OS::KERNEL::Terminal::getInstance()->printf("ptrVector[%d] = %d\n", i, *ptrVector[i]);
-        }
-
-
-        //HW_COMM::Mouse* mouse = HW_COMM::Mouse::getInstance();
 
         
-        /*
-        m_VGA->fillRectangle(0,0, 320, 200, 64,0xFF,0xFF);
-        GUI::Window* bar = new GUI::Window("OS Kernel - VGA 320x200", 0,0,320,12, 24, NULL);
-        GUI::Window* windowTest = new GUI::Window("Test Window", 50,40,150,100, 35, NULL);
-
-
-        GUI::Window* windowTest1 = new GUI::Window("Second Window", 100, 130,150, 60,42, NULL);
-        windowTest->addWidget(new GUI::Textbox("Inital text in the\ntext box\n", 10, 40, 100,100));
-        windowTest->addWidget(new GUI::Textbox("Inital t box\n", 10, 60, 100,100));
-        windowTest1->addWidget(new GUI::Textbox("NIGGER!\n", 100,148, 10,60));
-        windowTest1->addWidget(new GUI::Textbox("NIGGER2!\n", 100,168, 10,60));
-        */
 
         while(1) {
 
@@ -155,6 +130,7 @@ namespace OS { namespace KERNEL {
 
             m_PIT->waitForMilliSeconds(1000/60);
         }
+
 
         for(;;);
     }

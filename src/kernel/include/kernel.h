@@ -16,6 +16,7 @@
 
 
 #include "../../libc++/vector.h"
+#include "../../libc++/slow_deque.h"
 #include "../../libc++/string.h"
 
 
