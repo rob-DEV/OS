@@ -104,11 +104,32 @@ namespace OS { namespace KERNEL {
         m_Terminal->printf("Address of array 0x%x\n", largeIntArray);
         free(largeIntArray);
 
-
+        
+        
 
         int* largeIntArray2 = new int[2999];
         m_Terminal->printf("Address of new array 0x%x\n", largeIntArray2);
 
+        std::vector<int*> ptrVector;
+
+        ptrVector.push_back(new int(23));
+        ptrVector.push_back(new int(231123));
+        ptrVector.push_back(new int(28793));
+        ptrVector.push_back(new int(22343));
+        ptrVector.push_back(new int(2343));
+        ptrVector.push_back(new int(234));
+        ptrVector.push_back(new int(23));
+        ptrVector.push_back(new int(21));
+        ptrVector.push_back(new int(22));
+        ptrVector.push_back(new int(23));
+        ptrVector.push_back(new int(24));
+        ptrVector.push_back(new int(25));
+        ptrVector.push_back(new int(26));
+        
+        for (size_t i = 0; i < ptrVector.size(); i++)
+        {
+            OS::KERNEL::Terminal::getInstance()->printf("ptrVector[%d] = %d\n", i, *ptrVector[i]);
+        }
 
 
         //HW_COMM::Mouse* mouse = HW_COMM::Mouse::getInstance();
