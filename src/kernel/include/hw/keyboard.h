@@ -5,7 +5,7 @@
 #include "../cpu/isr.h"
 #include "../cpu/irq.h"
 #include "../io/terminal.h"
-#include "../mem/memorymanagement.h"
+#include "../mm/memorymanagement.h"
 
 
 #include "keyboardeventhandler.h"

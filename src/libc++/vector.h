@@ -3,7 +3,7 @@
 #define LIB_CPP_VECTOR_H
 
 #include "../kernel/include/com/string.h"
-#include "../kernel/include/mem/memorymanagement.h"
+#include "../kernel/include/mm/memorymanagement.h"
 
 namespace std {
 
@@ -88,7 +88,7 @@ namespace std {
 
 			memcpy(m_Elements, copy, sizeof(T) * m_Size);
 
-			//delete[] m_Elements;
+			delete[] m_Elements;
 
 			m_VectorBufferSize += 5;
 			m_Elements = new T[m_VectorBufferSize];

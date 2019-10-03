@@ -3,7 +3,7 @@
 #define LIB_CPP_VECTOR_H
 
 #include "../kernel/include/com/string.h"
-#include "../kernel/include/mem/memorymanagement.h"
+#include "../kernel/include/mm/memorymanagement.h"
 
 #include "vector.h"
 

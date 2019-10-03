@@ -19,6 +19,8 @@ namespace OS { namespace KERNEL { namespace MEMORY {
         size_t size;
     } memory_chunk_t;
 
+    void printMemChunk(memory_chunk_t* memChunk);
+
     class MemoryManager {
     public:
         

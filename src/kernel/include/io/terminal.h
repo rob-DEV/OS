@@ -9,7 +9,7 @@
 #include "../com/string.h"
 #include "../hw/port.h"
 #include "../util/util.h"
-#include "../mem/memorymanagement.h"
+#include "../mm/memorymanagement.h"
 
 #define EOF -1
 

@@ -5,7 +5,7 @@
 #include "cpu/isr.h"
 #include "cpu/irq.h"
 #include "cpu/pit.h"
-#include "mem/memorymanagement.h"
+#include "mm/memorymanagement.h"
 #include "io/terminal.h"
 #include "shell/shell.h"
 #include "gui/window.h"

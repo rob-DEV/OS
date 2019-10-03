@@ -1,8 +1,20 @@
-#include "../include/mem/memorymanagement.h"
+#include "../include/mm/memorymanagement.h"
 
 
 
 namespace OS { namespace KERNEL { namespace MEMORY {
+
+
+    void printMemChunk(memory_chunk_t* memChunk) {
+    
+
+        OS::KERNEL::Terminal::getInstance()->printf("\nPrinting Memory Chunk at 0x%x\n", memChunk);
+        OS::KERNEL::Terminal::getInstance()->printf("MAGIC: 0x%x\n", memChunk->magic);
+        OS::KERNEL::Terminal::getInstance()->printf("Size: %d\n", memChunk->size);
+        OS::KERNEL::Terminal::getInstance()->printf("Allocated: %d\n", memChunk->allocated);
+        OS::KERNEL::Terminal::getInstance()->printf("Previous: 0x%x\n", memChunk->prev);
+        OS::KERNEL::Terminal::getInstance()->printf("Next: 0x%x\n", memChunk->next);
+    }
 
     MemoryManager* MemoryManager::Instance = NULL;
 
@@ -78,12 +90,39 @@ namespace OS { namespace KERNEL { namespace MEMORY {
         
 
         //memory block not valid
-        if(ptr_mem_chunk->magic = MEMORY_CHUNK_MAGIC)
+        if(ptr_mem_chunk->magic != MEMORY_CHUNK_MAGIC)
             return;
 
         //free memory
+        OS::KERNEL::Terminal::getInstance()->printf("Freeing memory at 0x%x", ptr);
 
+        printMemChunk(ptr_mem_chunk);
+        printMemChunk(ptr_mem_chunk->prev);
+        printMemChunk(ptr_mem_chunk->next);
 
+        //allocated set to false then malloc can reallocate to this block
+        ptr_mem_chunk->allocated = false;
+
+        //check for free blocks in neighbouring elements and merge together
+        if(ptr_mem_chunk->prev != 0 && !ptr_mem_chunk->prev->allocated) {
+            OS::KERNEL::Terminal::getInstance()->printf("HERE 1\n");
+            ptr_mem_chunk->prev->next = ptr_mem_chunk->next;
+            ptr_mem_chunk->prev->size += ptr_mem_chunk->size + sizeof(MemoryChunk);
+            if(ptr_mem_chunk->next != 0)
+                ptr_mem_chunk->next->prev = ptr_mem_chunk->prev;
+            
+            ptr_mem_chunk = ptr_mem_chunk->prev;
+
+        }
+
+        if(ptr_mem_chunk->next != 0 && !ptr_mem_chunk->next->allocated)
+        {
+            OS::KERNEL::Terminal::getInstance()->printf("HERE 2\n");
+            ptr_mem_chunk->size += ptr_mem_chunk->next->size + sizeof(MemoryChunk);
+            ptr_mem_chunk->next = ptr_mem_chunk->next->next;
+            if(ptr_mem_chunk->next != 0)
+                ptr_mem_chunk->next->prev = ptr_mem_chunk;
+        }
 
     }
     

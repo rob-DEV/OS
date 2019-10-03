@@ -99,6 +99,18 @@ namespace OS { namespace KERNEL {
 
         m_VGA = HW_COMM::VGA::getInstance();
 
+        int* largeIntArray = new int[3000];
+        int* anotherArray = new int[3000];
+        m_Terminal->printf("Address of array 0x%x\n", largeIntArray);
+        free(largeIntArray);
+
+
+
+        int* largeIntArray2 = new int[2999];
+        m_Terminal->printf("Address of new array 0x%x\n", largeIntArray2);
+
+
+
         //HW_COMM::Mouse* mouse = HW_COMM::Mouse::getInstance();
 
         
