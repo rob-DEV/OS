@@ -55,7 +55,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
                 0,	/* All other keys are undefined */
             };	
         
-        KeyboardEventSubscriber* m_KeyboardEVSubscribers[10];
+        uint32_t m_KeyboardEVSubscribers[10];
         uint8_t m_KeyboardEVSubscribersCount = 0;
 
         static KeyboardEventHandler* m_Instance;

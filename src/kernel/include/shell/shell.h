@@ -30,7 +30,7 @@ namespace OS { namespace KERNEL { namespace SHELL {
         Shell();
         ~Shell();
 
-        void onKeyDown(char c);
+        void onKeyDown(unsigned char c);
         void addCommand(const char* cmdText, void(*callback)());
         void checkRegisteredCommands();
 

@@ -35,7 +35,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
         }
         else
         {
-            m_KeyboardEventHandler->onKeyDown(scancode);
+            m_KeyboardEventHandler->onKeyDown(KB_US[scancode]);
         }
     }
 

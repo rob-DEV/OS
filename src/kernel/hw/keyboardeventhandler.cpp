@@ -8,7 +8,8 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
     KeyboardEventHandler* KeyboardEventHandler::m_Instance = NULL;
     
     KeyboardEventHandler::KeyboardEventHandler() { 
-         m_KeyboardEVSubscribersCount = 0;
+        m_KeyboardEVSubscribers[10];
+        m_KeyboardEVSubscribersCount = 0;
     }
 
     KeyboardEventHandler::~KeyboardEventHandler() {
@@ -24,7 +25,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
 
     void KeyboardEventHandler::subscribe(KeyboardEventSubscriber* subscriber) {
 
-        m_KeyboardEVSubscribers[m_KeyboardEVSubscribersCount] = subscriber;
+        m_KeyboardEVSubscribers[m_KeyboardEVSubscribersCount] = (uint32_t)subscriber;
         ++m_KeyboardEVSubscribersCount;
     }
 
@@ -35,7 +36,10 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
     void KeyboardEventHandler::onKeyDown(unsigned char key) {
         
         for (size_t i = 0; i < m_KeyboardEVSubscribersCount; i++)
-            m_KeyboardEVSubscribers[i]->onKeyDown(key);
+        {
+            KeyboardEventSubscriber* kb_sub_ptr = (KeyboardEventSubscriber*)m_KeyboardEVSubscribers[i];
+            kb_sub_ptr->onKeyDown(key);
+        }
         
     }
 

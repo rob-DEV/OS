@@ -31,14 +31,9 @@ namespace OS { namespace KERNEL { namespace SHELL {
 
     
 
-    void Shell::onKeyDown(char c) {
+    void Shell::onKeyDown(unsigned char c) {
         //only hold line for now
         //pass char to video memory if not in graphics mode
-        
-        if(m_GraphicsModeEntered) {
-            m_Desktop->OnKeyDown(c);
-            return;
-        }       
 
         if(c != '\n') {
             Terminal::getInstance()->print(c);

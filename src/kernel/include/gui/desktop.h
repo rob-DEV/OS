@@ -12,11 +12,11 @@
 
 namespace OS { namespace KERNEL { namespace GUI { 
 
-    class Desktop : public Widget {
+    class Desktop : public Widget, public HW_COMM::KeyboardEventSubscriber {
     private:
 
         HW_COMM::VGA* m_VGA;
-
+        
 
         std::vector<Window*> m_Windows;
         std::slow_deque<Window*> m_RenderOrder;
@@ -29,7 +29,7 @@ namespace OS { namespace KERNEL { namespace GUI {
         Desktop();
         ~Desktop();
 
-        void OnKeyDown(char key);
+        void onKeyDown(unsigned char);
 
         void draw();
 

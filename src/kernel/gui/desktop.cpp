@@ -10,6 +10,9 @@ namespace  OS { namespace KERNEL { namespace GUI {
         m_VGA = HW_COMM::VGA::getInstance();
         m_VGA->setMode(m_W, m_H, 8);
 
+        //register with keyboard
+        HW_COMM::KeyboardEventHandler::getInstance()->subscribe(this);
+
         m_Windows.push_back(new Window("Test window 1", 10, 20, 200,125, 56, this));
         m_Windows.push_back(new Window("Test window 2", 80, 100, 200,125, 34, this));
         m_Windows.push_back(new Window("Test window 3", 180, 70, 200,125, 3, this));
@@ -40,7 +43,7 @@ namespace  OS { namespace KERNEL { namespace GUI {
     }
 
 
-    void Desktop::OnKeyDown(char key) {
+    void Desktop::onKeyDown(unsigned char key) {
 
 
         OS::KERNEL::Terminal::getInstance()->print(key);
