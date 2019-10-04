@@ -11,13 +11,13 @@ namespace  OS { namespace KERNEL { namespace GUI {
     class Window : public Widget {
     
     private:
-        const char* m_Name;
         std::vector<Widget*> m_Widgets;
     public:
         Window();
         Window(const char* name, uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t color, Widget* parent);
         ~Window();
 
+        const char* m_Name;
         void addWidget(Widget* component);
         inline void setPosition(const uint32_t x, const uint32_t y) { 
 

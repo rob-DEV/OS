@@ -1,4 +1,5 @@
 #include "../include/gui/desktop.h"
+#include "../include/cpu/pit.h"
 
 namespace  OS { namespace KERNEL { namespace GUI {
  
@@ -8,7 +9,7 @@ namespace  OS { namespace KERNEL { namespace GUI {
     Desktop::Desktop() :Widget(0,0,320,200, 43, NULL){
        
         m_VGA = HW_COMM::VGA::getInstance();
-        m_VGA->setMode(m_W, m_H, 8);
+        //m_VGA->setMode(m_W, m_H, 8);
 
         //register with keyboard
         HW_COMM::KeyboardEventHandler::getInstance()->subscribe(this);
@@ -18,21 +19,12 @@ namespace  OS { namespace KERNEL { namespace GUI {
         m_Windows.push_back(new Window("Test window 3", 180, 70, 200,125, 3, this));
 
 
-        for (size_t i = 0; i < m_Windows.size(); i++)
-            OS::KERNEL::Terminal::getInstance()->printf("\nInital Window[%d] = 0x%x!", i, m_Windows[i]);
-        
-        OS::KERNEL::Terminal::getInstance()->printf("\n");
-
-        m_ActiveWindow = m_Windows[1];
+        m_ActiveWindow = m_Windows[0];
+        m_LastActiveWindow = NULL;
 
         for (size_t i = 0; i < m_Windows.size(); i++)
-            if(m_Windows[i] != m_ActiveWindow)
                 m_RenderOrder.push_back(m_Windows[i]);
 
-        m_RenderOrder.push_front(m_ActiveWindow);
-
-        for (size_t i = 0; i < m_RenderOrder.size(); i++)
-            OS::KERNEL::Terminal::getInstance()->printf("\nInital Window[%d] = 0x%x!", i, m_RenderOrder[i]);
         
 
 
@@ -45,38 +37,15 @@ namespace  OS { namespace KERNEL { namespace GUI {
 
     void Desktop::onKeyDown(unsigned char key) {
 
-
-        OS::KERNEL::Terminal::getInstance()->print(key);
-        
         if(key == '1' || key == '2' || key == '3') {
 
-            if(key == '1') {
-            m_ActiveWindow = m_Windows[0];
-            }
+            if(key == '1')
+                m_ActiveWindow = m_Windows[0];
             if(key == '2') 
                 m_ActiveWindow = m_Windows[1];
 
             if(key == '3') 
                 m_ActiveWindow = m_Windows[2];
-
-
-            
-            for (size_t i = 0; i < m_RenderOrder.size(); i++)
-            {
-                if(m_RenderOrder[i] == m_ActiveWindow && i != 0) {
-                    
-                    m_RenderOrder.erase(i, 0);
-
-                    m_RenderOrder.push_front(m_ActiveWindow);
-
-                    for (size_t i = 0; i < m_RenderOrder.size(); i++)
-                        OS::KERNEL::Terminal::getInstance()->printf("m_RenderOrder[%d] = 0x%x!\n", i, m_RenderOrder[i]);
-
-                    OS::KERNEL::Terminal::getInstance()->printf("Returned\n");
-                    return;
-                } 
-
-            }
 
         }
 
@@ -91,6 +60,7 @@ namespace  OS { namespace KERNEL { namespace GUI {
         m_VGA->fillRectangle(m_X,m_Y, m_W, m_H, 43);
         m_VGA->fillRectangle(0,0, m_W, 10, 27);
         
+        /*
         const char* desktopHeader = "OS Desktop Test 320x200";
         uint8_t a = 0;
         for (size_t i = 0; i < strlen(desktopHeader); i++)
@@ -99,11 +69,41 @@ namespace  OS { namespace KERNEL { namespace GUI {
             a++;
         }
         
+        */
+        drawing = true;
+        
+        
+
+        if(m_LastActiveWindow != m_ActiveWindow){
+            //lock active window to frame
+            Window* currentActiveWindow = m_ActiveWindow;
+            uint32_t windowToErase = 0;
+            for (size_t i = 0; i < m_RenderOrder.size(); i++)
+            {
+                if(currentActiveWindow == m_RenderOrder[i]) {
+                    windowToErase = i;
+                    m_LastActiveWindow =currentActiveWindow;
+                    break;
+                }
+            }
+
+            m_RenderOrder.erase(windowToErase, 1);
+            m_RenderOrder.push_front(currentActiveWindow);
+            
+        }
 
         for (size_t i = 0; i < m_RenderOrder.size(); i++)
         {
+            OS::KERNEL::Terminal::getInstance()->printf("DRAWING WINDOW %s\n", m_RenderOrder[i]->m_Name);
+            OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(800);
             m_RenderOrder[i]->draw();
+
         }
+        
+
+        //OS::KERNEL::Terminal::getInstance()->printf("sIZE %d Top Window = %s\n", m_RenderOrder.size(), m_RenderOrder[0]->m_Name);
+
+        drawing = false;
     
         m_VGA->swapBuffers();
 

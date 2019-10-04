@@ -100,27 +100,6 @@ namespace OS { namespace KERNEL {
 
         m_VGA = HW_COMM::VGA::getInstance();
 
-        std::slow_deque<int> aa;
-
-        aa.push_back(1);
-        aa.push_back(2);
-        aa.push_back(3);
-
-        for (size_t i = 0; i < aa.size(); i++)
-        {
-            if(aa[i] == 3) {
-                aa.erase(i, 0);
-                aa.push_front(3);
-            }
-        }
-
-        for (size_t i = 0; i < aa.size(); i++)
-        {
-            m_Terminal->printf("aa[%d] = %d\n", i, aa[i]);
-        }
-        
-        m_Terminal->printf("aa size %d\n", aa.size());
-
         while(1) {
 
             if(SHELL::Shell::getInstance()->m_Desktop) 

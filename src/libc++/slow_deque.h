@@ -89,42 +89,28 @@ namespace std {
 
 		//actually delete the elements
 
-		T* lhsCopy = new T[firstIndex];
+		uint32_t sizeLHS = firstIndex;
+		T* lhsCopy = new T[sizeLHS];
 
-		//copy elements from lhs to index to erased - 1
-		memcpy(m_Elements, lhsCopy, firstIndex * sizeof(T));
+		memcpy(m_Elements, lhsCopy, sizeLHS * sizeof(T));
 
-		//for (size_t i = 0; i < firstIndex; i++)
-            //OS::KERNEL::Terminal::getInstance()->printf("lhs 0x%x slow_test[%d] = %d\n", lhsCopy, i, lhsCopy[i]);
+		uint32_t sizeRHS = size() - firstIndex + nToRemove;
 
-		//rhs copy
-		uint32_t rhsCount = (m_Size) - firstIndex - nToRemove;
-		T* rhsCopy = new T[rhsCount];
+		T* rhsCopy = new T[sizeRHS];
 
-		//OS::KERNEL::Terminal::getInstance()->printf("rhs COUNT %d\n", rhsCount);
-		//OS::KERNEL::Terminal::getInstance()->printf("rhs COUNT %d\n", rhsCount);
-		//OS::KERNEL::Terminal::getInstance()->printf("n %d\n", rhsCount);
-		//OS::KERNEL::Terminal::getInstance()->printf("rhs COUNT %d\n", rhsCount);
-
-		memcpy(&m_Elements[firstIndex + nToRemove], rhsCopy, rhsCount * sizeof(T));
-
-
-		//for (size_t i = 0; i < rhsCount; i++)
-            //OS::KERNEL::Terminal::getInstance()->printf("rhs slow_test[%d] = %d\n", i, rhsCopy[i]);
-
+		memcpy(&m_Elements[firstIndex + nToRemove], rhsCopy, sizeRHS * sizeof(T));
 
 		delete[] m_Elements;
 
-		m_Elements = new T[firstIndex + rhsCount];
+		m_Elements = new T[sizeLHS + sizeRHS];
 
-		memcpy(lhsCopy, m_Elements, firstIndex + rhsCount * sizeof(T));
+		memcpy(lhsCopy, m_Elements, sizeof(T) * sizeLHS);
+		memcpy(rhsCopy, &m_Elements[sizeLHS], sizeof(T) * sizeRHS);
 
+		m_Size -= nToRemove;
 
-
-		memcpy(rhsCopy, &m_Elements[firstIndex], firstIndex + rhsCount * sizeof(T));
-
-
-		m_Size = firstIndex + rhsCount;
+		
+		OS::KERNEL::Terminal::getInstance()->printf("SIZE AFTER ERASE = %d\n", m_Size);
 
 	}
 
