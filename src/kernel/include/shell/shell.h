@@ -13,7 +13,7 @@ namespace OS { namespace KERNEL { namespace SHELL {
 
 
     #define SHELL_PRINT_HEADER OS::KERNEL::Terminal::getInstance()->printf("kernel>")
-    class Shell {
+    class Shell : public HW_COMM::KeyboardEventSubscriber {
     
     private:
         static Shell* s_Instance;

@@ -1,8 +1,16 @@
 #ifndef OS_KERNEL_HW_COMM_KEYBOARDEVENTHANDLER_H
 #define OS_KERNEL_HW_COMM_KEYBOARDEVENTHANDLER_H
 
+#include "../../../libc/stdint.h"
+
 
 namespace OS { namespace KERNEL { namespace HW_COMM {
+
+    class KeyboardEventSubscriber {
+    public:
+        inline virtual void onKeyDown(unsigned char key) { }
+
+    };
 
      
     class KeyboardEventHandler
@@ -31,7 +39,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
                 0,	/* Home key */
                 0,	/* Up Arrow */
                 0,	/* Page Up */
-            '-',
+              '-',
                 0,	/* Left Arrow */
                 0,
                 0,	/* Right Arrow */
@@ -46,6 +54,10 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
                 0,	/* F12 Key */
                 0,	/* All other keys are undefined */
             };	
+        
+        KeyboardEventSubscriber* m_KeyboardEVSubscribers[10];
+        uint8_t m_KeyboardEVSubscribersCount = 0;
+
         static KeyboardEventHandler* m_Instance;
     public:
         KeyboardEventHandler();
@@ -53,8 +65,9 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
 
         static KeyboardEventHandler* getInstance();
 
-        void OnKeyUp(char key);
-        void OnKeyDown(char key);
+        void subscribe(KeyboardEventSubscriber* subscriber);
+        void onKeyUp(char key);
+        void onKeyDown(unsigned char key);
 
 
     };

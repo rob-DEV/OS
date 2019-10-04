@@ -100,28 +100,26 @@ namespace OS { namespace KERNEL {
 
         m_VGA = HW_COMM::VGA::getInstance();
 
+        std::slow_deque<int> aa;
 
-        std::slow_deque<int> slow_test;
-        slow_test.push_back(1);
-        slow_test.push_back(2);
-        slow_test.push_back(3);
-        slow_test.push_back(4);
-        slow_test.push_back(5);
-        slow_test.push_back(6);
-        slow_test.push_back(7);
-        slow_test.push_back(8);
-        
-        
-        //for (size_t i = 0; i < slow_test.size(); i++)
-          //  m_Terminal->printf("slow_test[%d] = %d\n", i, slow_test[i]);
+        aa.push_back(1);
+        aa.push_back(2);
+        aa.push_back(3);
 
-        slow_test.erase(3,0);
+        for (size_t i = 0; i < aa.size(); i++)
+        {
+            if(aa[i] == 3) {
+                aa.erase(i, 0);
+                aa.push_front(3);
+            }
+        }
 
-        for (size_t i = 0; i < slow_test.size(); i++)
-            m_Terminal->printf("slow_test[%d] = %d\n", i, slow_test[i]);
+        for (size_t i = 0; i < aa.size(); i++)
+        {
+            m_Terminal->printf("aa[%d] = %d\n", i, aa[i]);
+        }
         
-
-        
+        m_Terminal->printf("aa size %d\n", aa.size());
 
         while(1) {
 

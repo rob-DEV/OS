@@ -15,8 +15,22 @@ namespace  OS { namespace KERNEL { namespace GUI {
         m_Windows.push_back(new Window("Test window 3", 180, 70, 200,125, 3, this));
 
 
+        for (size_t i = 0; i < m_Windows.size(); i++)
+            OS::KERNEL::Terminal::getInstance()->printf("\nInital Window[%d] = 0x%x!", i, m_Windows[i]);
+        
+        OS::KERNEL::Terminal::getInstance()->printf("\n");
+
         m_ActiveWindow = m_Windows[1];
 
+        for (size_t i = 0; i < m_Windows.size(); i++)
+            if(m_Windows[i] != m_ActiveWindow)
+                m_RenderOrder.push_back(m_Windows[i]);
+
+        m_RenderOrder.push_front(m_ActiveWindow);
+
+        for (size_t i = 0; i < m_RenderOrder.size(); i++)
+            OS::KERNEL::Terminal::getInstance()->printf("\nInital Window[%d] = 0x%x!", i, m_RenderOrder[i]);
+        
 
 
     }
@@ -31,16 +45,37 @@ namespace  OS { namespace KERNEL { namespace GUI {
 
         OS::KERNEL::Terminal::getInstance()->print(key);
         
-        if(key == '1') {
+        if(key == '1' || key == '2' || key == '3') {
+
+            if(key == '1') {
             m_ActiveWindow = m_Windows[0];
+            }
+            if(key == '2') 
+                m_ActiveWindow = m_Windows[1];
+
+            if(key == '3') 
+                m_ActiveWindow = m_Windows[2];
+
+
+            
+            for (size_t i = 0; i < m_RenderOrder.size(); i++)
+            {
+                if(m_RenderOrder[i] == m_ActiveWindow && i != 0) {
+                    
+                    m_RenderOrder.erase(i, 0);
+
+                    m_RenderOrder.push_front(m_ActiveWindow);
+
+                    for (size_t i = 0; i < m_RenderOrder.size(); i++)
+                        OS::KERNEL::Terminal::getInstance()->printf("m_RenderOrder[%d] = 0x%x!\n", i, m_RenderOrder[i]);
+
+                    OS::KERNEL::Terminal::getInstance()->printf("Returned\n");
+                    return;
+                } 
+
+            }
+
         }
-        if(key == '2') 
-            m_ActiveWindow = m_Windows[1];
-
-        if(key == '3') 
-            m_ActiveWindow = m_Windows[2];
-
-
 
 
 
@@ -62,7 +97,7 @@ namespace  OS { namespace KERNEL { namespace GUI {
         }
         
 
-        for (size_t i = 0; i < m_Windows.size(); i++)
+        for (size_t i = 0; i < m_RenderOrder.size(); i++)
         {
             m_RenderOrder[i]->draw();
         }

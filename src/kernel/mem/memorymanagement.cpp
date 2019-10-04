@@ -98,8 +98,9 @@ namespace OS { namespace KERNEL { namespace MEMORY {
             return;
 
         //free memory
+        #if MEMORY_DEBUG
         OS::KERNEL::Terminal::getInstance()->printf("Freeing memory at 0x%x\n", ptr);
-
+        #endif
         printMemChunk(ptr_mem_chunk);
         printMemChunk(ptr_mem_chunk->prev);
         printMemChunk(ptr_mem_chunk->next);
@@ -122,7 +123,6 @@ namespace OS { namespace KERNEL { namespace MEMORY {
 
         //check for free blocks in neighbouring elements and merge together
         if(ptr_mem_chunk->prev != 0 && !ptr_mem_chunk->prev->allocated) {
-            OS::KERNEL::Terminal::getInstance()->printf("HERE 1\n");
             ptr_mem_chunk->prev->next = ptr_mem_chunk->next;
             ptr_mem_chunk->prev->size += ptr_mem_chunk->size + sizeof(MemoryChunk);
             if(ptr_mem_chunk->next != 0)
@@ -132,9 +132,7 @@ namespace OS { namespace KERNEL { namespace MEMORY {
 
         }
 
-        if(ptr_mem_chunk->next != 0 && !ptr_mem_chunk->next->allocated)
-        {
-            OS::KERNEL::Terminal::getInstance()->printf("HERE 2\n");
+        if(ptr_mem_chunk->next != 0 && !ptr_mem_chunk->next->allocated) {
             ptr_mem_chunk->size += ptr_mem_chunk->next->size + sizeof(MemoryChunk);
             ptr_mem_chunk->next = ptr_mem_chunk->next->next;
             if(ptr_mem_chunk->next != 0)

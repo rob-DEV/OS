@@ -11,6 +11,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
     Keyboard::Keyboard() {
         m_KeyboardEventHandler = KeyboardEventHandler::getInstance();
     }
+    
     Keyboard::~Keyboard() {
         delete m_KeyboardEventHandler;
     }
@@ -34,7 +35,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
         }
         else
         {
-            m_KeyboardEventHandler->OnKeyDown(scancode);
+            m_KeyboardEventHandler->onKeyDown(scancode);
         }
     }
 

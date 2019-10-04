@@ -10,6 +10,10 @@ namespace OS { namespace KERNEL { namespace SHELL {
         nLines = 1;
 
         m_Desktop = NULL;
+
+        //subscribe to keyboard handler
+        HW_COMM::KeyboardEventHandler::getInstance()->subscribe(this);
+
         OS::KERNEL::Terminal::getInstance()->printf("Shell Initialized!\n");
         SHELL_PRINT_HEADER;
     }
@@ -33,6 +37,7 @@ namespace OS { namespace KERNEL { namespace SHELL {
         
         if(m_GraphicsModeEntered) {
             m_Desktop->OnKeyDown(c);
+            return;
         }       
 
         if(c != '\n') {
