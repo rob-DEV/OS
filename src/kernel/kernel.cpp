@@ -1,5 +1,53 @@
 #include "include/kernel.h"
 
+
+static void play_sound(uint32_t nFrequence) {
+ 	uint32_t Div;
+ 	uint8_t tmp;
+ 
+        //Set the PIT to the desired frequency
+ 	Div = 1193180 / nFrequence;
+ 	OS::KERNEL::HW_COMM::Port::outportb(0x43, 0xb6);
+ 	OS::KERNEL::HW_COMM::Port::outportb(0x42, (uint8_t) (Div) );
+ 	OS::KERNEL::HW_COMM::Port::outportb(0x42, (uint8_t) (Div >> 8));
+ 
+        //And play the sound using the PC speaker
+ 	tmp = OS::KERNEL::HW_COMM::Port::inportb(0x61);
+  	if (tmp != (tmp | 3)) {
+ 		OS::KERNEL::HW_COMM::Port::outportb(0x61, tmp | 3);
+ 	}
+ }
+ 
+ //make it shutup
+ static void nosound() {
+ 	uint8_t tmp = OS::KERNEL::HW_COMM::Port::inportb(0x61) & 0xFC;
+ 
+ 	OS::KERNEL::HW_COMM::Port::outportb(0x61, tmp);
+ }
+ 
+ //Make a beep
+ void beep() {
+ 	play_sound(349);
+     OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(300);
+     nosound();
+    play_sound(466);
+    OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(300);
+     nosound();
+    play_sound(587);
+    OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(300);
+     nosound();
+    play_sound(783);
+    OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(300);
+     nosound();
+    play_sound(698);
+ 	OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(300);
+     nosound();
+    
+ 	nosound();
+    //set_PIT_2(old_frequency);
+ }
+
+
 namespace OS { namespace KERNEL {
 
     void alphaCmd() {
@@ -97,6 +145,7 @@ namespace OS { namespace KERNEL {
 
         SHELL::Shell::getInstance()->addCommand("vga", enterVGAStub);
         SHELL::Shell::getInstance()->addCommand("reboot", reboot);
+        SHELL::Shell::getInstance()->addCommand("beep", beep);
 
         m_VGA = HW_COMM::VGA::getInstance();
 
@@ -120,6 +169,10 @@ namespace OS { namespace KERNEL {
             m_Terminal->printf("ints[%d] = %d\n", i, ints[i]);
         }
         
+
+        while(true) {
+            beep();
+        }
 
         while(1) {
 
