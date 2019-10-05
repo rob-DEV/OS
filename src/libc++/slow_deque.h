@@ -169,7 +169,7 @@ namespace std {
 		//insert at 0th element
 
 		//slow as it is always reallocing memory through underlying malloc
-		if(m_Size == 0) {
+		if(m_Size == 0 && m_VectorBufferSize > 0) {
 			m_Elements[0] = t;
 			return;
 		}

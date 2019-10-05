@@ -2,6 +2,7 @@
 #define OS_KERNEL_GUI_DESKTOP_H
 
 #include "window.h"
+#include "textbox.h"
 #include "../hw/vga.h"
 #include "../hw/keyboard.h"
 
@@ -18,12 +19,11 @@ namespace OS { namespace KERNEL { namespace GUI {
         HW_COMM::VGA* m_VGA;
         
 
-        std::vector<Window*> m_Windows;
-        std::slow_deque<Window*> m_RenderOrder;
+        std::slow_deque<Window*> m_Windows;
         
         Window* m_ActiveWindow;
         Window* m_LastActiveWindow;
-        
+    
         bool drawing;
     public:
 
