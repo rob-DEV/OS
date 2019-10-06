@@ -6,7 +6,7 @@ void timer_handler(regs* registers){
 
 namespace OS { namespace KERNEL { namespace CPU {
 
-    PIT* PIT::m_Instance = NULL;
+    PIT* PIT::s_Instance = NULL;
 
     PIT::PIT() {
 
@@ -17,10 +17,10 @@ namespace OS { namespace KERNEL { namespace CPU {
     }
     
     PIT* PIT::getInstance() {
-        if(m_Instance == NULL)
-            m_Instance = new PIT();
+        if(s_Instance == NULL)
+            s_Instance = new PIT();
 
-        return m_Instance;
+        return s_Instance;
     }
 
     void PIT::handler(regs* registers) {

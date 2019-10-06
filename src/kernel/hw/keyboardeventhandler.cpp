@@ -5,7 +5,7 @@
 
 namespace OS { namespace KERNEL { namespace HW_COMM {
 
-    KeyboardEventHandler* KeyboardEventHandler::m_Instance = NULL;
+    KeyboardEventHandler* KeyboardEventHandler::s_Instance = NULL;
     
     KeyboardEventHandler::KeyboardEventHandler() { 
         m_KeyboardEVSubscribers[10];
@@ -17,10 +17,10 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
     }
 
     KeyboardEventHandler* KeyboardEventHandler::getInstance() {
-        if(m_Instance == NULL)
-            m_Instance = new KeyboardEventHandler();
+        if(s_Instance == NULL)
+            s_Instance = new KeyboardEventHandler();
 
-        return m_Instance;
+        return s_Instance;
     }
 
     void KeyboardEventHandler::subscribe(KeyboardEventSubscriber* subscriber) {

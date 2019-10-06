@@ -24,7 +24,7 @@ namespace OS { namespace KERNEL { namespace CPU {
 
     class GDT {
     private:
-        static GDT* m_Instance;
+        static GDT* s_Instance;
         void setGDTEntry(uint32_t num, long base, long limit, unsigned char access, unsigned char gran);
 
     public:

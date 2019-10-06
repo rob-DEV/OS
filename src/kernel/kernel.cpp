@@ -27,23 +27,23 @@ static void play_sound(uint32_t nFrequence) {
  
  //Make a beep
  void beep() {
- 	play_sound(349);
-     OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(300);
-     nosound();
+    uint32_t waitTime = 1000;
+    play_sound(349);
+    OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(waitTime);
+    nosound();
     play_sound(466);
-    OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(300);
-     nosound();
+    OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(waitTime);
+    nosound();
     play_sound(587);
-    OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(300);
-     nosound();
+    OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(waitTime);
+    nosound();
     play_sound(783);
-    OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(300);
-     nosound();
+    OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(waitTime);
+    nosound();
     play_sound(698);
- 	OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(300);
-     nosound();
-    
- 	nosound();
+    OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(waitTime);
+    nosound();
+
     //set_PIT_2(old_frequency);
  }
 
@@ -148,31 +148,7 @@ namespace OS { namespace KERNEL {
         SHELL::Shell::getInstance()->addCommand("beep", beep);
 
         m_VGA = HW_COMM::VGA::getInstance();
-
-
-        std::slow_deque<int> ints;
-
-        ints.push_back(1);
-        ints.push_back(2);
-        ints.push_back(3);
-        ints.push_back(4);
-
-        ints.clear();
-
-        ints.push_back(34);
-        ints.push_back(37);
-        ints.push_back(38);
-        ints.push_front(100);
-
-        for (size_t i = 0; i < ints.size(); i++)
-        {
-            m_Terminal->printf("ints[%d] = %d\n", i, ints[i]);
-        }
         
-
-        while(true) {
-            beep();
-        }
 
         while(1) {
 

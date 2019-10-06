@@ -12,7 +12,7 @@ namespace OS { namespace KERNEL { namespace CPU {
 
     class IRQ {
     private:
-        static IRQ* m_Instance;
+        static IRQ* s_Instance;
         
         void remap();
 

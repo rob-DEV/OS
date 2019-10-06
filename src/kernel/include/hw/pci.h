@@ -7,16 +7,16 @@
 
 namespace OS { namespace KERNEL { namespace HW_COMM {
 
-    class PcSpeaker {
+    class PCI {
     
     private:
-        static PcSpeaker* s_Instance;
+        static PCI* s_Instance;
 
     public:
-        PcSpeaker();
-        ~PcSpeaker();
+        PCI();
+        ~PCI();
 
-         static PcSpeaker* getInstance();
+         static PCI* getInstance();
 
     };
 

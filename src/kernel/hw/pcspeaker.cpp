@@ -2,7 +2,7 @@
 
 namespace OS { namespace KERNEL { namespace HW_COMM {
 
-    PcSpeaker* PcSpeaker::m_Instance = NULL;
+    PcSpeaker* PcSpeaker::s_Instance = NULL;
 
     PcSpeaker::PcSpeaker() {
 
@@ -14,10 +14,10 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
 
     PcSpeaker* PcSpeaker::getInstance() {
         
-        if(m_Instance == NULL) 
-            m_Instance = new PcSpeaker();
+        if(s_Instance == NULL) 
+            s_Instance = new PcSpeaker();
 
-        return m_Instance;
+        return s_Instance;
 
     }
 

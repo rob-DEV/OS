@@ -16,16 +16,27 @@ namespace  OS { namespace KERNEL { namespace GUI {
     }
 
     void Window::addWidget(Widget* component) {
+        component->m_X += m_X;
+        component->m_Y += m_Y + 8;
+
         m_Widgets.push_back(component);
     }
 
     void Window::draw() {
 
-        HW_COMM::VGA::getInstance()->fillRectangle(m_X, m_Y, m_W, m_H, m_Color,23,45);
+        //draw window header above window
+        uint8_t windowHeaderHeight = 10;
+
+        HW_COMM::VGA::getInstance()->fillRectangle(m_X, m_Y - windowHeaderHeight, m_W, windowHeaderHeight, 0,23,45);
 
         for (size_t i = 0; i < strlen(m_Name); i++)
-            HW_COMM::VGA::getInstance()->drawChar8(m_X + ( 8 * i),m_Y + 8, m_Name[i], 63);
+            HW_COMM::VGA::getInstance()->drawChar8(m_X + ( 8 * i),m_Y - 2, m_Name[i], 63);
 
+        //draw window
+
+        HW_COMM::VGA::getInstance()->fillRectangle(m_X, m_Y, m_W, m_H, m_Color,23,45);
+
+        
         for (size_t i = 0; i < m_Widgets.size(); i++)
             m_Widgets[i]->draw();
         

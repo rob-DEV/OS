@@ -2,7 +2,7 @@
 
 namespace OS { namespace KERNEL {
 
-    Terminal* Terminal::m_Instance = NULL;
+    Terminal* Terminal::s_Instance = NULL;
 
     Terminal::Terminal(){
         init();
@@ -13,10 +13,10 @@ namespace OS { namespace KERNEL {
     }
 
     Terminal* Terminal::getInstance() {
-        if(m_Instance == NULL) 
-            m_Instance = new Terminal();
+        if(s_Instance == NULL) 
+            s_Instance = new Terminal();
 
-        return m_Instance;
+        return s_Instance;
     }
 
     void Terminal::setColor(enum vga_color fg,  enum vga_color bg) {

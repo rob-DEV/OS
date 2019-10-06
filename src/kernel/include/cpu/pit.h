@@ -1,5 +1,5 @@
-#ifndef OS__KERNEL_CPU_PIC_H
-#define OS__KERNEL_CPU_PIC_H
+#ifndef OS__KERNEL_CPU_PIT_H
+#define OS__KERNEL_CPU_PIT_H
 
 #include "../com/type.h"
 #include "../hw/port.h"
@@ -13,7 +13,7 @@ namespace OS { namespace KERNEL { namespace CPU {
 
     class PIT {
     private:
-        static PIT* m_Instance;
+        static PIT* s_Instance;
         uint32_t m_Ticks = 0;
 
     public:
@@ -25,6 +25,7 @@ namespace OS { namespace KERNEL { namespace CPU {
         void handler(regs* registers);
         void install();
 
+        uint32_t getTicks() { return m_Ticks; };
         void waitForMilliSeconds(uint32_t milliseconds);
        
     };

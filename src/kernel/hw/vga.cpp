@@ -2,7 +2,7 @@
 
 namespace OS { namespace KERNEL { namespace HW_COMM {
 
-    VGA* VGA::m_Instance = NULL;
+    VGA* VGA::s_Instance = NULL;
 
     VGA::VGA() :
         miscPort(0x3C2),
@@ -29,10 +29,10 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
     }
 
     VGA* VGA::getInstance() {
-            if(m_Instance == NULL) 
-            m_Instance = new VGA();
+            if(s_Instance == NULL) 
+            s_Instance = new VGA();
 
-        return m_Instance;
+        return s_Instance;
     }
 
     void VGA::writeRegisters(uint8_t* registers) {

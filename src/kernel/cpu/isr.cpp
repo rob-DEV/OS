@@ -45,7 +45,7 @@ void fault_handler(regs* registers) {
 
 namespace OS { namespace KERNEL { namespace CPU {
 
-    ISR* ISR::m_Instance = NULL;
+    ISR* ISR::s_Instance = NULL;
 
     ISR::ISR() {
         
@@ -56,9 +56,9 @@ namespace OS { namespace KERNEL { namespace CPU {
     }
 
     ISR* ISR::getInstance(){
-        if(m_Instance == NULL)
-            m_Instance = new ISR();
-        return m_Instance;
+        if(s_Instance == NULL)
+            s_Instance = new ISR();
+        return s_Instance;
     }
 
     void ISR::install() {

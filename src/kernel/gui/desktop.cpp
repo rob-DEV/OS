@@ -14,7 +14,7 @@ namespace  OS { namespace KERNEL { namespace GUI {
         //register with keyboard
         HW_COMM::KeyboardEventHandler::getInstance()->subscribe(this);
 
-        m_Windows.push_back(new Window("0", 80, 100, 200,125, 34, this));
+        m_Windows.push_back(new Window("0 Window with textbox", 80, 100, 200,125, 34, this));
         m_Windows.push_back(new Window("1", 45, 80, 70,40, 7, this));
         m_Windows.push_back(new Window("2", 180, 70, 200,125, 3, this));
 
@@ -25,17 +25,19 @@ namespace  OS { namespace KERNEL { namespace GUI {
         m_Windows.push_back(new Window("7", 0, 58, 20,20, 39, this));
         m_Windows.push_back(new Window("8", 0, 60, 20,20, 40, this));
 
-        
+        m_Windows[0]->addWidget(new Textbox("a",0,0, 200, 125));
     
-        m_ActiveWindow = new Window("9", 10, 90, 200,125, 46, this);
-        
+        m_ActiveWindow = new Window("9 Window with textbox", 10, 90, 200,125, 46, this);
+        m_ActiveWindow->addWidget(new Textbox("TEST TEXT", 0,0, 200,125));
+
+
         m_LastActiveWindow = m_ActiveWindow;        
         m_Windows.push_back(m_ActiveWindow);
         
         OS::KERNEL::Terminal::getInstance()->printf("allocated window count %d \n", m_Windows.size());
 
         
-
+        m_renderDraws = 0;
         
 
 
@@ -47,18 +49,16 @@ namespace  OS { namespace KERNEL { namespace GUI {
 
 
     void Desktop::onKeyDown(unsigned char key) {
+        
+        //used for switching windows
+        if(key == '\t') {
 
-        if(key == '1' || key == '2' || key == '3') {
-
-            if(key == '1')
+            if(key == '\t')
                 m_ActiveWindow = m_Windows[0];
-            if(key == '2') 
-                m_ActiveWindow = m_Windows[1];
-            if(key == '3') 
-                m_ActiveWindow = m_Windows[2];
 
         }
 
+        m_ActiveWindow->onKeyDown(key);
 
 
 
@@ -67,19 +67,10 @@ namespace  OS { namespace KERNEL { namespace GUI {
 
     void Desktop::draw() {
 
-        OS::KERNEL::Terminal::getInstance()->printf("Destop::draw() begin\n");
+        //OS::KERNEL::Terminal::getInstance()->printf("Destop::draw() begin\n");
+
         m_VGA->fillRectangle(m_X,m_Y, m_W, m_H, 43);
         m_VGA->fillRectangle(0,0, m_W, 10, 27);
-        
-
-        
-        const char* desktopHeader = "OS Kernel v0.1";
-        uint8_t a = 0;
-        for (size_t i = 0; i < strlen(desktopHeader); i++)
-        {
-            m_VGA->drawChar8((a * 8),7,desktopHeader[i],0);
-            a++;
-        }
         
                 
         
@@ -102,17 +93,43 @@ namespace  OS { namespace KERNEL { namespace GUI {
         }
 
         //push window data to buffer
-        for (size_t i = 0; i < m_Windows.size(); i++) {
-            OS::KERNEL::Terminal::getInstance()->printf("Rendering window %s\n", m_Windows[i]->m_Name);
+        for (size_t i = 0; i < m_Windows.size(); i++)
             m_Windows[i]->draw();
+
+
+        const char* desktopHeader = "OS Kernel v0.1";
+        uint8_t a = 0;
+        for (size_t i = 0; i < strlen(desktopHeader); i++)
+        {
+            m_VGA->drawChar8((a * 8),7,desktopHeader[i],0);
+            a++;
         }
+        
 
         //OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(800);
         //flush buffer to screen
-        m_VGA->swapBuffers();
 
-    
-        OS::KERNEL::Terminal::getInstance()->printf("Destop::draw() end\n");
+        char fpsBuffer[30];
+            for (size_t i = 0; i < 30; i++)
+            {
+                fpsBuffer[i] = 0;
+            }
+            
+
+            Util::itoa(m_renderDraws, fpsBuffer);
+            
+            m_VGA->drawChar8(150,7,fpsBuffer[0] ,0);
+            m_VGA->drawChar8(150 + 8,7,fpsBuffer[1] ,0);
+        
+        if(OS::KERNEL::CPU::PIT::getInstance()->getTicks() % 18 == 0) {
+            OS::KERNEL::Terminal::getInstance()->printf("Destop::draw() end frametime %d\n", m_renderDraws);
+            
+            m_renderDraws = 0;
+        }
+        
+        m_VGA->swapBuffers();
+        m_renderDraws++;
+        
     }
 
 } } }

@@ -47,7 +47,7 @@ namespace OS { namespace KERNEL {
         uint16_t m_CursorY;
         uint8_t m_Color;
 
-        static Terminal* m_Instance;
+        static Terminal* s_Instance;
 
       
         void init();

@@ -44,7 +44,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
 
         uint8_t getColorIndex(RGB_Color color);
 
-        static VGA* m_Instance;
+        static VGA* s_Instance;
 
         uint8_t** m_VGA_Buffers;
         uint8_t m_VGA_Active_Buffer;

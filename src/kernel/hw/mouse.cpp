@@ -59,7 +59,7 @@ unsigned char mouse_read()
 
 namespace OS { namespace KERNEL { namespace HW_COMM {
 
-    Mouse* Mouse::m_Instance = NULL;
+    Mouse* Mouse::s_Instance = NULL;
 
     Mouse::Mouse() {
         
@@ -71,12 +71,12 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
 
     Mouse* Mouse::getInstance() {
         
-         if(m_Instance == NULL) 
-            m_Instance = new Mouse();
+         if(s_Instance == NULL) 
+            s_Instance = new Mouse();
         
         //Terminal::getInstance()->printf("MOUSE ADDRESS: 0x%x\n", MEMORY::MemoryManager::Instance);
 
-        return m_Instance;
+        return s_Instance;
     }
 
 

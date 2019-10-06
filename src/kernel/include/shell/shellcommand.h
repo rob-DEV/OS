@@ -10,18 +10,22 @@ namespace OS { namespace KERNEL { namespace SHELL {
 
     public:
         const char * commandText;
-    public:
+          
         ShellCommand(const char * cmdText, void(*callback)()) {
+
             commandText = cmdText;
             this->callback = callback;
+        
         };
 
-         ShellCommand(const char * cmdText, int(*callback)(const char* args)) {
+        ShellCommand(const char * cmdText, int(*callback)(const char* args)) {
+
             commandText = cmdText;
             this->args_callback = callback;
+        
         };
         
-        ~ShellCommand();
+        ~ShellCommand() {};
 
         inline void execute() { callback(); };
 

@@ -6,7 +6,7 @@ void keyboard_handler(regs* registers){
 
 namespace OS { namespace KERNEL { namespace HW_COMM {
 
-    Keyboard* Keyboard::m_Instance = NULL;
+    Keyboard* Keyboard::s_Instance = NULL;
 
     Keyboard::Keyboard() {
         m_KeyboardEventHandler = KeyboardEventHandler::getInstance();
@@ -17,10 +17,10 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
     }
         
     Keyboard* Keyboard::getInstance() {
-        if(m_Instance == NULL)
-            m_Instance = new Keyboard();
+        if(s_Instance == NULL)
+            s_Instance = new Keyboard();
 
-        return m_Instance;
+        return s_Instance;
     }
 
     void Keyboard::handler(regs* registers) {

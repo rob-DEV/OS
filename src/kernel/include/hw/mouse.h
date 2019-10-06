@@ -15,7 +15,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
 
     class Mouse {
     private:
-        static Mouse* m_Instance;
+        static Mouse* s_Instance;
         
 
         uint8_t buffer[3];

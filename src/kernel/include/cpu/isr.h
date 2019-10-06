@@ -70,7 +70,7 @@ namespace OS { namespace KERNEL { namespace CPU {
     class ISR {
     private:
         IDT* idt;
-        static ISR* m_Instance;
+        static ISR* s_Instance;
     public:
         ISR();
         ~ISR();

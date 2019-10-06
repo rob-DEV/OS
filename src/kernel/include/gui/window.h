@@ -2,6 +2,7 @@
 #define OS_KERNEL_GUI_WINDOW_H
 
 #include "widget.h"
+#include "textbox.h"
 #include "../hw/vga.h"
 
 #include "../../../libc++/vector.h"
@@ -13,6 +14,7 @@ namespace  OS { namespace KERNEL { namespace GUI {
     private:
         std::vector<Widget*> m_Widgets;
     public:
+
         Window();
         Window(const char* name, uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t color, Widget* parent);
         ~Window();
@@ -31,10 +33,15 @@ namespace  OS { namespace KERNEL { namespace GUI {
                 uint32_t  yOffset = y + 16;
                 m_Widgets[i]->setPosition((m_X - m_XPrev) + x, (m_Y - m_YPrev) + yOffset);
             }
-            
+        }
+        inline void onKeyDown(unsigned char key) {
+
+            GUI::Textbox* textBox = (GUI::Textbox*)m_Widgets[0];
+
+            textBox->appendText(key);
+
 
         }
-
         void draw();
 
     };

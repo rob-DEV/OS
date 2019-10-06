@@ -10,6 +10,8 @@
 
 #include "../../../libc++/vector.h"
 
+#define TEXTBOX_MAX_BUFFER_LENGTH (m_W * m_H) / (float)8
+
 namespace  OS { namespace KERNEL { namespace GUI {
  
     class Textbox : public Widget {
@@ -26,7 +28,8 @@ namespace  OS { namespace KERNEL { namespace GUI {
 
         
         void clear();
-
+        void appendText(unsigned char key);
+        
         void draw();
 
     };

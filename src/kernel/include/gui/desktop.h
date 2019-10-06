@@ -24,7 +24,7 @@ namespace OS { namespace KERNEL { namespace GUI {
         Window* m_ActiveWindow;
         Window* m_LastActiveWindow;
     
-        bool drawing;
+        uint32_t m_renderDraws;
     public:
 
         Desktop();

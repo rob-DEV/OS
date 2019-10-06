@@ -17,7 +17,7 @@ extern "C" void irq13();
 extern "C" void irq14();
 extern "C" void irq15();
 
-void *irq_routines[16] =
+void* irq_routines[16] =
 {
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0
@@ -29,7 +29,7 @@ void irq_handler(regs * registers) {
 
 namespace OS { namespace KERNEL { namespace CPU {
 
-    IRQ* IRQ::m_Instance = NULL;
+    IRQ* IRQ::s_Instance = NULL;
 
     IRQ::IRQ() {
         
@@ -40,10 +40,10 @@ namespace OS { namespace KERNEL { namespace CPU {
     }
 
     IRQ* IRQ::getInstance() {
-        if(m_Instance == NULL)
-            m_Instance = new IRQ();
+        if(s_Instance == NULL)
+            s_Instance = new IRQ();
         
-        return m_Instance;
+        return s_Instance;
     }
 
     void IRQ::irq_install(int irq, void (*handler)(struct regs *r)){

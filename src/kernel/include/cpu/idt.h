@@ -23,7 +23,7 @@ namespace OS { namespace KERNEL { namespace CPU {
 
     class IDT {
     private:
-        static IDT* m_Instance;
+        static IDT* s_Instance;
     public:
         IDT();
         ~IDT();

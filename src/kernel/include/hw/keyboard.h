@@ -58,7 +58,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
                 0,	/* All other keys are undefined */
             };	
        
-        static Keyboard* m_Instance;
+        static Keyboard* s_Instance;
         KeyboardEventHandler* m_KeyboardEventHandler;
     public:
         Keyboard();
