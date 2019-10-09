@@ -10,7 +10,7 @@
 
 #include "../../../libc++/vector.h"
 
-#define TEXTBOX_MAX_BUFFER_LENGTH (m_W * m_H) / (float)8
+#define TEXTBOX_MAX_BUFFER_LENGTH (m_W * m_H) / (float)64
 
 namespace  OS { namespace KERNEL { namespace GUI {
  
@@ -28,6 +28,7 @@ namespace  OS { namespace KERNEL { namespace GUI {
 
         
         void clear();
+        void onKeyDown(unsigned char key) { appendText(key); };
         void appendText(unsigned char key);
         
         void draw();

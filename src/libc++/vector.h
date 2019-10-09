@@ -79,7 +79,7 @@ namespace std {
 
 			delete[] m_Elements;
 
-			m_VectorBufferSize += 5;
+			m_VectorBufferSize *= 2;
 			m_Elements = new T[m_VectorBufferSize];
 			memcpy(copy, m_Elements, sizeof(T) * m_Size);
 

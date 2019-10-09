@@ -212,6 +212,29 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
     
     }
 
+    void fastmemcpy(void* src, void* dst, uint32_t size) {
+
+        //64000 bytes
+        if(src == dst)
+            return;
+    
+        uint32_t roundsBytes4 = size /4;
+
+        uint32_t* srcWORD = (uint32_t*)src;
+        uint32_t* dstWORD = (uint32_t*)dst;
+        
+        for (size_t i = 0; i < roundsBytes4; i++)
+        {
+
+            dstWORD[i] = srcWORD[i];
+
+        }
+        
+
+        
+
+    }
+
     void VGA::swapBuffers() {
         
         //memcopy screen buffer to vga
@@ -220,7 +243,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
             initalFrameCopied = true;
         }
         uint32_t* pixelAddress = (uint32_t*)getFrameBufferSegment();
-        memcpy(m_VGA_Buffers[m_VGA_Active_Buffer], pixelAddress, sizeof(uint32_t) * VGA_320x200_MEM_SIZE / 4);
+        fastmemcpy(m_VGA_Buffers[m_VGA_Active_Buffer], pixelAddress, VGA_320x200_MEM_SIZE);
 
         if(m_VGA_Active_Buffer == 1)
             m_VGA_Active_Buffer = 0;

@@ -25,6 +25,7 @@ class Widget {
 
         inline uint32_t ID() { return m_ID; };
 
+        inline virtual void onKeyDown(unsigned char key) {  };
 
         inline void getPostion(uint32_t& x, uint32_t& y) { x = m_X; y = m_Y; };
         inline virtual void setPosition(const uint32_t x, const uint32_t y) { m_X = x; m_Y = y; }; 

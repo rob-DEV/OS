@@ -9,7 +9,7 @@
 #include "../../../libc++/vector.h"
 #include "../../../libc++/slow_deque.h"
 
-
+#define VERBOSE_VGA_DEBUG 0
 
 namespace OS { namespace KERNEL { namespace GUI { 
 
@@ -25,6 +25,9 @@ namespace OS { namespace KERNEL { namespace GUI {
         Window* m_LastActiveWindow;
     
         uint32_t m_renderDraws;
+        char m_FpsBuffer[30];
+
+
     public:
 
         Desktop();

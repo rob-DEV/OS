@@ -20,7 +20,31 @@ namespace  OS { namespace KERNEL { namespace GUI {
         component->m_Y += m_Y + 8;
 
         m_Widgets.push_back(component);
+
+        if(m_Widgets.size() > 0)
+            m_FocusedWidget = m_Widgets[0];
+
     }
+
+    void Window::setPosition(const uint32_t x, const uint32_t y) { 
+
+        m_XPrev = m_X;
+        m_YPrev = m_Y;
+        m_X = x;
+        m_Y = y;
+        for (size_t i = 0; i < m_Widgets.size(); i++)
+        {
+            //title bar height
+            uint32_t  yOffset = y + 16;
+            m_Widgets[i]->setPosition((m_X - m_XPrev) + x, (m_Y - m_YPrev) + yOffset);
+        }
+        }
+    void Window::onKeyDown(unsigned char key) {
+
+        if(m_FocusedWidget != NULL)
+            m_FocusedWidget->onKeyDown(key);
+
+        }
 
     void Window::draw() {
 

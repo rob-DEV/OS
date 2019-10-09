@@ -22,7 +22,7 @@ namespace  OS { namespace KERNEL { namespace GUI {
     }
 
     void Textbox::clear() {
-        
+        m_strLen = 0;
     }
 
     void Textbox::appendText(unsigned char key) {
@@ -32,28 +32,30 @@ namespace  OS { namespace KERNEL { namespace GUI {
             return;
 
         if(key == '\b') {
-
+                
                 if(m_strLen == 0)
                     return;
                     
                 --m_strLen;
                 return;
-            }
+        }
 
-            m_Buffer[m_strLen] = key;
-            m_strLen++;
+        m_Buffer[m_strLen] = key;
+        m_strLen++;
     }
     
     void Textbox::draw() {
 
         if(m_strLen < 1)
             return;
-            
+
         int a = 0;
         int b = 0;
 
         //OS::KERNEL::Terminal::getInstance()->printf("textbox size %d\n", m_strLen);
-        for (size_t i = 0; i < m_strLen; i++)
+        uint32_t strlenToDraw = m_strLen;
+        OS::KERNEL::Terminal::getInstance()->printf("\nstrlen = %d", strlenToDraw);
+        for (size_t i = 0; i < strlenToDraw; i++)
         {
 
             //wrap around text

@@ -3,14 +3,12 @@
 
 namespace  OS { namespace KERNEL { namespace GUI {
  
-
-    
-
     Desktop::Desktop() :Widget(0,0,320,200, 43, NULL){
        
         m_VGA = HW_COMM::VGA::getInstance();
+        #if !VERBOSE_VGA_DEBUG
         m_VGA->setMode(m_W, m_H, 8);
-
+        #endif
         //register with keyboard
         HW_COMM::KeyboardEventHandler::getInstance()->subscribe(this);
 
@@ -34,10 +32,14 @@ namespace  OS { namespace KERNEL { namespace GUI {
         m_LastActiveWindow = m_ActiveWindow;        
         m_Windows.push_back(m_ActiveWindow);
         
+        #if VERBOSE_VGA_DEBUG
         OS::KERNEL::Terminal::getInstance()->printf("allocated window count %d \n", m_Windows.size());
-
+        #endif
         
         m_renderDraws = 0;
+        m_FpsBuffer[30];
+        for (size_t i = 0; i < 30; i++)
+            m_FpsBuffer[i] = 0;
         
 
 
@@ -67,7 +69,9 @@ namespace  OS { namespace KERNEL { namespace GUI {
 
     void Desktop::draw() {
 
+        #if VERBOSE_VGA_DEBUG
         //OS::KERNEL::Terminal::getInstance()->printf("Destop::draw() begin\n");
+        #endif
 
         m_VGA->fillRectangle(m_X,m_Y, m_W, m_H, 43);
         m_VGA->fillRectangle(0,0, m_W, 10, 27);
@@ -104,26 +108,20 @@ namespace  OS { namespace KERNEL { namespace GUI {
             m_VGA->drawChar8((a * 8),7,desktopHeader[i],0);
             a++;
         }
+
+
+        //FPS DEBUG HANDLER
+        Util::itoa(m_renderDraws, m_FpsBuffer);
         
-
-        //OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(800);
-        //flush buffer to screen
-
-        char fpsBuffer[30];
-            for (size_t i = 0; i < 30; i++)
-            {
-                fpsBuffer[i] = 0;
-            }
-            
-
-            Util::itoa(m_renderDraws, fpsBuffer);
-            
-            m_VGA->drawChar8(150,7,fpsBuffer[0] ,0);
-            m_VGA->drawChar8(150 + 8,7,fpsBuffer[1] ,0);
+        m_VGA->drawChar8(150,7,m_FpsBuffer[0] ,0);
+        m_VGA->drawChar8(150 + 8,7,m_FpsBuffer[1] ,0);
         
         if(OS::KERNEL::CPU::PIT::getInstance()->getTicks() % 18 == 0) {
-            OS::KERNEL::Terminal::getInstance()->printf("Destop::draw() end frametime %d\n", m_renderDraws);
             
+            #if VERBOSE_VGA_DEBUG
+            //OS::KERNEL::Terminal::getInstance()->printf("Destop::draw() end frametime %d\n", m_renderDraws);
+            #endif
+
             m_renderDraws = 0;
         }
         
