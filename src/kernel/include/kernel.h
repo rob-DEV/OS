@@ -1,23 +1,8 @@
-#include "com/multiboot.h"
-#include "com/string.h"
-#include "cpu/gdt.h"
-#include "cpu/idt.h"
-#include "cpu/isr.h"
-#include "cpu/irq.h"
-#include "cpu/pit.h"
-#include "mm/memorymanagement.h"
-#include "io/terminal.h"
-#include "shell/shell.h"
-#include "gui/window.h"
-#include "gui/textbox.h"
-#include "hw/keyboard.h"
-#include "hw/vga.h"
-#include "hw/mouse.h"
+#include <sys.h>
 
-
-#include "../../libc++/vector.h"
-#include "../../libc++/slow_deque.h"
-#include "../../libc++/string.h"
+#include <vector.h>
+#include <string.h>
+#include <slow_deque.h>
 
 
 #define MEM_SIZE 750 * 1024 * 1024
@@ -44,7 +29,7 @@ namespace OS { namespace KERNEL {
         Terminal* m_Terminal;
 
         void kernel_init(multiboot_info_t* mbi, uint32_t magic);
-        void vga();
+
 
     public:
         void kernel_main(multiboot_info_t* mbi, uint32_t magic);

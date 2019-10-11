@@ -2,13 +2,24 @@
 #define OS_KERNEL_HW_COMM_KEYBOARDEVENTHANDLER_H
 
 #include "../../../libc/stdint.h"
-
+#include "keymap.h"
 
 namespace OS { namespace KERNEL { namespace HW_COMM {
 
+    typedef struct keyboard_input_packet {
+
+        char keyPressed;
+        
+        char capsLockKeyPressed;
+        char leftShiftKeyPressed;
+        char leftCtrlKeyPressed;
+
+    } keyboard_input_packet_t;
+
+
     class KeyboardEventSubscriber {
     public:
-        inline virtual void onKeyDown(unsigned char key) { }
+        inline virtual void onKeyDown(const keyboard_input_packet_t& keyPacket) { }
 
     };
 
@@ -16,44 +27,6 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
     class KeyboardEventHandler
     {
     private:
-        const unsigned char KB_US[128] = {
-                0,  27, '1', '2', '3', '4', '5', '6', '7', '8',	/* 9 */
-            '9', '0', '-', '=', '\b',	/* Backspace */
-            '\t',			/* Tab */
-            'q', 'w', 'e', 'r',	/* 19 */
-            't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n',	/* Enter key */
-                0,			/* 29   - Control */
-            'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';',	/* 39 */
-            '\'', '`',   0,		/* Left shift */
-            '\\', 'z', 'x', 'c', 'v', 'b', 'n',			/* 49 */
-            'm', ',', '.', '/',   0,				/* Right shift */
-            '*',
-                0,	/* Alt */
-            ' ',	/* Space bar */
-                0,	/* Caps lock */
-                0,	/* 59 - F1 key ... > */
-                0,   0,   0,   0,   0,   0,   0,   0,
-                0,	/* < ... F10 */
-                0,	/* 69 - Num lock*/
-                0,	/* Scroll Lock */
-                0,	/* Home key */
-                0,	/* Up Arrow */
-                0,	/* Page Up */
-              '-',
-                0,	/* Left Arrow */
-                0,
-                0,	/* Right Arrow */
-            '+',
-                0,	/* 79 - End key*/
-                0,	/* Down Arrow */
-                0,	/* Page Down */
-                0,	/* Insert Key */
-                0,	/* Delete Key */
-                0,   0,   0,
-                0,	/* F11 Key */
-                0,	/* F12 Key */
-                0,	/* All other keys are undefined */
-            };	
         
         uint32_t m_KeyboardEVSubscribers[10];
         uint8_t m_KeyboardEVSubscribersCount = 0;
@@ -67,7 +40,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
 
         void subscribe(KeyboardEventSubscriber* subscriber);
         void onKeyUp(char key);
-        void onKeyDown(unsigned char key);
+        void onKeyDown(const keyboard_input_packet_t& keyPacket);
 
 
     };

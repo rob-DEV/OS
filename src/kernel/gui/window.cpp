@@ -18,7 +18,7 @@ namespace  OS { namespace KERNEL { namespace GUI {
     void Window::addWidget(Widget* component) {
         component->m_X += m_X;
         component->m_Y += m_Y + 8;
-
+        component->setParent(this);
         m_Widgets.push_back(component);
 
         if(m_Widgets.size() > 0)
@@ -38,13 +38,14 @@ namespace  OS { namespace KERNEL { namespace GUI {
             uint32_t  yOffset = y + 16;
             m_Widgets[i]->setPosition((m_X - m_XPrev) + x, (m_Y - m_YPrev) + yOffset);
         }
-        }
+    }
+
     void Window::onKeyDown(unsigned char key) {
 
         if(m_FocusedWidget != NULL)
             m_FocusedWidget->onKeyDown(key);
 
-        }
+    }
 
     void Window::draw() {
 

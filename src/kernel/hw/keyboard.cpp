@@ -1,5 +1,9 @@
 #include "../include/hw/keyboard.h"
 
+uint8_t shift = 0;
+uint8_t caps = 0;
+
+
 void keyboard_handler(regs* registers){
     OS::KERNEL::HW_COMM::Keyboard::getInstance()->handler(registers);
 }
@@ -24,19 +28,70 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
     }
 
     void Keyboard::handler(regs* registers) {
-        unsigned char scancode;
+        char scancode;
 
         scancode = HW_COMM::Port::inportb(0x60);
 
-        if (scancode & 0x80)
-        {
-            /* You can use this one to see if the user released the
-            *  shift, alt, or control keys... */
+        switch(scancode) {
+            case KEY_SHIFT:
+                shift = 1;
+                break;
+            case KEY_SHIFT_RELEASE:
+                shift = 0;
+                break;
+            case KEY_CAPSLOCK:
+                if(caps > 0)    caps = 0;
+                else   caps = 1;
+                break;
+            default:
+            
+            if(scancode < 0) return;
+            
+            char ch;
+            if(shift || caps)   ch = KB_US_UPPER[scancode];
+            else    ch = KB_US_LOWER[scancode];
+            
+
+            if(!(scancode & 0x80)) {
+                //build keyboard input packet
+                keyboard_input_packet_t packet;
+                packet.keyPressed = ch;
+
+                //pass key packet to all event subscribers
+                m_KeyboardEventHandler->onKeyDown(packet);
+            }
         }
-        else
-        {
-            m_KeyboardEventHandler->onKeyDown(KB_US[scancode]);
-        }
+
+        /*
+        
+        switch(keycode) {
+    case SHIFT:
+      shift = 1;
+      break;
+    case SHIFT_RELEASE:
+      shift = 0;
+      break;
+    case CAPSLOCK:
+      if(caps > 0){
+        caps = 0;
+      }else {
+        caps = 1;
+      }
+      break;
+    default:
+      if(keycode < 0) return;
+      char ch;
+      if(shift || caps) {
+        ch = keymap_upper[keycode];
+      }else {
+        ch = keymap_lower[keycode];
+      }
+      //case handled, now pass to shell
+      shell_handle_key(keycode, ch);
+
+  }
+        */
+        
     }
 
     void Keyboard::install() {

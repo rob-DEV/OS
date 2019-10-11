@@ -15,6 +15,9 @@ namespace  OS { namespace KERNEL { namespace GUI {
 
         memcpy((void*)initial, m_Buffer, m_strLen * sizeof(char));
         m_Buffer[m_BufferLength - 1] = 0;
+
+        //set cursor to intially flash
+        m_CursorFlash = 0;
     }
     
     Textbox::~Textbox() {
@@ -25,23 +28,38 @@ namespace  OS { namespace KERNEL { namespace GUI {
         m_strLen = 0;
     }
 
-    void Textbox::appendText(unsigned char key) {
+    void Textbox::onKeyDown(const HW_COMM::keyboard_input_packet_t& packet) {
+        //validate if character is printable
+        printable_string_t outPrint;
+        
+        GuiUtils::validatePrintableCharacter(packet.keyPressed, outPrint);
+        
+        appendText(outPrint);
+
+    }
+
+    void Textbox::appendText(const printable_string_t& key) {
         
         //avoid buffer overflow
         if(m_strLen + 2 > m_BufferLength)
             return;
 
-        if(key == '\b') {
-                
-                if(m_strLen == 0)
-                    return;
+        for (size_t i = 0; i < key.stream_len; i++)
+        {
+            if(key.stream[i] == KEY_BACKSPACE) {
+                 if(m_strLen == 0)
+                    continue;
                     
                 --m_strLen;
-                return;
-        }
+                continue;
+            }
 
-        m_Buffer[m_strLen] = key;
-        m_strLen++;
+
+            m_Buffer[m_strLen] = key.stream[i];
+            m_strLen++;
+        }
+        
+        
     }
     
     void Textbox::draw() {
@@ -52,9 +70,10 @@ namespace  OS { namespace KERNEL { namespace GUI {
         int a = 0;
         int b = 0;
 
-        //OS::KERNEL::Terminal::getInstance()->printf("textbox size %d\n", m_strLen);
+        
+        //make a copy of strlen to avoid it updating during the frame
         uint32_t strlenToDraw = m_strLen;
-        OS::KERNEL::Terminal::getInstance()->printf("\nstrlen = %d", strlenToDraw);
+        
         for (size_t i = 0; i < strlenToDraw; i++)
         {
 
@@ -70,11 +89,15 @@ namespace  OS { namespace KERNEL { namespace GUI {
                 continue;
             }
             OS::KERNEL::HW_COMM::VGA::getInstance()->drawChar8(m_X+ (b * 8) +1 , m_Y + (a * 8), m_Buffer[i], 0);
+            
             b++;
             
         }
+
+        if(m_CursorFlash % 8 == 0)
+            OS::KERNEL::HW_COMM::VGA::getInstance()->fillRectangle(m_X+ (b * 8) +1 , m_Y - 6 + (a * 8), 1, 8, 0);     
         
-        
+        m_CursorFlash++;
     }
 
 

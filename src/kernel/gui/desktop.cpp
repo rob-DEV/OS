@@ -12,16 +12,7 @@ namespace  OS { namespace KERNEL { namespace GUI {
         //register with keyboard
         HW_COMM::KeyboardEventHandler::getInstance()->subscribe(this);
 
-        m_Windows.push_back(new Window("0 Window with textbox", 80, 100, 200,125, 34, this));
-        m_Windows.push_back(new Window("1", 45, 80, 70,40, 7, this));
-        m_Windows.push_back(new Window("2", 180, 70, 200,125, 3, this));
-
-        m_Windows.push_back(new Window("3", 0, 22, 20,20, 36, this));
-        m_Windows.push_back(new Window("4", 0, 10, 20,20, 34, this));
-        m_Windows.push_back(new Window("5", 0, 34, 20,20, 37, this));
-        m_Windows.push_back(new Window("6", 0, 46, 20,20, 38, this));
-        m_Windows.push_back(new Window("7", 0, 58, 20,20, 39, this));
-        m_Windows.push_back(new Window("8", 0, 60, 20,20, 40, this));
+        m_Windows.push_back(new Window("0 Window with textbox", 20, 20, 200,125, 34, this));
 
         m_Windows[0]->addWidget(new Textbox("a",0,0, 200, 125));
     
@@ -52,15 +43,16 @@ namespace  OS { namespace KERNEL { namespace GUI {
 
     void Desktop::onKeyDown(unsigned char key) {
         
+        
+        m_ActiveWindow->onKeyDown(key);
+        
         //used for switching windows
-        if(key == '\t') {
+        if(key == KEY_ESCAPE) {
 
-            if(key == '\t')
-                m_ActiveWindow = m_Windows[0];
+            m_ActiveWindow = m_Windows[0];
 
         }
 
-        m_ActiveWindow->onKeyDown(key);
 
 
 
@@ -97,9 +89,12 @@ namespace  OS { namespace KERNEL { namespace GUI {
         }
 
         //push window data to buffer
-        for (size_t i = 0; i < m_Windows.size(); i++)
+        for (size_t i = 0; i < m_Windows.size(); i++) {
+            
             m_Windows[i]->draw();
+            
 
+        }
 
         const char* desktopHeader = "OS Kernel v0.1";
         uint8_t a = 0;

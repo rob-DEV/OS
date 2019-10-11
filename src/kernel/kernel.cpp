@@ -1,21 +1,7 @@
 #include "include/kernel.h"
 
-
 static void play_sound(uint32_t nFrequence) {
- 	uint32_t Div;
- 	uint8_t tmp;
- 
-        //Set the PIT to the desired frequency
- 	Div = 1193180 / nFrequence;
- 	OS::KERNEL::HW_COMM::Port::outportb(0x43, 0xb6);
- 	OS::KERNEL::HW_COMM::Port::outportb(0x42, (uint8_t) (Div) );
- 	OS::KERNEL::HW_COMM::Port::outportb(0x42, (uint8_t) (Div >> 8));
- 
-        //And play the sound using the PC speaker
- 	tmp = OS::KERNEL::HW_COMM::Port::inportb(0x61);
-  	if (tmp != (tmp | 3)) {
- 		OS::KERNEL::HW_COMM::Port::outportb(0x61, tmp | 3);
- 	}
+ 	
  }
  
  //make it shutup
@@ -27,7 +13,7 @@ static void play_sound(uint32_t nFrequence) {
  
  //Make a beep
  void beep() {
-    uint32_t waitTime = 1000;
+    uint32_t waitTime = 100;
     play_sound(349);
     OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(waitTime);
     nosound();
@@ -44,7 +30,7 @@ static void play_sound(uint32_t nFrequence) {
     OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(waitTime);
     nosound();
 
-    //set_PIT_2(old_frequency);
+
  }
 
 
@@ -122,6 +108,8 @@ namespace OS { namespace KERNEL {
 
         m_Terminal->print("Installing Programmable Interval Timer\n");
         m_PIT->install();
+
+        m_PIT->waitForMilliSeconds(100);
 
         m_Terminal->print("Installing Keyboard (US)\n");
         m_Keyboard->install();

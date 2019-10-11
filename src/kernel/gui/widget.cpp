@@ -1,7 +1,30 @@
 #include "../include/gui/widget.h"
+#include "../include/hw/keymap.h"
 
 namespace  OS { namespace KERNEL { namespace GUI {
- 
+
+    void GuiUtils::validatePrintableCharacter(unsigned char key , printable_string_t& outPrint) {
+
+        //determine if character is printable
+
+        if(key == KEY_ESCAPE) {
+            outPrint.stream_len = 0;
+            return;   
+        } 
+        if(key == KEY_TAB) {
+            outPrint.stream[0] = ' ';
+            outPrint.stream[1] = ' ';
+            outPrint.stream[2] = ' ';
+            outPrint.stream[3] = ' ';
+            outPrint.stream_len = 4;
+            return;
+        }        
+
+        outPrint.stream[0] = key;
+        outPrint.stream_len = 1;
+
+    }
+
 
     uint32_t Widget::s_WidgetCount = 0;
 

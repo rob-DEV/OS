@@ -31,10 +31,10 @@ namespace OS { namespace KERNEL { namespace SHELL {
 
     
 
-    void Shell::onKeyDown(unsigned char c) {
+    void Shell::onKeyDown(const HW_COMM::keyboard_input_packet_t& packet) {
         //only hold line for now
         //pass char to video memory if not in graphics mode
-
+        char c = packet.keyPressed;
         if(c != '\n') {
             Terminal::getInstance()->print(c);
         }
@@ -45,13 +45,16 @@ namespace OS { namespace KERNEL { namespace SHELL {
             nLines++;
 
         }
-        if(c != '\n') {
+        if(c != '\n' && c != '\b') {
             m_Buffer[m_BufferLength] = c;
             m_BufferLength++;
             return;
-        }else if(c == '\b') {
-            if(m_BufferLength != 0)
+        }
+        if(c == '\b') {
+            if(m_BufferLength != 0) {
                 m_BufferLength--;
+                m_Buffer[m_BufferLength] = '\0';
+            }
         }
         else {
             m_Buffer[m_BufferLength] = '\0';

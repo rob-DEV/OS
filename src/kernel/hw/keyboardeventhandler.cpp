@@ -33,12 +33,12 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
 
     }
     
-    void KeyboardEventHandler::onKeyDown(unsigned char key) {
+    void KeyboardEventHandler::onKeyDown(const keyboard_input_packet_t& packet) {
         
         for (size_t i = 0; i < m_KeyboardEVSubscribersCount; i++)
         {
             KeyboardEventSubscriber* kb_sub_ptr = (KeyboardEventSubscriber*)m_KeyboardEVSubscribers[i];
-            kb_sub_ptr->onKeyDown(key);
+            kb_sub_ptr->onKeyDown(packet);
         }
         
     }

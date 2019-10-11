@@ -2,8 +2,21 @@
 #define OS_KERNEL_GUI_WIDGET_H
 
 #include "../com/type.h"
-
 namespace OS { namespace KERNEL { namespace GUI { 
+
+typedef struct printable_string {
+
+    char stream[10];
+    uint32_t stream_len;
+
+} printable_string_t;
+
+class GuiUtils {
+
+    public:
+    static void validatePrintableCharacter(unsigned char key, printable_string_t& outPrint);
+
+};
 
 class Widget {
     public:
@@ -29,6 +42,9 @@ class Widget {
 
         inline void getPostion(uint32_t& x, uint32_t& y) { x = m_X; y = m_Y; };
         inline virtual void setPosition(const uint32_t x, const uint32_t y) { m_X = x; m_Y = y; }; 
+        
+        inline void setParent(Widget* parent) { m_Parent = parent;};
+
         inline uint32_t width() { return m_W; };
         inline uint32_t height() { return m_H; };
 

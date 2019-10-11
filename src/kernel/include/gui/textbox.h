@@ -6,6 +6,7 @@
 #include "../cpu/irq.h"
 #include "../hw/port.h"
 #include "../hw/vga.h"
+#include "../hw/keyboardeventhandler.h"
 #include "widget.h"
 
 #include "../../../libc++/vector.h"
@@ -21,6 +22,7 @@ namespace  OS { namespace KERNEL { namespace GUI {
         uint32_t m_strLen;
         uint32_t m_BufferLength;
         std::vector<Widget*> m_Widgets;
+        uint32_t m_CursorFlash;
     public:
         Textbox();
         Textbox(const char* initalText, uint32_t x, uint32_t y, uint32_t w, uint32_t h);
@@ -28,8 +30,8 @@ namespace  OS { namespace KERNEL { namespace GUI {
 
         
         void clear();
-        void onKeyDown(unsigned char key) { appendText(key); };
-        void appendText(unsigned char key);
+        void onKeyDown(const HW_COMM::keyboard_input_packet_t& packet);
+        void appendText(const printable_string_t& key);
         
         void draw();
 
