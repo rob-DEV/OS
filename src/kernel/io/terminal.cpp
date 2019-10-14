@@ -209,7 +209,26 @@ namespace OS { namespace KERNEL {
                 return -1;
                 
             written++;
-        } else if (*format == 'x') {
+        } 
+         else if (*format == 'f') {
+
+
+            format++;
+            double input = va_arg(parameters, double /* char promotes to int */);
+            char buff[16];//enough for 64 bits integer
+            //convert
+            Util::ftoa(input,buff);
+            
+            if (!maxrem) 
+                // TODO: Set errno to EOVERFLOW.
+                return -1;
+            
+            if (!print(buff, strlen(buff)))
+                return -1;
+                
+            written++;
+        } 
+        else if (*format == 'x') {
             format++;
             int input = va_arg(parameters, int /* char promotes to int */);
 

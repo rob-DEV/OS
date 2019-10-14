@@ -33,10 +33,14 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
         scancode = HW_COMM::Port::inportb(0x60);
 
         switch(scancode) {
-            case KEY_SHIFT:
+            case KEY_SHIFT_LEFT:
                 shift = 1;
                 break;
-            case KEY_SHIFT_RELEASE:
+            case KEY_SHIFT_RIGHT:
+                shift = 1;
+                break;
+            case KEY_SHIFT_LEFT_RELEASE:
+            case KEY_SHIFT_RIGHT_RELEASE:
                 shift = 0;
                 break;
             case KEY_CAPSLOCK:
@@ -56,41 +60,12 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
                 //build keyboard input packet
                 keyboard_input_packet_t packet;
                 packet.keyPressed = ch;
+                packet.leftShiftKeyPressed = shift;
 
                 //pass key packet to all event subscribers
                 m_KeyboardEventHandler->onKeyDown(packet);
             }
         }
-
-        /*
-        
-        switch(keycode) {
-    case SHIFT:
-      shift = 1;
-      break;
-    case SHIFT_RELEASE:
-      shift = 0;
-      break;
-    case CAPSLOCK:
-      if(caps > 0){
-        caps = 0;
-      }else {
-        caps = 1;
-      }
-      break;
-    default:
-      if(keycode < 0) return;
-      char ch;
-      if(shift || caps) {
-        ch = keymap_upper[keycode];
-      }else {
-        ch = keymap_lower[keycode];
-      }
-      //case handled, now pass to shell
-      shell_handle_key(keycode, ch);
-
-  }
-        */
         
     }
 

@@ -9,6 +9,11 @@
 
 extern "C" void timer_handler(regs* r);
 
+typedef uint32_t clock_t;
+
+clock_t clock();
+
+
 namespace OS { namespace KERNEL { namespace CPU {
 
     class PIT {
@@ -25,7 +30,7 @@ namespace OS { namespace KERNEL { namespace CPU {
         void handler(regs* registers);
         void install();
 
-        uint32_t getTicks() { return m_Ticks; };
+        uint32_t getTicks();
         void waitForMilliSeconds(uint32_t milliseconds);
        
     };

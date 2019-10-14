@@ -118,7 +118,12 @@ namespace OS { namespace KERNEL {
         m_Terminal->print("LOG: Kernel Initalized!\n");
         m_Terminal->setColor(VGA_COLOR_WHITE, VGA_COLOR_BLACK);
     
+        float as = 34.56;
+
+        m_Terminal->printf("aids %f float print\n",34.56);
+
     }
+
 
     void enterVGAStub() {
         SHELL::Shell::getInstance()->enterGraphicsMode();
@@ -142,7 +147,6 @@ namespace OS { namespace KERNEL {
 
             if(SHELL::Shell::getInstance()->m_Desktop) 
                 SHELL::Shell::getInstance()->m_Desktop->draw();
-
             m_PIT->waitForMilliSeconds(1000/60);
         }
 

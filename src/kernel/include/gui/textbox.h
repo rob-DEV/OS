@@ -30,7 +30,7 @@ namespace  OS { namespace KERNEL { namespace GUI {
 
         
         void clear();
-        void onKeyDown(const HW_COMM::keyboard_input_packet_t& packet);
+        void onKeyDown(unsigned char key);
         void appendText(const printable_string_t& key);
         
         void draw();

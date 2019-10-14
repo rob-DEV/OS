@@ -47,6 +47,67 @@ namespace OS { namespace KERNEL {
 
     }
 
+    int pow(int n, int e) {
+
+        if (e == 0)
+            return 1;
+        else if ((e % 2) == 0)
+            return pow (n, e / 2) * pow (n, e / 2);
+        else
+            return n * pow (n, e / 2) * pow (n, e / 2);
+
+    }
+
+    int intToStr(int x, char str[], int d) 
+    { 
+        int i = 0; 
+        while (x) 
+        { 
+            str[i++] = (x%10) + '0'; 
+            x = x/10; 
+        } 
+    
+        // If number of digits required is more, then 
+        // add 0s at the beginning 
+        while (i < d) 
+            str[i++] = '0'; 
+    
+        Util::reverse(str); 
+        str[i] = '\0'; 
+        return i; 
+    } 
+
+    void Util::ftoa(float f, char s[])
+    {
+    
+        // Extract integer part 
+        int ipart = (int)f; 
+    
+        // Extract floating part 
+        float fpart = f - (float)ipart; 
+    
+        // convert integer part to string 
+        int i = intToStr(ipart, s, 0); 
+
+        int afterpoint = 4;
+
+        // check for display option after point 
+        if (afterpoint != 0) 
+        { 
+            s[i] = '.';  // add dot 
+    
+            // Get the value of fraction part upto given no. 
+            // of points after dot. The third parameter is needed 
+            // to handle cases like 233.007 
+            fpart = fpart * pow(10, afterpoint); 
+    
+            intToStr((int)fpart, s + i + 1, afterpoint); 
+        } 
+        
+
+    }
+
+
     uint32_t Util::strlen(const char* c) {
          char i;
         uint16_t length = 0;

@@ -28,11 +28,11 @@ namespace  OS { namespace KERNEL { namespace GUI {
         m_strLen = 0;
     }
 
-    void Textbox::onKeyDown(const HW_COMM::keyboard_input_packet_t& packet) {
+    void Textbox::onKeyDown(unsigned char key) {
         //validate if character is printable
         printable_string_t outPrint;
         
-        GuiUtils::validatePrintableCharacter(packet.keyPressed, outPrint);
+        GuiUtils::validatePrintableCharacter(key, outPrint);
         
         appendText(outPrint);
 
@@ -47,7 +47,15 @@ namespace  OS { namespace KERNEL { namespace GUI {
         for (size_t i = 0; i < key.stream_len; i++)
         {
             if(key.stream[i] == KEY_BACKSPACE) {
-                 if(m_strLen == 0)
+
+                //test
+                //remove four spaces in one go
+                if(m_Buffer[m_strLen -1] == ' ' &&m_Buffer[m_strLen - 2] == ' ' && m_Buffer[m_strLen - 3] == ' ' &&m_Buffer[m_strLen - 4] == ' ' ) {
+                    m_strLen -= 4;
+                    return;
+                }
+
+                if(m_strLen == 0)
                     continue;
                     
                 --m_strLen;

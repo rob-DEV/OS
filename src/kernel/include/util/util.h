@@ -11,6 +11,8 @@ namespace OS { namespace KERNEL {
         
         static void itoa(int n, char s[]);
 
+        static void ftoa(float f, char s[]);
+
         static void reverse(char s[]);
 
         static uint32_t strlen(const char* c);

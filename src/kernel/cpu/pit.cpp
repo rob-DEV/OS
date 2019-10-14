@@ -3,13 +3,33 @@
 void timer_handler(regs* registers){
     OS::KERNEL::CPU::PIT::getInstance()->handler(registers);
 }
+#define INPUT_CLOCK_FREQUENCY 1193180
+#define TARGET_FREQUENCY 100
+#define TIMER_COMMAND 0x43
+#define TIMER_DATA 0x40
+#define TIMER_ICW 0x36
+
+
+clock_t clock() {
+
+    OS::KERNEL::CPU::PIT::getInstance()->getTicks();
+
+}
+
+
 
 namespace OS { namespace KERNEL { namespace CPU {
 
     PIT* PIT::s_Instance = NULL;
 
     PIT::PIT() {
-
+        //set PIT frequency
+        uint16_t hz = 1000;
+        uint16_t divisor = INPUT_CLOCK_FREQUENCY / hz;
+        // Init, Square Wave Mode, non-BCD, first transfer LSB then MSB
+        HW_COMM::Port::outportb(TIMER_COMMAND, TIMER_ICW);
+        HW_COMM::Port::outportb(TIMER_DATA, divisor & 0xFF);
+        HW_COMM::Port::outportb(TIMER_DATA, (divisor >> 8) & 0xFF);
     }
 
     PIT::~PIT() {
@@ -37,6 +57,10 @@ namespace OS { namespace KERNEL { namespace CPU {
 
     void PIT::install() {
         OS::KERNEL::CPU::IRQ::getInstance()->irq_install(0, timer_handler);
+    }
+
+    uint32_t PIT::getTicks() {
+        return m_Ticks;
     }
 
     void PIT::waitForMilliSeconds(uint32_t milliseconds) {

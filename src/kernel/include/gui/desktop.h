@@ -24,7 +24,6 @@ namespace OS { namespace KERNEL { namespace GUI {
         Window* m_ActiveWindow;
         Window* m_LastActiveWindow;
     
-        uint32_t m_renderDraws;
         char m_FpsBuffer[30];
 
 
@@ -33,7 +32,7 @@ namespace OS { namespace KERNEL { namespace GUI {
         Desktop();
         ~Desktop();
 
-        void onKeyDown(unsigned char);
+        void onKeyDown(const HW_COMM::keyboard_input_packet_t& packet);
 
         void draw();
 

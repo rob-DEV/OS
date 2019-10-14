@@ -12,11 +12,14 @@ namespace  OS { namespace KERNEL { namespace GUI {
         //register with keyboard
         HW_COMM::KeyboardEventHandler::getInstance()->subscribe(this);
 
-        m_Windows.push_back(new Window("0 Window with textbox", 20, 20, 200,125, 34, this));
+        m_Windows.push_back(new Window("0 Window with textbox", 20, 20, 200,125, 4, this));
 
         m_Windows[0]->addWidget(new Textbox("a",0,0, 200, 125));
+
+                  
+       
     
-        m_ActiveWindow = new Window("9 Window with textbox", 10, 90, 200,125, 46, this);
+        m_ActiveWindow = new Window("9 Window with textbox", 10, 90, 200,125, 6, this);
         m_ActiveWindow->addWidget(new Textbox("TEST TEXT", 0,0, 200,125));
 
 
@@ -27,7 +30,6 @@ namespace  OS { namespace KERNEL { namespace GUI {
         OS::KERNEL::Terminal::getInstance()->printf("allocated window count %d \n", m_Windows.size());
         #endif
         
-        m_renderDraws = 0;
         m_FpsBuffer[30];
         for (size_t i = 0; i < 30; i++)
             m_FpsBuffer[i] = 0;
@@ -41,13 +43,13 @@ namespace  OS { namespace KERNEL { namespace GUI {
     }
 
 
-    void Desktop::onKeyDown(unsigned char key) {
+    void Desktop::onKeyDown(const HW_COMM::keyboard_input_packet_t& packet) {
         
         
-        m_ActiveWindow->onKeyDown(key);
+        m_ActiveWindow->onKeyDown(packet.keyPressed);
         
         //used for switching windows
-        if(key == KEY_ESCAPE) {
+        if(packet.keyPressed == KEY_ESCAPE) {
 
             m_ActiveWindow = m_Windows[0];
 
@@ -61,6 +63,8 @@ namespace  OS { namespace KERNEL { namespace GUI {
 
     void Desktop::draw() {
 
+
+        clock_t start = clock();
         #if VERBOSE_VGA_DEBUG
         //OS::KERNEL::Terminal::getInstance()->printf("Destop::draw() begin\n");
         #endif
@@ -105,23 +109,25 @@ namespace  OS { namespace KERNEL { namespace GUI {
         }
 
 
+
+        //TICKS IN ONE FRAME
+        clock_t end = clock();
+
+        uint32_t frameDurationTicks = end - start;
+        uint32_t frames = 1000 / (float)frameDurationTicks;
+
         //FPS DEBUG HANDLER
-        Util::itoa(m_renderDraws, m_FpsBuffer);
+        Util::itoa(frames, m_FpsBuffer);
         
         m_VGA->drawChar8(150,7,m_FpsBuffer[0] ,0);
         m_VGA->drawChar8(150 + 8,7,m_FpsBuffer[1] ,0);
+        m_VGA->drawChar8(150 + 8,7,m_FpsBuffer[2] ,0);
         
-        if(OS::KERNEL::CPU::PIT::getInstance()->getTicks() % 18 == 0) {
-            
-            #if VERBOSE_VGA_DEBUG
-            //OS::KERNEL::Terminal::getInstance()->printf("Destop::draw() end frametime %d\n", m_renderDraws);
-            #endif
-
-            m_renderDraws = 0;
-        }
         
+        //buffers must be swapped las to render fps counter
         m_VGA->swapBuffers();
-        m_renderDraws++;
+        
+        //OS::KERNEL::Terminal::getInstance()->printf("Clock ticks %d\n", 1000 / (end - start));
         
     }
 
