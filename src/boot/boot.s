@@ -10,6 +10,9 @@
 .long MAGIC
 .long FLAGS
 .long CHECKSUM
+.long 0, 0, 0, 0, 0
+.long 0 # 0 = set graphics mode
+.long 1024, 768, 32 # Width, height, depth
 
 .section .bss
 .align 16

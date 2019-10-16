@@ -1,5 +1,5 @@
 CXX = ~/opt/cross/bin/i686-elf-g++
-CXX_GLOBAL_INCLUDES = -I ../src/kernel/include -I ../src/libc -I ../src/libc++ 
+CXX_GLOBAL_INCLUDES = -I ../src/kernel/include -I ../src/libc/include -I ../src/libc++ 
 CXX_FLAGS = -c -ffreestanding -nostdlib -fno-builtin -fno-rtti -fno-exceptions  $(CXX_GLOBAL_INCLUDES)
 ASM = ~/opt/cross/bin/i686-elf-as
 ASM_FLAGS = -c

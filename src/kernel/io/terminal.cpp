@@ -126,7 +126,7 @@ namespace OS { namespace KERNEL {
 
     }
 
-    void Terminal::print(const char* str) {
+    void Terminal::puts(const char* str) {
         
         while (*str != 0)
         {
@@ -215,13 +215,17 @@ namespace OS { namespace KERNEL {
 
             format++;
             double input = va_arg(parameters, double /* char promotes to int */);
-            char buff[16];//enough for 64 bits integer
+            char buff[256];//enough for 64 bits integer
+            int length;
             //convert
             Util::ftoa(input,buff);
+
             
             if (!maxrem) 
                 // TODO: Set errno to EOVERFLOW.
                 return -1;
+            
+           
             
             if (!print(buff, strlen(buff)))
                 return -1;

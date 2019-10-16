@@ -46,7 +46,7 @@ namespace OS { namespace KERNEL { namespace MEMORY {
     }
     MemoryManager::~MemoryManager()
     {
-        OS::KERNEL::Terminal::getInstance()->print("Memory Manager: destructor called\n");
+        kputs("Memory Manager: destructor called\n");
         if(Instance == this)
             Instance = 0;
     }

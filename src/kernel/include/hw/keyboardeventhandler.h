@@ -1,7 +1,7 @@
 #ifndef OS_KERNEL_HW_COMM_KEYBOARDEVENTHANDLER_H
 #define OS_KERNEL_HW_COMM_KEYBOARDEVENTHANDLER_H
 
-#include "../../../libc/stdint.h"
+#include "../com/type.h"
 #include "keymap.h"
 
 namespace OS { namespace KERNEL { namespace HW_COMM {

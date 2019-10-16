@@ -103,9 +103,8 @@ namespace OS { namespace KERNEL { namespace CPU {
             /* Display the description for the Exception that occurred.
             *  In this tutorial, we will simply halt the system using an
             *  infinite loop */
-            Terminal* terminal = Terminal::getInstance();
-            terminal->print(exception_messages[r->int_no]);
-            terminal->print(" Exception. System Halted!\n");
+            kputs(exception_messages[r->int_no]);
+            kputs(" Exception. System Halted!\n");
             //puts(exception_messages[r->int_no]);
             //puts(" Exception. System Halted!\n");
             for (;;);

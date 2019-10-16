@@ -1,37 +1,71 @@
 #include "include/kernel.h"
+#include <stdio.h>
 
-static void play_sound(uint32_t nFrequence) {
- 	
- }
- 
- //make it shutup
- static void nosound() {
- 	uint8_t tmp = OS::KERNEL::HW_COMM::Port::inportb(0x61) & 0xFC;
- 
- 	OS::KERNEL::HW_COMM::Port::outportb(0x61, tmp);
- }
- 
- //Make a beep
- void beep() {
-    uint32_t waitTime = 100;
-    play_sound(349);
-    OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(waitTime);
-    nosound();
-    play_sound(466);
-    OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(waitTime);
-    nosound();
-    play_sound(587);
-    OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(waitTime);
-    nosound();
-    play_sound(783);
-    OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(waitTime);
-    nosound();
-    play_sound(698);
-    OS::KERNEL::CPU::PIT::getInstance()->waitForMilliSeconds(waitTime);
-    nosound();
+#define CHECK_FLAG(flags,bit)   ((flags) & (1 << (bit)))
 
+void parse_multiboot_info(uint32_t magic, multiboot_info_t* mbi)
+{
+    OS::KERNEL::Terminal::getInstance()->printf("Processing Multiboot Information\n");
+    //multiboot_info_t* mbi;
+    // Am I booted by a Multiboot-compliant boot loader?
+    if (magic != MULTIBOOT_BOOTLOADER_MAGIC)
+    {
+        OS::KERNEL::Terminal::getInstance()->printf("Invalid magic number: %x\n", (unsigned)magic);
+        return;
+    }
+    // Set MBI to the address of the Multiboot information structure.
+    //mbi = (multiboot_info_t *)addr;
+    // Print out the flags.
+    OS::KERNEL::Terminal::getInstance()->printf("Flags = 0x%d\n", (unsigned)mbi->flags);
+    // Are mem_* valid?
+    if (CHECK_FLAG(mbi->flags, 0))
+    {
+        OS::KERNEL::Terminal::getInstance()->printf("mem_lower = %d KB, mem_upper = %d KB\n",
+                   (unsigned)mbi->mem_lower, (unsigned)mbi->mem_upper);
+    }
+    // Bits 4 and 5 are mutually exclusive!
+    if (CHECK_FLAG(mbi->flags, 4) && CHECK_FLAG(mbi->flags, 5))
+    {
+        OS::KERNEL::Terminal::getInstance()->printf("Both bits 4 and 5 are set.\n");
+        return;
+    }
+    // Is the symbol table of a.out valid?
+    if (CHECK_FLAG(mbi->flags, 4))
+    {
+        multiboot_aout_symbol_table_t *multiboot_aout_sym = &(mbi->u.aout_sym);
+        OS::KERNEL::Terminal::getInstance()->printf("multiboot_aout_symbol_table: tabsize = 0x%0x, strsize = 0x%x, addr = 0x%x\n",
+                   (unsigned)multiboot_aout_sym->tabsize,
+                   (unsigned)multiboot_aout_sym->strsize,
+                   (unsigned)multiboot_aout_sym->addr);
+    }
+    // Is the section header table of ELF valid?
+    if (CHECK_FLAG(mbi->flags, 5))
+    {
+        multiboot_elf_section_header_table_t *multiboot_elf_sec = &(mbi->u.elf_sec);
+        OS::KERNEL::Terminal::getInstance()->printf("multiboot_elf_sec: num = %u, size = 0x%x, addr = 0x%x, shndx = 0x%x\n",
+                   (unsigned)multiboot_elf_sec->num, (unsigned)multiboot_elf_sec->size,
+                   (unsigned)multiboot_elf_sec->addr, (unsigned)multiboot_elf_sec->shndx);
+    }
+    // Are mmap_* valid?
+    if (CHECK_FLAG(mbi->flags, 6))
+    {
+        multiboot_memory_map_t *mmap;
+        OS::KERNEL::Terminal::getInstance()->printf("mmap_addr = 0x%x, mmap_length = 0x%x\n",
+                   (unsigned)mbi->mmap_addr, (unsigned)mbi->mmap_length);
+        for (mmap = (multiboot_memory_map_t *)mbi->mmap_addr;
+             (unsigned long)mmap < mbi->mmap_addr + mbi->mmap_length;
+             mmap = (multiboot_memory_map_t *)((unsigned long)mmap + mmap->size + sizeof(mmap->size)))
+            OS::KERNEL::Terminal::getInstance()->printf("size = 0x%x, base_addr = 0x%x%x, length = 0x%x%x, type = 0x%x\n",
+                       (unsigned)mmap->size,
+                       (unsigned)(mmap->addr >> 32),
+                       (unsigned)(mmap->addr & 0xffffffff),
+                       (unsigned)(mmap->len >> 32),
+                       (unsigned)(mmap->len & 0xffffffff),
+                       (unsigned)mmap->type);
+    }
+    
+}
 
- }
 
 
 namespace OS { namespace KERNEL {
@@ -58,24 +92,21 @@ namespace OS { namespace KERNEL {
             uint32_t start = (mbi->mem_upper * 1024) - (MEM_SIZE);
             m_Memory = new MEMORY::MemoryManager(start, mbi->mem_upper * 1024);
             
-            Terminal::getInstance()->print("LOG: Initalizing Kernel...\n");
-            Terminal::getInstance()->printf("LOG: Memory Management Initialized! start : %x\n", start);
+            kputs("LOG: Initalizing Kernel...\n");
+            kprintf("LOG: Memory Management Initialized! start : %x\n", start);
 
 
-            Terminal::getInstance()->printf("Address STACK MM : 0x%x\n", &stackMemoryVolatile);
-            Terminal::getInstance()->printf("Address STACK MM hs : 0x%x\n", stackMemoryVolatile.m_HeapStart);
-            Terminal::getInstance()->printf("Address STACK MM he : 0x%x\n", stackMemoryVolatile.m_HeapEnd);
+            kprintf("Address STACK MM : 0x%x\n", &stackMemoryVolatile);
+            kprintf("Address STACK MM hs : 0x%x\n", stackMemoryVolatile.m_HeapStart);
+            kprintf("Address STACK MM he : 0x%x\n", stackMemoryVolatile.m_HeapEnd);
         
         }
-        Terminal::getInstance()->printf("Memory Manager Heap Start: 0x%x\n", m_Memory->m_HeapStart);
-        Terminal::getInstance()->printf("Memory Manager Heap End: 0x%x\n", m_Memory->m_HeapEnd);
-        Terminal::getInstance()->printf("Memory Manager Heap Size: %d(BYTES), %d(MB)\n", m_Memory->m_SizeBytes, m_Memory->m_SizeBytes / (1024 * 1024));
-        
+        kprintf("Memory Manager Heap Start: 0x%x\n", m_Memory->m_HeapStart);
+        kprintf("Memory Manager Heap End: 0x%x\n", m_Memory->m_HeapEnd);
+        kprintf("Memory Manager Heap Size: %d(BYTES), %d(MB)\n", m_Memory->m_SizeBytes, m_Memory->m_SizeBytes / (1024 * 1024));
         
 
-        m_Terminal = Terminal::getInstance();
-        m_Terminal->print("LOG: Heap Allocating core Kernel components...\n");
-        //TODO: make it work
+        kputs("LOG: Heap Allocating core Kernel components...\n");
         m_GDT = CPU::GDT::getInstance();
         m_IDT = CPU::IDT::getInstance();
         m_IRQ = CPU::IRQ::getInstance();
@@ -84,43 +115,43 @@ namespace OS { namespace KERNEL {
         m_Keyboard = HW_COMM::Keyboard::getInstance();
         
 
-        m_Terminal->printf("m_GDT Address: 0x%x\n", m_GDT);
-        m_Terminal->printf("m_IDT Address: 0x%x\n", m_IDT);
-        m_Terminal->printf("m_IRQ Address: 0x%x\n", m_IRQ);
-        m_Terminal->printf("m_ISRS Address: 0x%x\n", m_ISRS);
-        m_Terminal->printf("m_PIT Address: 0x%x\n", m_PIT);
-        m_Terminal->printf("m_Keyboard Address: 0x%x\n", m_Keyboard);
+        kprintf("m_GDT Address: 0x%x\n", m_GDT);
+        kprintf("m_IDT Address: 0x%x\n", m_IDT);
+        kprintf("m_IRQ Address: 0x%x\n", m_IRQ);
+        kprintf("m_ISRS Address: 0x%x\n", m_ISRS);
+        kprintf("m_PIT Address: 0x%x\n", m_PIT);
+        kprintf("m_Keyboard Address: 0x%x\n", m_Keyboard);
                 
 
-        m_Terminal->print("Installing Global Descriptor Table\n");
+        kputs("Installing Global Descriptor Table\n");
         m_GDT->install();
         
-        m_Terminal->print("Installing Interrupt Descriptor Table\n");
+        kputs("Installing Interrupt Descriptor Table\n");
         m_IDT->install();
 
-        m_Terminal->print("Installing Interrupt Service Routines\n");
+        kputs("Installing Interrupt Service Routines\n");
 
         m_ISRS->install();
 
-        m_Terminal->print("Installing Interrupt Request Handler\n");
+        kputs("Installing Interrupt Request Handler\n");
 
         m_IRQ->install();
 
-        m_Terminal->print("Installing Programmable Interval Timer\n");
+        kputs("Installing Programmable Interval Timer\n");
         m_PIT->install();
 
         m_PIT->waitForMilliSeconds(100);
 
-        m_Terminal->print("Installing Keyboard (US)\n");
+        kputs("Installing Keyboard (US)\n");
         m_Keyboard->install();
 
         m_Terminal->setColor(VGA_COLOR_GREEN, VGA_COLOR_BLACK);
-        m_Terminal->print("LOG: Kernel Initalized!\n");
+        kputs("LOG: Kernel Initalized!\n");
         m_Terminal->setColor(VGA_COLOR_WHITE, VGA_COLOR_BLACK);
     
-        float as = 34.56;
 
-        m_Terminal->printf("aids %f float print\n",34.56);
+        kprintf("MBI VBE %d", mbi->vbe_mode_info);
+
 
     }
 
@@ -138,10 +169,20 @@ namespace OS { namespace KERNEL {
 
         SHELL::Shell::getInstance()->addCommand("vga", enterVGAStub);
         SHELL::Shell::getInstance()->addCommand("reboot", reboot);
-        SHELL::Shell::getInstance()->addCommand("beep", beep);
 
         m_VGA = HW_COMM::VGA::getInstance();
         
+
+        parse_multiboot_info(magic, mbi);
+
+        printf("Test apples %f\n", 34.245);
+        printf("Test apples %f\n", 34.245);
+        kprintf("Macro test %f\n", 34.245);
+
+
+
+
+        kprintf("sizeof unsigned long long %d ", sizeof(unsigned long long));
 
         while(1) {
 

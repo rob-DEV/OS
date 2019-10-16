@@ -36,11 +36,11 @@ namespace OS { namespace KERNEL { namespace SHELL {
         //pass char to video memory if not in graphics mode
         char c = packet.keyPressed;
         if(c != '\n') {
-            Terminal::getInstance()->print(c);
+            Terminal::getInstance()->putchar(c);
         }
         else {
 
-            Terminal::getInstance()->print("\n");
+            kputs("\n");
             SHELL_PRINT_HEADER;
             nLines++;
 
