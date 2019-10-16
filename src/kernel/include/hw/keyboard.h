@@ -28,7 +28,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
         
         static Keyboard* getInstance();
 
-        void handler(regs* registers);
+        void handler(regs_t* registers);
         void install();
         void uninstall();
     };

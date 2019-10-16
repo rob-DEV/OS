@@ -27,7 +27,7 @@ namespace OS { namespace KERNEL { namespace CPU {
         
         static PIT* getInstance();
 
-        void handler(regs* registers);
+        void handler(regs_t* registers);
         void install();
 
         uint32_t getTicks();

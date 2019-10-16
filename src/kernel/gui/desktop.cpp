@@ -9,7 +9,7 @@ namespace  OS { namespace KERNEL { namespace GUI {
         #if !VERBOSE_VGA_DEBUG
         m_VGA->setMode(m_W, m_H, 8);
         #endif
-        //register with keyboard
+        //regs_tister with keyboard
         HW_COMM::KeyboardEventHandler::getInstance()->subscribe(this);
 
         m_Windows.push_back(new Window("0 Window with textbox", 20, 20, 200,125, 4, this));

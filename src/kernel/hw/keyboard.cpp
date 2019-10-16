@@ -27,7 +27,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
         return s_Instance;
     }
 
-    void Keyboard::handler(regs* registers) {
+    void Keyboard::handler(regs_t* registers) {
         char scancode;
 
         scancode = HW_COMM::Port::inportb(0x60);

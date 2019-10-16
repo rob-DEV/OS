@@ -19,10 +19,6 @@ namespace OS { namespace KERNEL {
         return s_Instance;
     }
 
-    void Terminal::setColor(enum vga_color fg,  enum vga_color bg) {
-        m_Color = fg | bg << 4;
-    }
-
     void Terminal::init() {
         m_CursorX = 0;
         m_CursorY = 0;
@@ -30,6 +26,44 @@ namespace OS { namespace KERNEL {
         setColor(VGA_COLOR_WHITE, VGA_COLOR_BLACK);
         
         cls();
+    }
+
+    void Terminal::scroll() {
+
+        unsigned blank, temp;
+        int attrib = 0x0F;
+
+        /* A blank is defined as a space... we need to give it
+        *  backcolor too */
+        blank = 0x20 | (attrib << 8);
+
+        /* Row 25 is the end, this means we need to scroll up */
+        if(m_CursorY >= 25)
+        {
+            /* Move the current text chunk that makes up the screen
+            *  back in the buffer by a line */
+            temp = m_CursorY - 25 + 1;
+            memcpy (VGA_MEMORY, VGA_MEMORY + temp * 80, (25 - temp) * 80 * 2);
+
+            /* Finally, we set the chunk of memory that occupies
+            *  the last line of text to our 'blank' character */
+            memsetw (VGA_MEMORY + (25 - temp) * 80, blank, 80);
+            m_CursorY = 25 - 1;
+        }
+    }
+
+
+    void Terminal::moveCursor() {
+        
+        unsigned int temp;
+
+        temp = m_CursorY * VGA_WIDTH + m_CursorX;
+
+        HW_COMM::Port::outportb(0x3D4, 14);
+        HW_COMM::Port::outportb(0x3D5, temp >> 8);
+        HW_COMM::Port::outportb(0x3D4, 15);
+        HW_COMM::Port::outportb(0x3D5, temp);
+
     }
 
     int Terminal::putchar(char c) {
@@ -80,50 +114,12 @@ namespace OS { namespace KERNEL {
         return 0;
     }
 
-    bool Terminal::print(const char* data, size_t length) {
+    bool Terminal::puts(const char* data, size_t length) {
         const unsigned char* bytes = (const unsigned char*) data;
         for (size_t i = 0; i < length; i++)
             if (putchar(bytes[i]) == EOF)
                 return false;
         return true;
-    }
-
-    void Terminal::scroll() {
-
-        unsigned blank, temp;
-        int attrib = 0x0F;
-
-        /* A blank is defined as a space... we need to give it
-        *  backcolor too */
-        blank = 0x20 | (attrib << 8);
-
-        /* Row 25 is the end, this means we need to scroll up */
-        if(m_CursorY >= 25)
-        {
-            /* Move the current text chunk that makes up the screen
-            *  back in the buffer by a line */
-            temp = m_CursorY - 25 + 1;
-            memcpy (VGA_MEMORY, VGA_MEMORY + temp * 80, (25 - temp) * 80 * 2);
-
-            /* Finally, we set the chunk of memory that occupies
-            *  the last line of text to our 'blank' character */
-            memsetw (VGA_MEMORY + (25 - temp) * 80, blank, 80);
-            m_CursorY = 25 - 1;
-        }
-    }
-
-
-    void Terminal::moveCursor() {
-        
-        unsigned int temp;
-
-        temp = m_CursorY * VGA_WIDTH + m_CursorX;
-
-        HW_COMM::Port::outportb(0x3D4, 14);
-        HW_COMM::Port::outportb(0x3D5, temp >> 8);
-        HW_COMM::Port::outportb(0x3D4, 15);
-        HW_COMM::Port::outportb(0x3D5, temp);
-
     }
 
     void Terminal::puts(const char* str) {
@@ -135,10 +131,7 @@ namespace OS { namespace KERNEL {
         }
     }
 
-    void Terminal::print(char c) {
-        putchar(c);
-    }
-
+    
     int Terminal::printf(const char* __restrict format, ...) {
         
     va_list parameters;
@@ -161,7 +154,7 @@ namespace OS { namespace KERNEL {
             // TODO: Set errno to EOVERFLOW.
                 return -1;
             }
-            if (!print(format, amount))
+            if (!puts(format, amount))
                 return -1;
             format += amount;
             written += amount;
@@ -177,7 +170,7 @@ namespace OS { namespace KERNEL {
                 // TODO: Set errno to EOVERFLOW.
                 return -1;
             }
-            if (!print(&c, sizeof(c)))
+            if (!puts(&c, sizeof(c)))
                 return -1;
             written++;
         }
@@ -189,7 +182,7 @@ namespace OS { namespace KERNEL {
                 // TODO: Set errno to EOVERFLOW.
                 return -1;
             }
-            if (!print(str, len))
+            if (!puts(str, len))
                 return -1;
             written += len;
         }
@@ -205,7 +198,7 @@ namespace OS { namespace KERNEL {
             
            
             
-            if (!print(buffer, strlen(buffer)))
+            if (!puts(buffer, strlen(buffer)))
                 return -1;
                 
             written++;
@@ -227,7 +220,7 @@ namespace OS { namespace KERNEL {
             
            
             
-            if (!print(buff, strlen(buff)))
+            if (!puts(buff, strlen(buff)))
                 return -1;
                 
             written++;
@@ -245,7 +238,7 @@ namespace OS { namespace KERNEL {
                 // TODO: Set errno to EOVERFLOW.
                 return -1;
             }
-            if (!print(buff, strlen(buff)))
+            if (!puts(buff, strlen(buff)))
                 return -1;
             written++;
         } else {
@@ -255,7 +248,7 @@ namespace OS { namespace KERNEL {
                 // TODO: Set errno to EOVERFLOW.
                 return -1;
             }
-            if (!print(format, len))
+            if (!puts(format, len))
                 return -1;
             written += len;
             format += len;
@@ -265,6 +258,10 @@ namespace OS { namespace KERNEL {
     va_end(parameters);
     return written;
 
+    }
+
+    void Terminal::setColor(enum vga_color fg,  enum vga_color bg) {
+        m_Color = fg | bg << 4;
     }
 
     void Terminal::cls() {

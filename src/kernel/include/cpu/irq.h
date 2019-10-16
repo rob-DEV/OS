@@ -6,7 +6,7 @@
 #include "isr.h"
 
 
-extern "C" void irq_handler(regs* r);
+extern "C" void irq_handler(regs_t* r);
 
 namespace OS { namespace KERNEL { namespace CPU {
 
@@ -26,7 +26,7 @@ namespace OS { namespace KERNEL { namespace CPU {
         
         void irq_install(int irq, void (*handler)(struct regs *r));
         void irq_uninstall(int irq);   
-        void irq_handler(regs* registers);
+        void irq_handler(regs_t* registers);
        
     };
 

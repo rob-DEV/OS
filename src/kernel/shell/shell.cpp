@@ -61,7 +61,7 @@ namespace OS { namespace KERNEL { namespace SHELL {
 
             //check the commands
             
-            checkRegisteredCommands();
+            checkregs_tisteredCommands();
 
             //reset the buffer length for a new line
             m_BufferLength = 0;
@@ -75,7 +75,7 @@ namespace OS { namespace KERNEL { namespace SHELL {
         m_Commands.push_back(new ShellCommand(cmdText, callback));
     }
 
-    void Shell::checkRegisteredCommands() {
+    void Shell::checkregs_tisteredCommands() {
 
         for (size_t i = 0; i < m_Commands.size(); i++)
             if(strcmp(m_Commands[i]->commandText, m_Buffer))

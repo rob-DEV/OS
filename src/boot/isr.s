@@ -276,7 +276,7 @@ isr_common_stub:
     push %eax
 
     movl $fault_handler, %eax
-    call *%eax  # Bran say this preserves the EIP register
+    call *%eax  # Bran say this preserves the EIP regs_tister
 
     # Undo everything IN REVERSE ORDER
     pop %eax

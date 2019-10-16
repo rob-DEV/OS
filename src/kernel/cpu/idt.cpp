@@ -43,7 +43,7 @@ namespace OS { namespace KERNEL { namespace CPU {
         /* Clear out the entire IDT, initializing it to zeros */
         memset(&idt, 0, sizeof(struct idt_entry) * 256);
 
-        /* Points the processor's internal register to the new IDT */
+        /* Points the processor's internal regs_tister to the new IDT */
         idt_load();
     }
 

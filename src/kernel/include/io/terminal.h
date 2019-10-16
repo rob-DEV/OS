@@ -14,6 +14,7 @@
 
 #define kprintf(format, ...) OS::KERNEL::Terminal::getInstance()->printf(format, __VA_ARGS__)
 #define kputs(s) OS::KERNEL::Terminal::getInstance()->puts(s)
+#define ktermsetcolor(fg, bg) OS::KERNEL::Terminal::getInstance()->setColor(fg,bg)
 #define EOF -1
 
 
@@ -66,8 +67,7 @@ namespace OS { namespace KERNEL {
         static Terminal* getInstance();
 
         int putchar(char c);
-        bool print(const char* data, size_t length);
-        void print(char c);
+        bool puts(const char* data, size_t length);
         void puts(const char* str);
         int printf(const char* __restrict format, ...);
 

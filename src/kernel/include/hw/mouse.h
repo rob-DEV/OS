@@ -7,7 +7,7 @@
 #include "../hw/port.h"
 #include "vga.h"
 
-extern "C" void mouse_handler(regs* r);
+extern "C" void mouse_handler(regs_t* r);
 
 #define MOUSE_IRQ_ID 12
 
@@ -35,7 +35,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
 
         static Mouse* getInstance();
         
-        void handler(regs* registers);
+        void handler(regs_t* registers);
         void install();
         void uninstall();
 

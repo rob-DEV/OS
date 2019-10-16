@@ -82,9 +82,8 @@ namespace OS { namespace KERNEL {
     void Kernel::kernel_init(multiboot_info_t* mbi, uint32_t magic) {
         
         
-        
         //migrate stack managed memory to full heap based memory
-        //small inital manage to allocate the actual manager onto the heap
+        //small inital manager to allocate the actual manager onto the heap
         { //destroy stack mm after scope end - migrate to heap
             MEMORY::MemoryManager stackMemoryVolatile(mbi->mem_lower, mbi->mem_lower + 500);
 
@@ -113,14 +112,6 @@ namespace OS { namespace KERNEL {
         m_ISRS = CPU::ISR::getInstance();
         m_PIT = CPU::PIT::getInstance();
         m_Keyboard = HW_COMM::Keyboard::getInstance();
-        
-
-        kprintf("m_GDT Address: 0x%x\n", m_GDT);
-        kprintf("m_IDT Address: 0x%x\n", m_IDT);
-        kprintf("m_IRQ Address: 0x%x\n", m_IRQ);
-        kprintf("m_ISRS Address: 0x%x\n", m_ISRS);
-        kprintf("m_PIT Address: 0x%x\n", m_PIT);
-        kprintf("m_Keyboard Address: 0x%x\n", m_Keyboard);
                 
 
         kputs("Installing Global Descriptor Table\n");
@@ -140,17 +131,15 @@ namespace OS { namespace KERNEL {
         kputs("Installing Programmable Interval Timer\n");
         m_PIT->install();
 
-        m_PIT->waitForMilliSeconds(100);
+        kputs("Waiting...\n");
+        m_PIT->waitForMilliSeconds(5000);
 
         kputs("Installing Keyboard (US)\n");
         m_Keyboard->install();
 
-        m_Terminal->setColor(VGA_COLOR_GREEN, VGA_COLOR_BLACK);
+        ktermsetcolor(VGA_COLOR_GREEN, VGA_COLOR_BLACK);
         kputs("LOG: Kernel Initalized!\n");
-        m_Terminal->setColor(VGA_COLOR_WHITE, VGA_COLOR_BLACK);
-    
-
-        kprintf("MBI VBE %d", mbi->vbe_mode_info);
+        ktermsetcolor(VGA_COLOR_WHITE, VGA_COLOR_BLACK);
 
 
     }
@@ -171,18 +160,15 @@ namespace OS { namespace KERNEL {
         SHELL::Shell::getInstance()->addCommand("reboot", reboot);
 
         m_VGA = HW_COMM::VGA::getInstance();
-        
-
-        parse_multiboot_info(magic, mbi);
 
         printf("Test apples %f\n", 34.245);
         printf("Test apples %f\n", 34.245);
         kprintf("Macro test %f\n", 34.245);
 
 
-
-
-        kprintf("sizeof unsigned long long %d ", sizeof(unsigned long long));
+        printf("Test apples %d\n", 33);
+        printf("Test apples %d\n", 32);
+        kprintf("Macro test %d\n", 32);
 
         while(1) {
 

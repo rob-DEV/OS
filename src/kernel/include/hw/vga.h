@@ -38,7 +38,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
 
 
 
-        void writeRegisters(uint8_t* registers);
+        void writeregisters(uint8_t* registers);
         
         uint8_t* getFrameBufferSegment();
 

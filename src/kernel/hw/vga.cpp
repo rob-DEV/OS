@@ -35,7 +35,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
         return s_Instance;
     }
 
-    void VGA::writeRegisters(uint8_t* registers) {
+    void VGA::writeregisters(uint8_t* registers) {
         //set vga mode 320x200x256
         //misc
         miscPort.write(*(registers++));
@@ -144,7 +144,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
                 0x41, 0x00, 0x0F, 0x00,	0x00
         };
 
-        writeRegisters(g_320x200x256);
+        writeregisters(g_320x200x256);
         return true;
     }
 

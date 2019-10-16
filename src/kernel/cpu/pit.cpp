@@ -43,16 +43,17 @@ namespace OS { namespace KERNEL { namespace CPU {
         return s_Instance;
     }
 
-    void PIT::handler(regs* registers) {
+    void PIT::handler(regs_t* registers) {
         /* Increment our 'tick count' */
+        
         m_Ticks++;
 
         /* Every 18 clocks (approximately 1 second), we will
         *  display a message on the screen */
-        if (m_Ticks % 18 == 0)
-        {
+        //if (m_Ticks % 1000 == 0)
+        //{
             //Terminal::getInstance()->printf("%d\n", m_Ticks);
-        }
+        //}
     }
 
     void PIT::install() {
@@ -65,8 +66,9 @@ namespace OS { namespace KERNEL { namespace CPU {
 
     void PIT::waitForMilliSeconds(uint32_t milliseconds) {
         
-        unsigned int targetTicks = m_Ticks + (18 * (float)milliseconds / 1000);
+        unsigned int targetTicks = m_Ticks + milliseconds;
         while(m_Ticks < targetTicks);
+            
         //Terminal::getInstance()->printf("Waited for %d milliseconds!\n", milliseconds);
     }
 

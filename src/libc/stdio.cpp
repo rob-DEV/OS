@@ -35,7 +35,7 @@ int printf(const char* __restrict format, ...) {
             // TODO: Set errno to EOVERFLOW.
                 return -1;
             }
-            if (!OS::KERNEL::Terminal::getInstance()->print(format, amount))
+            if (!OS::KERNEL::Terminal::getInstance()->puts(format, amount))
                 return -1;
             format += amount;
             written += amount;
@@ -51,7 +51,7 @@ int printf(const char* __restrict format, ...) {
                 // TODO: Set errno to EOVERFLOW.
                 return -1;
             }
-            if (!OS::KERNEL::Terminal::getInstance()->print(&c, sizeof(c)))
+            if (!OS::KERNEL::Terminal::getInstance()->puts(&c, sizeof(c)))
                 return -1;
             written++;
         }
@@ -63,15 +63,17 @@ int printf(const char* __restrict format, ...) {
                 // TODO: Set errno to EOVERFLOW.
                 return -1;
             }
-            if (!OS::KERNEL::Terminal::getInstance()->print(str, len))
+            if (!OS::KERNEL::Terminal::getInstance()->puts(str, len))
                 return -1;
             written += len;
         }
         else if (*format == 'd') {
             format++;
             int input = va_arg(parameters, int /* char promotes to int */);
-            
-            OS::KERNEL::Util::itoa(input, buffer);
+            char buff[8];//enough for 64 bits integer
+            int length;
+
+            OS::KERNEL::Util::itoa(input, buff);
             
             if (!maxrem) 
                 // TODO: Set errno to EOVERFLOW.
@@ -79,7 +81,7 @@ int printf(const char* __restrict format, ...) {
             
            
             
-            if (!OS::KERNEL::Terminal::getInstance()->print(buffer, strlen(buffer)))
+            if (!OS::KERNEL::Terminal::getInstance()->puts(buff, strlen(buff)))
                 return -1;
                 
             written++;
@@ -101,7 +103,7 @@ int printf(const char* __restrict format, ...) {
             
            
             
-            if (!OS::KERNEL::Terminal::getInstance()->print(buff, strlen(buff)))
+            if (!OS::KERNEL::Terminal::getInstance()->puts(buff, strlen(buff)))
                 return -1;
 
             //weird bug fix with this zeroing 
@@ -122,7 +124,7 @@ int printf(const char* __restrict format, ...) {
                 // TODO: Set errno to EOVERFLOW.
                 return -1;
             }
-            if (!OS::KERNEL::Terminal::getInstance()->print(buff, strlen(buff)))
+            if (!OS::KERNEL::Terminal::getInstance()->puts(buff, strlen(buff)))
                 return -1;
             written++;
         } else {
@@ -132,7 +134,7 @@ int printf(const char* __restrict format, ...) {
                 // TODO: Set errno to EOVERFLOW.
                 return -1;
             }
-            if (!OS::KERNEL::Terminal::getInstance()->print(format, len))
+            if (!OS::KERNEL::Terminal::getInstance()->puts(format, len))
                 return -1;
             written += len;
             format += len;

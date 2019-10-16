@@ -32,7 +32,7 @@ namespace OS { namespace KERNEL { namespace SHELL {
 
         void onKeyDown(const HW_COMM::keyboard_input_packet_t& packet);
         void addCommand(const char* cmdText, void(*callback)());
-        void checkRegisteredCommands();
+        void checkregs_tisteredCommands();
 
         GUI::Desktop* m_Desktop;
         void enterGraphicsMode();

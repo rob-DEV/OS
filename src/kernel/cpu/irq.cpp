@@ -23,7 +23,7 @@ void* irq_routines[16] =
         0, 0, 0, 0, 0, 0, 0, 0
 };
 
-void irq_handler(regs * registers) {
+void irq_handler(regs_t * registers) {
     OS::KERNEL::CPU::IRQ::getInstance()->irq_handler(registers);
 }
 
@@ -91,13 +91,13 @@ namespace OS { namespace KERNEL { namespace CPU {
         HW_COMM::Port::outportb(0xA1, 0x0);
     }
 
-    void IRQ::irq_handler(regs* registers) {
+    void IRQ::irq_handler(regs_t* registers) {
         /* This is a blank function pointer */
-        void (*handler)(regs *r);
+        void (*handler)(regs_t *r);
 
         /* Find out if we have a custom handler to run for this
         *  IRQ, and then finally, run it */
-        handler = (void (*)(regs*))irq_routines[registers->int_no - 32];
+        handler = (void (*)(regs_t*))irq_routines[registers->int_no - 32];
         if (handler)
         {
             handler(registers);
