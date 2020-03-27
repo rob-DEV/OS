@@ -35,12 +35,21 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
     
     void KeyboardEventHandler::onKeyDown(const keyboard_input_packet_t& packet) {
         
+        m_KeyPressed = true;
         for (size_t i = 0; i < m_KeyboardEVSubscribersCount; i++)
         {
             KeyboardEventSubscriber* kb_sub_ptr = (KeyboardEventSubscriber*)m_KeyboardEVSubscribers[i];
             kb_sub_ptr->onKeyDown(packet);
         }
         
+    }
+
+    void KeyboardEventHandler::waitForKey() {
+        
+        while(!m_KeyPressed)  {}
+
+        m_KeyPressed = false;
+
     }
 
 

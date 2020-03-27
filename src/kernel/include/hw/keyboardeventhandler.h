@@ -30,7 +30,7 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
         
         uint32_t m_KeyboardEVSubscribers[10];
         uint8_t m_KeyboardEVSubscribersCount = 0;
-
+        bool m_KeyPressed = false;
         static KeyboardEventHandler* s_Instance;
     public:
         KeyboardEventHandler();
@@ -41,6 +41,8 @@ namespace OS { namespace KERNEL { namespace HW_COMM {
         void subscribe(KeyboardEventSubscriber* subscriber);
         void onKeyUp(char key);
         void onKeyDown(const keyboard_input_packet_t& keyPacket);
+
+        void waitForKey();
 
 
     };

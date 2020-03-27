@@ -140,6 +140,28 @@ namespace OS { namespace KERNEL { namespace MEMORY {
         }
 
     }
+
+    void MemoryManager::printInfo() {
+        kputs("\nMemory Manager Info\n");
+
+        kprintf("Total Memory : %dMB\n", m_SizeBytes / 1024 / 1024);
+
+        //calc used memory
+        uint32_t memoryUsedBytes = 0;
+        for(MemoryChunk* chunk = first; chunk != 0; chunk = chunk->next)
+            if(chunk->allocated)
+                memoryUsedBytes += chunk->size;
+        
+        kprintf("Memory In Use : %dB\n", memoryUsedBytes);
+        uint32_t kbRamUsed = uint32_t((float)memoryUsedBytes / (float)(1024*1024));
+        //kprintf("Memory In Use : %dMB\n", kbRamUsed);
+
+        kprintf("Memory Available : %dB\n", (m_SizeBytes - memoryUsedBytes));
+        uint32_t kbRamAvail = uint32_t((m_SizeBytes - memoryUsedBytes) / (float)(1024*1024));
+        //kprintf("Memory Available : %dMB\n", kbRamAvail);
+
+        kputs("Memory Manager Info End\n");
+    }
     
 }}}
 
@@ -177,6 +199,20 @@ void operator delete(void* ptr) {
 }
 
 void operator delete[](void* ptr) {
+
+
+
+    if(OS::KERNEL::MEMORY::MemoryManager::Instance != 0)
+        OS::KERNEL::MEMORY::MemoryManager::Instance->free(ptr);
+    //get block and free
+    //kprintf("DELETE[] magic : %x", ((OS::KERNEL::MEMORY::memory_chunk_t*)(ptr - sizeof(OS::KERNEL::MEMORY::memory_chunk_t)))->magic);
+    //ensure all objects have there destructors called
+    uint32_t chuck_size = ((OS::KERNEL::MEMORY::memory_chunk_t*)(ptr - sizeof(OS::KERNEL::MEMORY::memory_chunk_t)))->size;
+    uint32_t number_of_objects = chuck_size / sizeof(void*);
+
+    uint32_t ptrAddress = (uint32_t)ptr;
+
+    kputs("Here");
     if(OS::KERNEL::MEMORY::MemoryManager::Instance != 0)
         OS::KERNEL::MEMORY::MemoryManager::Instance->free(ptr);
 }

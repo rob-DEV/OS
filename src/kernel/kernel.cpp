@@ -3,6 +3,23 @@
 
 #define CHECK_FLAG(flags,bit)   ((flags) & (1 << (bit)))
 
+
+class Test
+{
+private:
+    /* data */
+    const char* m_Name;
+    char* data;
+public:
+    Test() : m_Name("ORANGE") { data = new char[100000000]; }; 
+    Test(const char* name) : m_Name(name) { data = new char[100000000];}; 
+    ~Test() { delete data; kprintf("Destructed Test Class : %s\n", m_Name);} ;
+};
+
+
+
+
+
 void parse_multiboot_info(uint32_t magic, multiboot_info_t* mbi)
 {
     OS::KERNEL::Terminal::getInstance()->printf("Processing Multiboot Information\n");
@@ -79,6 +96,10 @@ namespace OS { namespace KERNEL {
          CPU::PIT::getInstance()->waitForMilliSeconds(300);   
     }
 
+    void waitforkey() {
+        OS::KERNEL::HW_COMM::KeyboardEventHandler::getInstance()->waitForKey();
+    }
+
     void Kernel::kernel_init(multiboot_info_t* mbi, uint32_t magic) {
         
         
@@ -100,6 +121,7 @@ namespace OS { namespace KERNEL {
             kprintf("Address STACK MM he : 0x%x\n", stackMemoryVolatile.m_HeapEnd);
         
         }
+        kputs("Migrating memory manager to heap...\n");
         kprintf("Memory Manager Heap Start: 0x%x\n", m_Memory->m_HeapStart);
         kprintf("Memory Manager Heap End: 0x%x\n", m_Memory->m_HeapEnd);
         kprintf("Memory Manager Heap Size: %d(BYTES), %d(MB)\n", m_Memory->m_SizeBytes, m_Memory->m_SizeBytes / (1024 * 1024));
@@ -132,7 +154,7 @@ namespace OS { namespace KERNEL {
         m_PIT->install();
 
         kputs("Waiting...\n");
-        m_PIT->waitForMilliSeconds(5000);
+        m_PIT->waitForMilliSeconds(2000);
 
         kputs("Installing Keyboard (US)\n");
         m_Keyboard->install();
@@ -149,6 +171,11 @@ namespace OS { namespace KERNEL {
         SHELL::Shell::getInstance()->enterGraphicsMode();
     }
 
+    void ramInfoStub() {
+        //get current amount of ram allocated
+        OS::KERNEL::MEMORY::MemoryManager::Instance->printInfo();
+    }
+
     void Kernel::kernel_main(multiboot_info_t* mbi, uint32_t magic) {
 
         kernel_init(mbi, magic);
@@ -158,18 +185,60 @@ namespace OS { namespace KERNEL {
 
         SHELL::Shell::getInstance()->addCommand("vga", enterVGAStub);
         SHELL::Shell::getInstance()->addCommand("reboot", reboot);
+        SHELL::Shell::getInstance()->addCommand("ram-info", ramInfoStub);
 
         m_VGA = HW_COMM::VGA::getInstance();
 
-        printf("Test apples %f\n", 34.245);
-        printf("Test apples %f\n", 34.245);
-        kprintf("Macro test %f\n", 34.245);
 
 
-        printf("Test apples %d\n", 33);
-        printf("Test apples %d\n", 32);
-        kprintf("Macro test %d\n", 32);
+        std::vector<Test*> testVector;
 
+        testVector.push_back(new Test("Apples"));
+        testVector.push_back(new Test("Apples2"));
+        testVector.push_back(new Test("Apples3"));
+        testVector.push_back(new Test("Apples4"));
+        testVector.push_back(new Test("Apples5"));
+        testVector.push_back(new Test("Apples6"));
+        testVector.push_back(new Test("Apples7"));
+
+        kprintf("Vector Size : %d\n\n", testVector.size());
+
+        ramInfoStub();
+
+        for (size_t i = 0; i < testVector.size(); i++)
+            delete testVector[i];
+
+        ramInfoStub();
+
+        waitforkey();
+        Test* testArray = new Test[5];
+        Test* tmpTestArray = testArray;
+        for (size_t i = 0; i < 5; i++)
+        { 
+            
+            testArray = new Test("TRRRR");
+            testArray = &testArray[i];
+            
+        }
+
+        testArray = tmpTestArray;
+        kputs("ALLOCATED TEST ARRAY\n");
+        ramInfoStub();
+        waitforkey();
+        for (size_t i = 0; i < 3; i++)
+        { 
+            delete testArray;
+            testArray = &testArray[i];
+            
+        }
+
+        testArray = tmpTestArray;
+        waitforkey();
+        ramInfoStub();
+
+
+
+        while(true);
         while(1) {
 
             if(SHELL::Shell::getInstance()->m_Desktop) 
